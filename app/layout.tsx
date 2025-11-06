@@ -1,7 +1,8 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter, Noto_Sans_Armenian } from "next/font/google" // Import Noto_Sans_Armenian
-import "@/styles/globals.css"
+<<<<<<< HEAD
+import "./globals.css"
 import { LanguageProvider } from "@/contexts/language-context"
 import { cn } from "@/lib/utils" // Import cn utility
 
@@ -22,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(inter.variable, notoSansArmenian.variable)}>
+      <body className={cn("font-sans antialiased", inter.variable, notoSansArmenian.variable)}>
         {" "}
         {/* Add both font variables */}
         <LanguageProvider>{children}</LanguageProvider>
