@@ -1,0 +1,33 @@
+"use client"
+
+import { Button } from "@/components/ui/button"
+import { useLanguage } from "@/contexts/language-context"
+
+export function LanguageToggle() {
+  const { language, setLanguage } = useLanguage()
+
+  return (
+    <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
+      <Button
+        variant={language === "en" ? "default" : "ghost"}
+        size="sm"
+        onClick={() => setLanguage("en")}
+        className={`text-xs px-3 py-1 ${
+          language === "en" ? "bg-armath-blue text-white" : "text-gray-600 hover:text-gray-900"
+        }`}
+      >
+        EN
+      </Button>
+      <Button
+        variant={language === "hy" ? "default" : "ghost"}
+        size="sm"
+        onClick={() => setLanguage("hy")}
+        className={`text-xs px-3 py-1 ${
+          language === "hy" ? "bg-armath-blue text-white" : "text-gray-600 hover:text-gray-900"
+        }`}
+      >
+        ՀՅ
+      </Button>
+    </div>
+  )
+}

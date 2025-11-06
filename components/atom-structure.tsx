@@ -1,0 +1,380 @@
+"use client"
+
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import React, { useLayoutEffect, useEffect, useMemo, useRef, useState } from "react"
+import { Card, CardContent } from "@/components/ui/card"
+import { useLanguage } from "@/contexts/language-context"
+
+// --- Types ---
+interface TeamMember {
+  id: string
+  name: string
+  role: string
+  isCore: boolean
+  contribution?: string
+  details?: string
+}
+
+// --- Sample Data (unchanged, but with ids) ---
+const teamMembers: TeamMember[] = [
+  {
+    id: "grisha-kh",
+    name: "Grisha Khachatryan",
+    role: "Lead Coach",
+    isCore: true,
+    details:
+      "Leads the lab, coordinates projects, and mentors students in advanced engineering concepts.",
+  },
+  {
+    id: "olya-kh",
+    name: "Olya Khachatryan",
+    role: "Coach",
+    isCore: true,
+    details:
+      "Assistant to the Lead Coach; Beginners' coach.",
+  },
+  {
+    id: "narek-sar",
+    name: "Narek Saroyan",
+    role: "Coach",
+    isCore: true,
+    details:
+      "Assistant to the Lead Coach; Beginners' coach.",
+  },
+  {
+    id: "edgar-har",
+    name: "Edgar Harutyunyan",
+    role: "Supporter",
+    isCore: false,
+    contribution: "Scientific researcher; Provided equipment",
+  },
+  {
+    id: "narek-har",
+    name: "Narek Harutyunyan",
+    role: "Supporter",
+    isCore: false,
+    contribution: "Volunteering as website developer",
+  },
+]
+
+// --- Constants ---
+const GOLDEN_ANGLE = 137.5 // Golden angle in degrees for optimal spacing
+const MIN_NUCLEUS_DIAMETER = 72
+const MIN_ORBIT_RADIUS_MULTIPLIER = 0.9
+
+// --- Helpers ---
+const getInitials = (full: string): string => {
+  if (!full || typeof full !== "string") return "?"
+  return full
+    .trim()
+    .split(/\s+/)
+    .map((w) => w.charAt(0))
+    .join("")
+    .toUpperCase()
+}
+
+// Observe element size
+function useMeasure<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null)
+  const [rect, setRect] = useState({ width: 0, height: 0 })
+
+  useLayoutEffect(() => {
+    if (!ref.current) return
+    const el = ref.current
+    const ro = new ResizeObserver((entries) => {
+      const cr = entries[0].contentRect
+      setRect({ width: cr.width, height: cr.height })
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
+  return { ref, ...rect }
+}
+
+// Hook to handle keyboard events (Escape key)
+function useEscapeKey(callback: () => void) {
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        callback()
+      }
+    }
+    window.addEventListener("keydown", handleEscape)
+    return () => window.removeEventListener("keydown", handleEscape)
+  }, [callback])
+}
+
+// --- Subcomponents ---
+
+type NucleusProps = {
+  diameter: number
+  coreMembers: TeamMember[]
+  activeId: string | null
+  setActiveId: (id: string | null) => void
+}
+
+const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setActiveId }) => {
+  const reduceMotion = useReducedMotion()
+
+  // Early return if no core members
+  if (coreMembers.length === 0) {
+    return null
+  }
+
+  // Place the core members inside the nucleus, evenly spaced on a small orbit
+  const dotSize = 32 // h-8 w-8
+  const padding = 12
+  const count = coreMembers.length
+  const radius = Math.max(0, diameter / 2 - dotSize / 2 - padding)
+  
+  // For better spacing, use a smaller radius for the orbit
+  const orbitRadius = radius * 0.6
+
+  return (
+    <motion.div
+      className="relative z-10 flex items-center justify-center rounded-full bg-gradient-to-br from-armath-blue to-armath-blue/80 shadow-xl border-4 border-white shadow-[0_0_30px_rgba(59,130,246,0.25)]"
+      style={{ width: diameter, height: diameter }}
+      initial={reduceMotion ? false : { scale: 0 }}
+      animate={reduceMotion ? {} : { scale: 1 }}
+      transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+    >
+      {coreMembers.map((member, index) => {
+        const angleDeg = (360 / count) * index - 90
+        const tipId = `tip-${member.id}`
+
+        return (
+          <div
+            key={member.id}
+            className="absolute left-1/2 top-1/2"
+            style={{ transform: `translate(-50%, -50%) rotate(${angleDeg}deg)` }}
+          >
+            <div className="absolute" style={{ left: `${orbitRadius}px`, transform: "translate(-50%, -50%)" }}>
+              <motion.button
+                type="button"
+                aria-describedby={activeId === member.id ? tipId : undefined}
+                aria-label={`${member.name}, ${member.role}`}
+                className="relative"
+                initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
+                animate={reduceMotion ? {} : { scale: 1, opacity: 1 }}
+                transition={{ delay: 0.4 + index * 0.2, type: "spring", stiffness: 300 }}
+                onMouseEnter={() => setActiveId(member.id)}
+                onMouseLeave={() => setActiveId(null)}
+                onFocus={() => setActiveId(member.id)}
+                onBlur={() => setActiveId(null)}
+                whileHover={reduceMotion ? undefined : { scale: 1.2, zIndex: 30 }}
+              >
+                <div style={{ transform: `rotate(${-angleDeg}deg)` }}>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-armath-blue/20 bg-white text-xs font-bold text-armath-blue shadow-md">
+                    {getInitials(member.name)}
+                  </div>
+
+                  <AnimatePresence>
+                    {activeId === member.id && (
+                      <motion.div
+                        key={tipId}
+                        id={tipId}
+                        role="tooltip"
+                        initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                        className="absolute bottom-full left-1/2 mb-3 w-max max-w-[200px] sm:max-w-xs -translate-x-1/2 z-[100]"
+                        style={{
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                        }}
+                      >
+                        <Card className="shadow-xl border-armath-blue/20">
+                          <CardContent className="p-4 text-center">
+                            <p className="mb-1 text-sm font-bold text-gray-900">{member.name}</p>
+                            <p className="mb-2 text-xs font-medium text-armath-blue">{member.role}</p>
+                            <p className="text-xs leading-relaxed text-gray-600">{member.details ?? "—"}</p>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.button>
+            </div>
+          </div>
+        )
+      })}
+    </motion.div>
+  )
+}
+
+type OrbitProps = { radius: number; delay: number; dashed?: boolean }
+const Orbit: React.FC<OrbitProps> = ({ radius, delay, dashed }) => {
+  const reduceMotion = useReducedMotion()
+  return (
+    <motion.div
+      aria-hidden
+      className={`absolute rounded-full border border-armath-blue/20 ${dashed ? "border-dashed" : ""}`}
+      style={{ width: radius * 2, height: radius * 2 }}
+      initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
+      animate={reduceMotion ? {} : { scale: 1, opacity: 1 }}
+      transition={{ delay, duration: 0.8 }}
+    />
+  )
+}
+
+type ElectronProps = {
+  supporter: TeamMember
+  orbitRadius: number
+  duration: number
+  startingAngle: number
+  activeId: string | null
+  setActiveId: (id: string | null) => void
+}
+
+const Electron: React.FC<ElectronProps> = ({ supporter, orbitRadius, duration, startingAngle, activeId, setActiveId }) => {
+  const reduceMotion = useReducedMotion()
+  const isActive = activeId === supporter.id
+  const tipId = `tip-${supporter.id}`
+
+  const transition = useMemo(() => {
+    if (reduceMotion) {
+      return { duration: 0 as number }
+    }
+    return { duration, ease: "linear" as const, repeat: Infinity as number }
+  }, [duration, reduceMotion])
+
+  // Memoize initials to avoid recalculating on every render
+  const initials = useMemo(() => getInitials(supporter.name), [supporter.name])
+
+  return (
+    <motion.div
+      className="absolute left-1/2 top-1/2"
+      style={{ transform: "translate(-50%, -50%)" }}
+      initial={{ rotate: startingAngle }}
+      animate={{ rotate: startingAngle + 360 }}
+      transition={transition}
+    >
+      <div className="absolute" style={{ left: `${orbitRadius}px`, transform: "translate(-50%, -50%)" }}>
+        <motion.button
+          type="button"
+          aria-describedby={isActive ? tipId : undefined}
+          aria-label={`${supporter.name}, ${supporter.role}`}
+          className="relative"
+          onMouseEnter={() => setActiveId(supporter.id)}
+          onMouseLeave={() => setActiveId(null)}
+          onFocus={() => setActiveId(supporter.id)}
+          onBlur={() => setActiveId(null)}
+          whileHover={reduceMotion ? undefined : { scale: 1.1, zIndex: 40 }}
+        >
+          <motion.div
+            className="relative"
+            initial={{ rotate: -startingAngle }}
+            animate={{ rotate: -(startingAngle + 360) }}
+            transition={transition}
+          >
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-armath-red text-sm font-bold text-white shadow-lg">
+              {initials}
+            </div>
+            <AnimatePresence>
+              {isActive && (
+                <motion.div
+                  key={tipId}
+                  id={tipId}
+                  role="tooltip"
+                  initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                  className="pointer-events-none absolute bottom-full left-1/2 z-[100] mb-3 -translate-x-1/2"
+                  style={{
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                  }}
+                >
+                  <Card className="min-w-max max-w-[200px] sm:max-w-none border-armath-red/20 bg-white shadow-xl">
+                    <CardContent className="p-3 text-center">
+                      <p className="text-sm font-medium text-gray-900 break-words">{supporter.name}</p>
+                      <p className="mt-1 text-xs text-armath-red break-words">{supporter.contribution ?? "—"}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </motion.button>
+      </div>
+    </motion.div>
+  )
+}
+
+// --- Legend Component ---
+const Legend: React.FC = () => {
+  const { t } = useLanguage()
+  return (
+    <div className="mt-4 text-center">
+      <p className="text-sm font-medium text-gray-600">
+        <span className="text-armath-blue">●</span> {t("coreTeam")} ({t("nucleus")}) •
+        <span className="ml-2 text-armath-red">●</span> {t("supporters")} ({t("orbitingElectrons")})
+      </p>
+    </div>
+  )
+}
+
+// --- Main Component ---
+export function AtomStructure() {
+  const [activeMemberId, setActiveMemberId] = useState<string | null>(null)
+
+  // Handle escape key to close tooltip (at component level to avoid multiple listeners)
+  useEscapeKey(() => setActiveMemberId(null))
+
+  // Measure container to scale radii proportionally
+  const { ref, width, height } = useMeasure<HTMLDivElement>()
+  const shortest = Math.max(0, Math.min(width, height))
+  const baseRadius = shortest / 2
+
+  // Proportional sizing (tweak ratios as needed)
+  const nucleusDiameter = Math.max(MIN_NUCLEUS_DIAMETER, shortest * 0.28)
+  const innerOrbit = Math.max(nucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER, baseRadius * 0.45)
+  const outerOrbit = Math.max(nucleusDiameter * 1.3, baseRadius * 0.62)
+
+  const orbits = [
+    { radius: innerOrbit, duration: 20 },
+    { radius: outerOrbit, duration: 25 },
+  ]
+
+  const coreMembers = teamMembers.filter((m) => m.isCore)
+  const supporters = teamMembers.filter((m) => !m.isCore)
+
+  return (
+    <div className="w-full">
+      {/* Scene container */}
+      <div
+        ref={ref}
+        className="relative mx-auto flex h-[clamp(18rem,60vw,28rem)] max-w-full items-center justify-center"
+      >
+        {/* Nucleus */}
+        <Nucleus diameter={nucleusDiameter} coreMembers={coreMembers} activeId={activeMemberId} setActiveId={setActiveMemberId} />
+
+        {/* Orbits */}
+        {orbits.map((o, i) => (
+          <Orbit key={i} radius={o.radius} delay={0.8 + i * 0.2} dashed={i === orbits.length - 1} />
+        ))}
+
+        {/* Electrons */}
+        {supporters.length > 0 && supporters.map((supporter, index) => {
+          const { radius, duration } = orbits[index % orbits.length]
+          const startingAngle = index * GOLDEN_ANGLE
+          return (
+            <Electron
+              key={supporter.id}
+              supporter={supporter}
+              orbitRadius={radius}
+              duration={duration}
+              startingAngle={startingAngle}
+              activeId={activeMemberId}
+              setActiveId={setActiveMemberId}
+            />)
+        })}
+      </div>
+
+      {/* Legend (moved outside absolute scene for consistent placement) */}
+      <Legend />
+    </div>
+  )
+}

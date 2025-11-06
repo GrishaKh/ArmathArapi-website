@@ -1,0 +1,195 @@
+export const translations = {
+  en: {
+    // Navigation
+    aboutUs: "About Us",
+    structure: "Structure",
+    fieldsOfStudy: "Fields of Study",
+    events: "Events",
+    ourProjects: "Our Projects",
+    joinAsStudent: "Join as a Student",
+    supportArmath: "Support Armath",
+    contact: "Contact",
+
+    // About Us
+    vision: "Vision",
+    visionText:
+      "Arapi's Armath Engineering Lab is the leading makerspace in Shirak province, aligned with the overall vision of the Armath Engineering Laboratories initiative.",
+    mission: "Mission",
+    missionText:
+      "To serve Armath's mission by fostering the rise of an innovative, tech-savvy, and community-dedicated generation in our village and region.",
+    whatWeDo: "What We Do",
+    whatWeDoText:
+      "We aim to create an experimental STEM environment where students can: explore their talents, fall in love with science and math, orient toward future careers, realize their ideas, and grow into caring, responsible citizens of their community and country.",
+
+    // Structure
+    ourAtom: "Our Atom",
+    atomIntro: "We present our team structure as an atom — with a central nucleus and orbiting electrons.",
+    coreTeam: "Core Team",
+    nucleus: "Nucleus",
+    supporters: "Supporters",
+    orbitingElectrons: "Orbiting Electrons",
+
+    // Fields of Study
+    programmingBasics: "Programming Basics",
+    visualProgramming: "Visual Programming",
+    textBasedProgramming: "Text-Based Programming",
+    electronicsEmbedded: "Electronics & Embedded Systems",
+    electronicsBasics: "Electronics Basics",
+    modeling3d: "3D Modeling",
+    printing3d: "3D Printing",
+    vectorGraphics: "Vector Graphics",
+    cncLaser: "CNC / Laser Engraving Tools",
+    robotics: "Robotics",
+    otherTools: "Other Tools & Areas",
+    openToNew: "We remain open to new tools and directions beyond the ones listed above.",
+    beginner: "Beginner",
+    next: "Next",
+    advanced: "Advanced",
+
+    // Events
+    eventsTitle: "Our Events & Achievements",
+    eventsDescription: "Showcase of our participation in competitions, camps, and exhibitions",
+
+    // Projects
+    projectsTitle: "Our Projects",
+    projectsDescription: "Highlighting the best and most impactful student projects",
+    viewProject: "View Project",
+    toolsUsed: "Tools Used",
+
+    // Join as Student
+    joinTitle: "Join as a Student",
+    joinDescription: "We invite students aged 10-17 to join our innovative STEM lab",
+    joinInfo: "Free to join. Students may be selected via interview.",
+    classFrequency: "Classes held twice per week",
+    applyNow: "Apply Now",
+    studentName: "Student Name",
+    age: "Age",
+    parentContact: "Parent Contact",
+    interests: "Areas of Interest",
+
+    // Support Armath
+    supportTitle: "Support Armath",
+    supportDescription: "Help us grow and impact more students in our community",
+    waysToSupport: "Ways to Support",
+    hostWorkshop: "Host a workshop or seminar",
+    donateEquipment: "Donate equipment or tools",
+    financialSupport: "Offer financial support",
+    mentoring: "Provide mentoring or technical advice",
+    supportUs: "Support Us",
+    supportType: "Type of Support",
+
+    // Contact
+    contactTitle: "Contact Us",
+    getInTouch: "Get in Touch",
+    location: "Location",
+    email: "Email",
+    phone: "Phone",
+    sendMessage: "Send Message",
+    name: "Name",
+    message: "Message",
+    send: "Send",
+
+    // Common
+    learnMore: "Learn More",
+    readMore: "Read More",
+    close: "Close",
+  },
+  hy: {
+    // Navigation
+    aboutUs: "Մեր մասին",
+    structure: "Կառուցվածք",
+    fieldsOfStudy: "Ուսումնասիրության ոլորտներ",
+    events: "Միջոցառումներ",
+    ourProjects: "Մեր նախագծերը",
+    joinAsStudent: "Միացեք որպես ուսանող",
+    supportArmath: "Աջակցեք Արմաթին",
+    contact: "Կապ",
+
+    // About Us
+    vision: "Տեսլական",
+    visionText:
+      "Առափիի «Արմաթ» ճարտարագիտական աշխատանոցը Շիրակի մարզի առաջատար աշխատանոցն է, որը գործում է «Արմաթ»-ի տեսլականին համահունչ:",
+    mission: "Առաքելություն",
+    missionText:
+      "Ծառայել «Արմաթ»-ի առաքելությանը՝ համայնքում և մարզում նպաստելով նորարար և համայնքին նվիրված տեխնոլոգիական սերնդի կայացմանը:",
+    whatWeDo: "Ինչ ենք անում",
+    whatWeDoText:
+      "Մենք նպատակ ունենք ստեղծել ԲՏՃՄ փորձարարական միջավայր, որտեղ ուսանողները կարող են՝ բացահայտել իրենց տաղանդները, սիրահարվել գիտությանն ու մաթեմատիկային, կողմնորոշվել ապագա կարիերայի հարցում, իրականացնել իրենց գաղափարները և կայանալ որպես իրենց համայնքի և երկրի հոգատար ու պատասխանատու քաղաքացիներ:",
+
+    // Structure
+    ourAtom: "Մեր ատոմը",
+    atomIntro: "Մենք ներկայացնում ենք մեր թիմի կառուցվածքը որպես ատոմ՝ միջուկով և վերջինիս շուրջ պտտվող էլեկտրոններով:",
+    coreTeam: "Հիմնական թիմ",
+    nucleus: "Միջուկ",
+    supporters: "Աջակիցներ",
+    orbitingElectrons: "Պտտվող էլեկտրոններ",
+
+    // Fields of Study
+    programmingBasics: "Ծրագրավորման հիմունքներ",
+    visualProgramming: "Վիզուալ ծրագրավորում",
+    textBasedProgramming: "Տեքստային ծրագրավորում",
+    electronicsEmbedded: "Էլեկտրոնիկա և ներկառուցված համակարգեր",
+    electronicsBasics: "Էլեկտրոնիկայի հիմունքներ",
+    modeling3d: "3D մոդելավորում",
+    printing3d: "3D տպագրություն",
+    vectorGraphics: "Վեկտորային գրաֆիկա",
+    cncLaser: "CNC / Լազերային փորագրման գործիքներ",
+    robotics: "Ռոբոտաշինություն",
+    otherTools: "Այլ գործիքներ և ոլորտներ",
+    openToNew: "Վերը նշվածներից բացի մենք բաց ենք նաև նոր գործիքների և ուղղությունների համար:",
+    beginner: "Սկսնակ",
+    next: "Հաջորդ",
+    advanced: "Առաջադեմ",
+
+    // Events
+    eventsTitle: "Մեր միջոցառումները և նվաճումները",
+    eventsDescription: "Մեր մասնակցությունը մրցույթներին, ճամբարներին և ցուցահանդեսներին",
+
+    // Projects
+    projectsTitle: "Մեր նախագծերը",
+    projectsDescription: "Ուսանողների լավագույն նախագծերը",
+    viewProject: "Դիտել նախագիծը",
+    toolsUsed: "Օգտագործված գործիքներ",
+
+    // Join as Student
+    joinTitle: "Միացեք որպես ուսանող",
+    joinDescription: "Մենք հրավիրում ենք 10-17 տարեկան ուսանողներին միանալ մեր նորարարական ԲՏՃՄ աշխատանոցին",
+    joinInfo: "Անվճար է: Ուսանողները կարող են ընտրվել հարցազրույցի միջոցով:",
+    classFrequency: "Դասերը անցկացվում են շաբաթը երկու անգամ",
+    applyNow: "Դիմել հիմա",
+    studentName: "Ուսանողի անունը",
+    age: "Տարիքը",
+    parentContact: "Ծնողի կոնտակտներ",
+    interests: "Հետաքրքրության ոլորտները",
+
+    // Support Armath
+    supportTitle: "Աջակցեք Արմաթին",
+    supportDescription: "Օգնեք մեզ զարգանալ",
+    waysToSupport: "Աջակցության ձևերը",
+    hostWorkshop: "Կազմակերպել արվեստանոց կամ սեմինար",
+    donateEquipment: "Նվիրաբերել սարքավորումներ կամ գործիքներ",
+    financialSupport: "Տրամադրել ֆինանսական աջակցություն",
+    mentoring: "Տրամադրել մենթորություն կամ տեխնիկական խորհրդատվություն",
+    supportUs: "Աջակցեք մեզ",
+    supportType: "Աջակցության տեսակը",
+
+    // Contact
+    contactTitle: "Կապվեք մեզ հետ",
+    getInTouch: "Կապվեք մեզ հետ",
+    location: "Գտնվելու վայրը",
+    email: "Էլ. փոստ",
+    phone: "Հեռախոս",
+    sendMessage: "Ուղարկել հաղորդագրություն",
+    name: "Անուն",
+    message: "Հաղորդագրություն",
+    send: "Ուղարկել",
+
+    // Common
+    learnMore: "Իմացեք ավելին",
+    readMore: "Կարդալ ավելին",
+    close: "Փակել",
+  },
+}
+
+export type Language = keyof typeof translations
+export type TranslationKey = keyof typeof translations.en
