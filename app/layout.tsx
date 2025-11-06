@@ -1,7 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter, Noto_Sans_Armenian } from "next/font/google" // Import Noto_Sans_Armenian
-import "./styles/globals.css"
+import "@/styles/globals.css"
 import { LanguageProvider } from "@/contexts/language-context"
 import { cn } from "@/lib/utils" // Import cn utility
 
