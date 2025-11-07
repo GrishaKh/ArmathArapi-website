@@ -27,14 +27,35 @@ export function HeroSection() {
           </Badge>
         </motion.div>
 
-        <motion.h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }}>
+        <motion.h1
+          className={cn(
+            "font-bold text-gray-900 mb-6",
+            language === "hy" ? "text-3xl md:text-5xl tracking-tight" : "text-4xl md:text-6xl"
+          )}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
           {language === "hy" ? "Արմաթ Առափի" : "Armath Arapi"}
-          <motion.span className="text-armath-red block" initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.6 }}>
+          <motion.span
+            className="text-armath-red block"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
             {language === "hy" ? "Ճարտարագիտական աշխատանոց" : "Engineering Makerspace"}
           </motion.span>
         </motion.h1>
 
-        <motion.p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.8 }}>
+        <motion.p
+          className={cn(
+            "text-gray-600 mb-8 max-w-3xl mx-auto",
+            language === "hy" ? "text-lg tracking-tight" : "text-xl"
+          )}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
           {language === "hy"
             ? "ԲՏՃՄ աշխատանոց, որտեղ ուսանողները բացահայտում են իրենց տաղանդները և կառուցում իրենց ու համայնքի ապագան"
             : "STEM education center where students discover their talents and create the future"}

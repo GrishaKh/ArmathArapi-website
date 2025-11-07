@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn("font-sans antialiased", inter.variable, notoSansArmenian.variable)}>
+      <body className={cn("relative font-sans antialiased", inter.variable, notoSansArmenian.variable)}>
         {" "}
         {/* Add both font variables */}
         <LanguageProvider>{children}</LanguageProvider>
