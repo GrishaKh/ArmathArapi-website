@@ -186,7 +186,7 @@ export default function HomePage() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <div className={cn("relative min-h-screen bg-background", language === "hy" && "font-armenian")}>
+    <div className={cn("relative min-h-screen bg-background overflow-x-hidden", language === "hy" && "font-armenian")}>
       {" "}
       {/* Apply font conditionally */}
       {/* Header */}
