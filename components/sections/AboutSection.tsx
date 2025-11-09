@@ -14,7 +14,7 @@ export function AboutSection() {
         </AnimatedSection>
 
         <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <AnimatedSection animation="fadeInLeft">
+          <AnimatedSection>
             <Card className="border-armath-blue/20 hover:shadow-xl transition-all duration-500 hover:scale-105 group h-full">
               <CardHeader>
                 <div className="flex items-center space-x-2 mb-2">
@@ -50,7 +50,7 @@ export function AboutSection() {
             </Card>
           </AnimatedSection>
 
-          <AnimatedSection animation="fadeInRight" delay={0.4}>
+          <AnimatedSection delay={0.4}>
             <Card className="border-armath-blue/20 hover:shadow-xl transition-all duration-500 hover:scale-105 group h-full">
               <CardHeader>
                 <div className="flex items-center space-x-2 mb-2">

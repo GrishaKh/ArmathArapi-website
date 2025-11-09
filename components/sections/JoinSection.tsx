@@ -22,7 +22,7 @@ export function JoinSection() {
     <section id="joinAsStudent" className="py-20 bg-gradient-to-br from-armath-blue/10 to-armath-red/10">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <AnimatedSection animation="fadeInLeft">
+          <AnimatedSection>
             <div>
               <h2 className="text-4xl font-bold text-gray-900 mb-6">{t("joinTitle")}</h2>
               <p className="text-gray-600 mb-6 text-lg leading-relaxed">{t("joinDescription")}</p>
@@ -44,7 +44,7 @@ export function JoinSection() {
             </div>
           </AnimatedSection>
 
-          <AnimatedSection animation="fadeInRight">
+          <AnimatedSection>
             <Card className="hover:shadow-xl transition-all duration-500">
               <CardHeader>
                 <CardTitle className="text-2xl text-center">{t("applyNow")}</CardTitle>

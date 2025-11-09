@@ -27,7 +27,7 @@ export function SupportSection() {
         </AnimatedSection>
 
         <div className="grid md:grid-cols-2 gap-12">
-          <AnimatedSection animation="fadeInLeft">
+          <AnimatedSection>
             <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-6">{t("waysToSupport")}</h3>
               <div className="space-y-4">
@@ -59,7 +59,7 @@ export function SupportSection() {
             </div>
           </AnimatedSection>
 
-          <AnimatedSection animation="fadeInRight">
+          <AnimatedSection>
             <Card className="hover:shadow-xl transition-all duration-500">
               <CardHeader>
                 <CardTitle className="text-2xl text-center flex items-center justify-center space-x-2">

@@ -7,7 +7,7 @@ import type React from "react"
 interface AnimatedSectionProps {
   children: React.ReactNode
   className?: string
-  animation?: "fadeInUp" | "fadeInLeft" | "fadeInRight" | "scaleIn" | "slideInFromBottom"
+  animation?: "fadeInUp" | "scaleIn" | "slideInFromBottom"
   delay?: number
 }
 
@@ -15,14 +15,6 @@ const animations = {
   fadeInUp: {
     initial: { opacity: 0, y: 60 },
     animate: { opacity: 1, y: 0 },
-  },
-  fadeInLeft: {
-    initial: { opacity: 0, x: -60 },
-    animate: { opacity: 1, x: 0 },
-  },
-  fadeInRight: {
-    initial: { opacity: 0, x: 60 },
-    animate: { opacity: 1, x: 0 },
   },
   scaleIn: {
     initial: { opacity: 0, scale: 0.8 },
