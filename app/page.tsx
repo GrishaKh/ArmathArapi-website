@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { LanguageToggle } from "@/components/language-toggle"
-import { AnimatedSection } from "@/components/animated-section"
 import { useLanguage } from "@/contexts/language-context"
 import { motion } from "framer-motion"
 import { useMemo, useState } from "react"
@@ -19,33 +18,7 @@ import { SupportSection } from "@/components/sections/SupportSection"
 import { ContactSection } from "@/components/sections/ContactSection"
 import { FooterSection } from "@/components/sections/FooterSection"
 import Image from "next/image"
-import {
-  Wrench,
-  Cpu,
-  Zap,
-  Users,
-  Calendar,
-  MapPin,
-  Mail,
-  Phone,
-  ArrowRight,
-  Lightbulb,
-  Eye,
-  Target,
-  Code,
-  Gamepad2,
-  Printer,
-  Scissors,
-  Bot,
-  Award,
-  ExternalLink,
-  Heart,
-  DollarSign,
-  BookOpen,
-  UserCheck,
-  Menu,
-  X,
-} from "lucide-react"
+import { Wrench, Cpu, Zap, Code, Gamepad2, Printer, Scissors, Bot, Menu, X } from "lucide-react"
 
 // Move these arrays outside the component to prevent recreation on re-renders
 const getFieldsOfStudy = (t: (key: TranslationKey) => string) => [
@@ -186,7 +159,7 @@ export default function HomePage() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <div className={cn("relative min-h-screen bg-background overflow-x-hidden", language === "hy" && "font-armenian")}>
+    <div className={cn("relative min-h-screen bg-background", language === "hy" && "font-armenian")}>
       {" "}
       {/* Apply font conditionally */}
       {/* Header */}
@@ -217,12 +190,7 @@ export default function HomePage() {
               />
             </motion.div>
             <div>
-              <h1
-                className={cn(
-                  "font-bold text-gray-900",
-                  language === "hy" ? "text-lg tracking-tight" : "text-xl"
-                )}
-              >
+              <h1 className={cn("font-bold text-gray-900", language === "hy" ? "text-lg tracking-tight" : "text-xl")}>
                 {language === "hy" ? "Արմաթ Առափի" : "Armath Arapi"}
               </h1>
               <p className="text-sm text-gray-600">
@@ -231,22 +199,24 @@ export default function HomePage() {
             </div>
           </motion.div>
           <nav className="hidden lg:flex items-center space-x-4">
-            {(([
-              "aboutUs",
-              "structure",
-              "fieldsOfStudy",
-              "events",
-              "ourProjects",
-              "joinAsStudent",
-              "supportArmath",
-              "contact",
-            ] as TranslationKey[])).map((item, index) => (
+            {(
+              [
+                "aboutUs",
+                "structure",
+                "fieldsOfStudy",
+                "events",
+                "ourProjects",
+                "joinAsStudent",
+                "supportArmath",
+                "contact",
+              ] as TranslationKey[]
+            ).map((item, index) => (
               <motion.a
                 key={item}
                 href={`#${item}`}
                 className={cn(
                   "text-gray-600 hover:text-gray-900 transition-colors relative",
-                  language === "hy" ? "text-xs tracking-tight" : "text-sm"
+                  language === "hy" ? "text-xs tracking-tight" : "text-sm",
                 )}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -293,22 +263,24 @@ export default function HomePage() {
           >
             <div className="rounded-2xl border border-white/30 bg-white/30 backdrop-blur-xl shadow-lg p-4">
               <div className="grid gap-2">
-                {(([
-                  "aboutUs",
-                  "structure",
-                  "fieldsOfStudy",
-                  "events",
-                  "ourProjects",
-                  "joinAsStudent",
-                  "supportArmath",
-                  "contact",
-                ] as TranslationKey[])).map((item) => (
+                {(
+                  [
+                    "aboutUs",
+                    "structure",
+                    "fieldsOfStudy",
+                    "events",
+                    "ourProjects",
+                    "joinAsStudent",
+                    "supportArmath",
+                    "contact",
+                  ] as TranslationKey[]
+                ).map((item) => (
                   <a
                     key={item}
                     href={`#${item}`}
                     className={cn(
                       "block py-2 px-3 rounded-lg text-gray-800 hover:bg-white/40 transition-colors",
-                      language === "hy" ? "text-sm tracking-tight" : "text-base"
+                      language === "hy" ? "text-sm tracking-tight" : "text-base",
                     )}
                     onClick={() => setMobileOpen(false)}
                   >
