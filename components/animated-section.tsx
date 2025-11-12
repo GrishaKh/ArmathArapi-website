@@ -15,14 +15,17 @@ const animations = {
   fadeInUp: {
     initial: { opacity: 0, y: 60 },
     animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -60 },
   },
   scaleIn: {
     initial: { opacity: 0, scale: 0.8 },
     animate: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 0.8 },
   },
   slideInFromBottom: {
     initial: { opacity: 0, y: 100 },
     animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -100 },
   },
 }
 
@@ -33,7 +36,7 @@ export function AnimatedSection({ children, className = "", animation = "fadeInU
     <motion.div
       ref={ref}
       initial={animations[animation].initial}
-      animate={isVisible ? animations[animation].animate : animations[animation].initial}
+      animate={isVisible ? animations[animation].animate : animations[animation].exit}
       transition={{
         duration: 0.6,
         ease: "easeOut",

@@ -1,10 +1,12 @@
+"use client"
+
 import { AnimatedSection } from "@/components/animated-section"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
 import type { TranslationKey } from "@/lib/translations"
 import { motion } from "framer-motion"
-import { Bot, Code, Cpu, Gamepad2, Printer, Scissors, Wrench, Zap } from "lucide-react"
+import { Bot, Code, Box, Boxes, Gamepad2, Scissors, Wrench, Zap } from "lucide-react"
 import { useMemo } from "react"
 
 const getFieldsOfStudy = (t: (key: TranslationKey) => string) => [
@@ -40,10 +42,10 @@ const getFieldsOfStudy = (t: (key: TranslationKey) => string) => [
     title: t("modeling3d"),
     items: [
       {
-        subtitle: "",
+        subtitle: t("modeling3d"),
         beginner: "FreeCAD",
         next: "Blender",
-        icon: Cpu,
+        icon: Box,
       },
     ],
   },
@@ -51,10 +53,10 @@ const getFieldsOfStudy = (t: (key: TranslationKey) => string) => [
     title: t("printing3d"),
     items: [
       {
-        subtitle: "",
+        subtitle: t("printing3d"),
         beginner: "Slic3r, Printrun",
         next: "",
-        icon: Printer,
+        icon: Boxes,
       },
     ],
   },
@@ -62,7 +64,7 @@ const getFieldsOfStudy = (t: (key: TranslationKey) => string) => [
     title: t("vectorGraphics"),
     items: [
       {
-        subtitle: "",
+        subtitle: t("vectorGraphics"),
         beginner: "Inkscape",
         next: "",
         icon: Scissors,
@@ -73,7 +75,7 @@ const getFieldsOfStudy = (t: (key: TranslationKey) => string) => [
     title: t("cncLaser"),
     items: [
       {
-        subtitle: "",
+        subtitle: t("cncLaser"),
         beginner: "HeeksCAD, bCNC",
         next: "",
         icon: Wrench,
@@ -84,7 +86,7 @@ const getFieldsOfStudy = (t: (key: TranslationKey) => string) => [
     title: t("robotics"),
     items: [
       {
-        subtitle: "",
+        subtitle: t("robotics"),
         beginner: "SERob Kit",
         next: "Custom-built robots",
         icon: Bot,

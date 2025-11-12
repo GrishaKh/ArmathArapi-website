@@ -1,7 +1,8 @@
 "use client"
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
-import React, { useLayoutEffect, useEffect, useMemo, useRef, useState } from "react"
+import type React from "react"
+import { useLayoutEffect, useEffect, useMemo, useRef, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
 
@@ -22,24 +23,21 @@ const teamMembers: TeamMember[] = [
     name: "Grisha Khachatryan",
     role: "Lead Coach",
     isCore: true,
-    details:
-      "Leads the lab, coordinates projects, and mentors students in advanced engineering concepts.",
+    details: "Leads the lab, coordinates projects, and mentors students in advanced engineering concepts.",
   },
   {
     id: "olya-kh",
     name: "Olya Khachatryan",
     role: "Coach",
     isCore: true,
-    details:
-      "Assistant to the Lead Coach; Beginners' coach.",
+    details: "Assistant to the Lead Coach; Beginners' coach.",
   },
   {
     id: "narek-sar",
     name: "Narek Saroyan",
     role: "Coach",
     isCore: true,
-    details:
-      "Assistant to the Lead Coach; Beginners' coach.",
+    details: "Assistant to the Lead Coach; Beginners' coach.",
   },
   {
     id: "edgar-har",
@@ -127,7 +125,7 @@ const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setA
   const padding = 12
   const count = coreMembers.length
   const radius = Math.max(0, diameter / 2 - dotSize / 2 - padding)
-  
+
   // For better spacing, use a smaller radius for the orbit
   const orbitRadius = radius * 0.6
 
@@ -166,10 +164,10 @@ const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setA
               >
                 <div style={{ transform: `rotate(${-angleDeg}deg)` }}>
                   <div
-                    className="flex items-center justify-center rounded-full border-2 border-armath-blue/20 bg-white text-xs font-bold text-armath-blue shadow-md"
+                    className="flex flex-col items-center justify-center rounded-full border-2 border-armath-blue/20 bg-white text-xs font-bold text-armath-blue shadow-md cursor-pointer hover:bg-armath-blue/5 transition-colors"
                     style={{ width: dotSize, height: dotSize }}
                   >
-                    {getInitials(member.name)}
+                    <span>{getInitials(member.name)}</span>
                   </div>
 
                   <AnimatePresence>
@@ -189,8 +187,8 @@ const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setA
                       >
                         <Card className="shadow-xl border-armath-blue/20">
                           <CardContent className="p-4 text-center">
-                            <p className="mb-1 text-sm font-bold text-gray-900">{member.name}</p>
-                            <p className="mb-2 text-xs font-medium text-armath-blue">{member.role}</p>
+                            <p className="text-sm font-bold text-gray-900 mb-1">{member.name}</p>
+                            <p className="text-xs font-medium text-armath-blue mb-2">{member.role}</p>
                             <p className="text-xs leading-relaxed text-gray-600">{member.details ?? "—"}</p>
                           </CardContent>
                         </Card>
@@ -232,7 +230,15 @@ type ElectronProps = {
   size: number
 }
 
-const Electron: React.FC<ElectronProps> = ({ supporter, orbitRadius, duration, startingAngle, activeId, setActiveId, size }) => {
+const Electron: React.FC<ElectronProps> = ({
+  supporter,
+  orbitRadius,
+  duration,
+  startingAngle,
+  activeId,
+  setActiveId,
+  size,
+}) => {
   const reduceMotion = useReducedMotion()
   const isActive = activeId === supporter.id
   const tipId = `tip-${supporter.id}`
@@ -241,7 +247,7 @@ const Electron: React.FC<ElectronProps> = ({ supporter, orbitRadius, duration, s
     if (reduceMotion) {
       return { duration: 0 as number }
     }
-    return { duration, ease: "linear" as const, repeat: Infinity as number }
+    return { duration, ease: "linear" as const, repeat: Number.POSITIVE_INFINITY as number }
   }, [duration, reduceMotion])
 
   // Memoize initials to avoid recalculating on every render
@@ -274,7 +280,7 @@ const Electron: React.FC<ElectronProps> = ({ supporter, orbitRadius, duration, s
             transition={transition}
           >
             <div
-              className="relative flex items-center justify-center rounded-full border-2 border-white bg-armath-red text-sm font-bold text-white shadow-lg"
+              className="relative flex items-center justify-center rounded-full border-2 border-white bg-armath-red text-sm font-bold text-white shadow-lg cursor-pointer hover:bg-armath-red/90 transition-colors"
               style={{ width: size, height: size }}
             >
               {initials}
@@ -296,8 +302,8 @@ const Electron: React.FC<ElectronProps> = ({ supporter, orbitRadius, duration, s
                 >
                   <Card className="min-w-max max-w-[200px] sm:max-w-none border-armath-red/20 bg-white shadow-xl">
                     <CardContent className="p-3 text-center">
-                      <p className="text-sm font-medium text-gray-900 break-words">{supporter.name}</p>
-                      <p className="mt-1 text-xs text-armath-red break-words">{supporter.contribution ?? "—"}</p>
+                      <p className="text-sm font-medium text-gray-900 break-words mb-1">{supporter.name}</p>
+                      <p className="text-xs break-words text-gray-600">{supporter.contribution ?? "—"}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -335,11 +341,10 @@ export function AtomStructure() {
   const shortest = Math.max(0, Math.min(width, height))
   const baseRadius = shortest / 2
 
-  // Proportional sizing (tweak ratios as needed)
   const isSmall = shortest < 360
-  const nucleusDiameter = Math.max(MIN_NUCLEUS_DIAMETER, shortest * (isSmall ? 0.24 : 0.28))
-  const innerOrbit = Math.max(nucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER, baseRadius * (isSmall ? 0.42 : 0.45))
-  const outerOrbit = Math.max(nucleusDiameter * 1.25, baseRadius * (isSmall ? 0.66 : 0.62))
+  const nucleusDiameter = Math.max(MIN_NUCLEUS_DIAMETER, shortest * (isSmall ? 0.32 : 0.28))
+  const innerOrbit = Math.max(nucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER, baseRadius * (isSmall ? 0.52 : 0.45))
+  const outerOrbit = Math.max(nucleusDiameter * 1.25, baseRadius * (isSmall ? 0.76 : 0.62))
 
   const orbits = [
     { radius: innerOrbit, duration: 20 },
@@ -357,7 +362,12 @@ export function AtomStructure() {
         className="relative mx-auto flex h-[clamp(18rem,60vw,28rem)] max-w-full items-center justify-center overflow-hidden touch-pan-y"
       >
         {/* Nucleus */}
-        <Nucleus diameter={nucleusDiameter} coreMembers={coreMembers} activeId={activeMemberId} setActiveId={setActiveMemberId} />
+        <Nucleus
+          diameter={nucleusDiameter}
+          coreMembers={coreMembers}
+          activeId={activeMemberId}
+          setActiveId={setActiveMemberId}
+        />
 
         {/* Orbits */}
         {orbits.map((o, i) => (
@@ -365,22 +375,24 @@ export function AtomStructure() {
         ))}
 
         {/* Electrons */}
-        {supporters.length > 0 && supporters.map((supporter, index) => {
-          const { radius, duration } = orbits[index % orbits.length]
-          const startingAngle = index * GOLDEN_ANGLE
-          const electronSize = Math.round(Math.max(28, Math.min(48, shortest * (isSmall ? 0.12 : 0.14))))
-          return (
-            <Electron
-              key={supporter.id}
-              supporter={supporter}
-              orbitRadius={radius}
-              duration={duration}
-              startingAngle={startingAngle}
-              activeId={activeMemberId}
-              setActiveId={setActiveMemberId}
-              size={electronSize}
-            />)
-        })}
+        {supporters.length > 0 &&
+          supporters.map((supporter, index) => {
+            const { radius, duration } = orbits[index % orbits.length]
+            const startingAngle = index * GOLDEN_ANGLE
+            const electronSize = Math.round(Math.max(28, Math.min(48, shortest * (isSmall ? 0.12 : 0.14))))
+            return (
+              <Electron
+                key={supporter.id}
+                supporter={supporter}
+                orbitRadius={radius}
+                duration={duration}
+                startingAngle={startingAngle}
+                activeId={activeMemberId}
+                setActiveId={setActiveMemberId}
+                size={electronSize}
+              />
+            )
+          })}
       </div>
 
       {/* Legend (moved outside absolute scene for consistent placement) */}
