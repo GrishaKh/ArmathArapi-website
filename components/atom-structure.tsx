@@ -57,7 +57,7 @@ const teamMembers: TeamMember[] = [
 
 // --- Constants ---
 const GOLDEN_ANGLE = 137.5 // Golden angle in degrees for optimal spacing
-const MIN_NUCLEUS_DIAMETER = 72
+const MIN_NUCLEUS_DIAMETER = 110 // Increased for better mobile spacing
 const MIN_ORBIT_RADIUS_MULTIPLIER = 0.9
 
 // --- Helpers ---
@@ -120,14 +120,25 @@ const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setA
     return null
   }
 
-  // Place the core members inside the nucleus, evenly spaced on a small orbit
-  const dotSize = Math.round(Math.max(24, Math.min(32, diameter * 0.16)))
-  const padding = 12
   const count = coreMembers.length
-  const radius = Math.max(0, diameter / 2 - dotSize / 2 - padding)
-
-  // For better spacing, use a smaller radius for the orbit
-  const orbitRadius = radius * 0.6
+  
+  // Calculate dot size - smaller minimum for mobile, scales with diameter
+  const dotSize = Math.round(Math.max(20, Math.min(32, diameter * 0.18)))
+  
+  // Calculate minimum orbit radius needed to prevent overlap
+  // For n items evenly spaced on a circle, the minimum radius to avoid overlap is:
+  // r >= dotSize / (2 * sin(π / n))
+  // We use 0.75 multiplier to add extra breathing room between elements
+  const minSafeRadius = count > 1 
+    ? (dotSize * 0.75) / Math.sin(Math.PI / count) 
+    : 0
+  
+  // Available radius from nucleus edge
+  const padding = 6
+  const maxRadius = diameter / 2 - dotSize / 2 - padding
+  
+  // Use the larger of minimum safe radius or 70% of max, capped at max
+  const orbitRadius = Math.min(maxRadius, Math.max(minSafeRadius, maxRadius * 0.7))
 
   return (
     <motion.div
@@ -342,9 +353,17 @@ export function AtomStructure() {
   const baseRadius = shortest / 2
 
   const isSmall = shortest < 360
-  const nucleusDiameter = Math.max(MIN_NUCLEUS_DIAMETER, shortest * (isSmall ? 0.32 : 0.28))
-  const innerOrbit = Math.max(nucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER, baseRadius * (isSmall ? 0.52 : 0.45))
-  const outerOrbit = Math.max(nucleusDiameter * 1.25, baseRadius * (isSmall ? 0.76 : 0.62))
+  const isTiny = shortest < 280
+  
+  // Nucleus needs to be larger on mobile to fit core members without overlap
+  const nucleusDiameter = Math.max(
+    MIN_NUCLEUS_DIAMETER, 
+    shortest * (isTiny ? 0.42 : isSmall ? 0.38 : 0.28)
+  )
+  
+  // Adjust orbit radii to accommodate larger nucleus on mobile
+  const innerOrbit = Math.max(nucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER, baseRadius * (isTiny ? 0.58 : isSmall ? 0.52 : 0.45))
+  const outerOrbit = Math.max(nucleusDiameter * 1.25, baseRadius * (isTiny ? 0.82 : isSmall ? 0.76 : 0.62))
 
   const orbits = [
     { radius: innerOrbit, duration: 20 },
@@ -359,7 +378,7 @@ export function AtomStructure() {
       {/* Scene container */}
       <div
         ref={ref}
-        className="relative mx-auto flex h-[clamp(18rem,60vw,28rem)] max-w-full items-center justify-center overflow-hidden touch-pan-y"
+        className="relative mx-auto flex h-[clamp(20rem,65vw,28rem)] max-w-full items-center justify-center overflow-hidden touch-pan-y"
       >
         {/* Nucleus */}
         <Nucleus
@@ -379,7 +398,7 @@ export function AtomStructure() {
           supporters.map((supporter, index) => {
             const { radius, duration } = orbits[index % orbits.length]
             const startingAngle = index * GOLDEN_ANGLE
-            const electronSize = Math.round(Math.max(28, Math.min(48, shortest * (isSmall ? 0.12 : 0.14))))
+            const electronSize = Math.round(Math.max(24, Math.min(44, shortest * (isTiny ? 0.1 : isSmall ? 0.11 : 0.12))))
             return (
               <Electron
                 key={supporter.id}
