@@ -93,6 +93,7 @@ export const translations = {
     learnMore: "Learn More",
     readMore: "Read More",
     close: "Close",
+
     // Form Messages
     submitting: "Submitting...",
     sending: "Sending...",
@@ -209,6 +210,28 @@ export const translations = {
     learnMore: "Իմացեք ավելին",
     readMore: "Կարդալ ավելին",
     close: "Փակել",
+
+    // Form Messages
+    submitting: "Ուղարկվում է...",
+    sending: "Ուղարկվում է...",
+    applicationSubmitted: "Հայտը ուղարկված է",
+    applicationThankYou: "Շնորհակալություն դիմելու համար: Մենք շուտով կկապնվենք ձեզ հետ:",
+    messageSubmitted: "Հաղորդագրությունը ուղարկված է",
+    messageThankYou: "Շնորհակալություն հաղորդագրության համար: Մենք շուտով կպատասխանենք:",
+    supportSubmitted: "Հայտը ուղարկված է",
+    supportThankYou: "Շնորհակալություն աջակցության առաջարկի համար: Մենք շուտով կկապնվենք ձեզ հետ:",
+    errorRequired: "Այս դաշտը պարտադիր է",
+    errorSelectAge: "Խնդրում ենք ընտրել տարիքը",
+    errorConnection: "Կապի խափանում: Խնդրում ենք փորձել կրկին:",
+    studentNamePlaceholder: "Ուսանողի անունը",
+    selectAgePlaceholder: "Ընտրեք տարիքը",
+    yearsOld: "տարեկան",
+    parentContactPlaceholder: "Ծնողի հեռախոսահամար",
+    interestsPlaceholder: "Ինչ ոլորտներն են հետաքրքրում...",
+    yourName: "Ձեր անունը",
+    yourEmail: "Ձեր էլ. փոստը",
+    yourMessage: "Ձեր հաղորդագրությունը...",
+    selectSupportType: "Ընտրեք աջակցության տեսակը",
   },
 }
 

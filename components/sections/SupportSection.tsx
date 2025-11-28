@@ -158,7 +158,7 @@ export function SupportSection() {
                         <Input
                           value={supportFormData.name}
                           onChange={(e) => setSupportFormData({ ...supportFormData, name: e.target.value })}
-                          placeholder={language === "hy" ? "Ձեր անունը" : "Your name"}
+                          placeholder={t("yourName")}
                           className="focus:ring-armath-blue"
                           disabled={submitStatus === 'loading'}
                         />
@@ -170,7 +170,7 @@ export function SupportSection() {
                           type="email"
                           value={supportFormData.email}
                           onChange={(e) => setSupportFormData({ ...supportFormData, email: e.target.value })}
-                          placeholder={language === "hy" ? "Ձեր էլ. փոստը" : "Your email"}
+                          placeholder={t("yourEmail")}
                           className="focus:ring-armath-blue"
                           disabled={submitStatus === 'loading'}
                         />
@@ -184,7 +184,7 @@ export function SupportSection() {
                           disabled={submitStatus === 'loading'}
                         >
                           <SelectTrigger className="focus:ring-armath-blue">
-                          <SelectValue placeholder={language === "hy" ? "Ընտրեք աջակցության տեսակը" : "Select support type"} />
+                          <SelectValue placeholder={t("selectSupportType")} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="workshop">{t("hostWorkshop")}</SelectItem>
@@ -200,7 +200,7 @@ export function SupportSection() {
                         <Textarea
                           value={supportFormData.message}
                           onChange={(e) => setSupportFormData({ ...supportFormData, message: e.target.value })}
-                          placeholder={language === "hy" ? "Ձեր հաղորդագրությունը..." : "Your message..."}
+                          placeholder={t("yourMessage")}
                           className="focus:ring-armath-blue resize-none"
                           rows={4}
                           disabled={submitStatus === 'loading'}
