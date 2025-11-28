@@ -1,3 +1,5 @@
+"use client"
+
 import { AnimatedSection } from "@/components/animated-section"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -5,9 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/language-context"
-import { BookOpen, DollarSign, Heart, UserCheck, Wrench } from "lucide-react"
-import { motion } from "framer-motion"
+import { BookOpen, DollarSign, Heart, UserCheck, Wrench, Loader2, CheckCircle, XCircle } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
+
+type SubmitStatus = 'idle' | 'loading' | 'success' | 'error'
 
 export function SupportSection() {
   const { t, language } = useLanguage()
@@ -17,6 +21,54 @@ export function SupportSection() {
     supportType: "",
     message: "",
   })
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle')
+  const [errorMessage, setErrorMessage] = useState("")
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!supportFormData.name.trim() || !supportFormData.email.trim() || !supportFormData.supportType || !supportFormData.message.trim()) {
+      setErrorMessage(t("errorRequired"))
+      setSubmitStatus('error')
+      return
+    }
+
+    setSubmitStatus('loading')
+    setErrorMessage("")
+
+    try {
+      const response = await fetch('/api/submissions/support', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...supportFormData,
+          language,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        setSubmitStatus('success')
+        setTimeout(() => {
+          setSupportFormData({ name: "", email: "", supportType: "", message: "" })
+          setSubmitStatus('idle')
+        }, 3000)
+      } else {
+        setErrorMessage(data.error || data.message || t("errorConnection"))
+        setSubmitStatus('error')
+      }
+    } catch (error) {
+      console.error('Submission error:', error)
+      setErrorMessage(t("errorConnection"))
+      setSubmitStatus('error')
+    }
+  }
+
+  const resetForm = () => {
+    setSubmitStatus('idle')
+    setErrorMessage("")
+  }
 
   return (
     <section id="supportArmath" className="py-20 bg-white">
@@ -67,59 +119,131 @@ export function SupportSection() {
                   <span>{t("supportUs")}</span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-700 block mb-1">{t("name")}</label>
-                  <Input
-                    value={supportFormData.name}
-                    onChange={(e) => setSupportFormData({ ...supportFormData, name: e.target.value })}
-                    placeholder={language === "hy" ? "Ձեր անունը" : "Your name"}
-                    className="focus:ring-armath-blue"
-                  />
-                </div>
+              <CardContent>
+                <AnimatePresence mode="wait">
+                  {submitStatus === 'success' ? (
+                    <motion.div
+                      key="success"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      className="flex flex-col items-center justify-center py-8 space-y-4"
+                    >
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", delay: 0.1 }}
+                        className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center"
+                      >
+                        <CheckCircle className="w-8 h-8 text-emerald-600" />
+                      </motion.div>
+                      <h3 className="text-xl font-semibold text-gray-900">
+                        {t("supportSubmitted")}
+                      </h3>
+                      <p className="text-gray-600 text-center">
+                        {t("supportThankYou")}
+                      </p>
+                    </motion.div>
+                  ) : (
+                    <motion.form
+                      key="form"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onSubmit={handleSubmit}
+                      className="space-y-4"
+                    >
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("name")}</label>
+                        <Input
+                          value={supportFormData.name}
+                          onChange={(e) => setSupportFormData({ ...supportFormData, name: e.target.value })}
+                          placeholder={language === "hy" ? "Ձեր անունը" : "Your name"}
+                          className="focus:ring-armath-blue"
+                          disabled={submitStatus === 'loading'}
+                        />
+                      </div>
 
-                <div>
-                  <label className="text-sm font-medium text-gray-700 block mb-1">{t("email")}</label>
-                  <Input
-                    type="email"
-                    value={supportFormData.email}
-                    onChange={(e) => setSupportFormData({ ...supportFormData, email: e.target.value })}
-                    placeholder={language === "hy" ? "Ձեր էլ. փոստը" : "Your email"}
-                    className="focus:ring-armath-blue"
-                  />
-                </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("email")}</label>
+                        <Input
+                          type="email"
+                          value={supportFormData.email}
+                          onChange={(e) => setSupportFormData({ ...supportFormData, email: e.target.value })}
+                          placeholder={language === "hy" ? "Ձեր էլ. փոստը" : "Your email"}
+                          className="focus:ring-armath-blue"
+                          disabled={submitStatus === 'loading'}
+                        />
+                      </div>
 
-                <div>
-                  <label className="text-sm font-medium text-gray-700 block mb-1">{t("supportType")}</label>
-                  <Select value={supportFormData.supportType} onValueChange={(value) => setSupportFormData({ ...supportFormData, supportType: value })}>
-                    <SelectTrigger className="focus:ring-armath-blue">
-                      <SelectValue placeholder={language === "hy" ? "Ընտրեք աջակցության տեսակը" : "Select support type"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="workshop">{t("hostWorkshop")}</SelectItem>
-                      <SelectItem value="equipment">{t("donateEquipment")}</SelectItem>
-                      <SelectItem value="financial">{t("financialSupport")}</SelectItem>
-                      <SelectItem value="mentoring">{t("mentoring")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("supportType")}</label>
+                        <Select 
+                          value={supportFormData.supportType} 
+                          onValueChange={(value) => setSupportFormData({ ...supportFormData, supportType: value })}
+                          disabled={submitStatus === 'loading'}
+                        >
+                          <SelectTrigger className="focus:ring-armath-blue">
+                          <SelectValue placeholder={language === "hy" ? "Ընտրեք աջակցության տեսակը" : "Select support type"} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="workshop">{t("hostWorkshop")}</SelectItem>
+                            <SelectItem value="equipment">{t("donateEquipment")}</SelectItem>
+                            <SelectItem value="financial">{t("financialSupport")}</SelectItem>
+                            <SelectItem value="mentoring">{t("mentoring")}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                <div>
-                  <label className="text-sm font-medium text-gray-700 block mb-1">{t("message")}</label>
-                  <Textarea
-                    value={supportFormData.message}
-                    onChange={(e) => setSupportFormData({ ...supportFormData, message: e.target.value })}
-                    placeholder={language === "hy" ? "Ձեր հաղորդագրությունը..." : "Your message..."}
-                    className="focus:ring-armath-blue resize-none"
-                    rows={4}
-                  />
-                </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("message")}</label>
+                        <Textarea
+                          value={supportFormData.message}
+                          onChange={(e) => setSupportFormData({ ...supportFormData, message: e.target.value })}
+                          placeholder={language === "hy" ? "Ձեր հաղորդագրությունը..." : "Your message..."}
+                          className="focus:ring-armath-blue resize-none"
+                          rows={4}
+                          disabled={submitStatus === 'loading'}
+                        />
+                      </div>
 
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button className="w-full bg-armath-blue hover:bg-armath-blue/90 shadow-lg hover:shadow-xl transition-all duration-300">
-                    {t("send")}
-                  </Button>
-                </motion.div>
+                      {submitStatus === 'error' && errorMessage && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg"
+                        >
+                          <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                          <p className="text-sm text-red-600">{errorMessage}</p>
+                          <button 
+                            type="button" 
+                            onClick={resetForm}
+                            className="ml-auto text-red-500 hover:text-red-700"
+                          >
+                            ✕
+                          </button>
+                        </motion.div>
+                      )}
+
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        <Button 
+                          type="submit"
+                          className="w-full bg-armath-blue hover:bg-armath-blue/90 shadow-lg hover:shadow-xl transition-all duration-300"
+                          disabled={submitStatus === 'loading'}
+                        >
+                          {submitStatus === 'loading' ? (
+                            <span className="flex items-center space-x-2">
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              <span>{t("sending")}</span>
+                            </span>
+                          ) : (
+                            t("send")
+                          )}
+                        </Button>
+                      </motion.div>
+                    </motion.form>
+                  )}
+                </AnimatePresence>
               </CardContent>
             </Card>
           </AnimatedSection>
