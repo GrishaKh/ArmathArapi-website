@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin, isSupabaseConfigured } from '@/lib/supabase'
 import { cookies } from 'next/headers'
 
 async function isAuthenticated(): Promise<boolean> {
@@ -11,6 +11,10 @@ async function isAuthenticated(): Promise<boolean> {
 export async function GET(): Promise<NextResponse> {
   if (!(await isAuthenticated())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  if (!isSupabaseConfigured() || !supabaseAdmin) {
+    return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
   }
 
   try {

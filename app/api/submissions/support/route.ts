@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin, isSupabaseConfigured } from '@/lib/supabase'
 import { supportRequestSchema } from '@/lib/validations'
 import { sendAdminNotification, supportRequestEmail } from '@/lib/email'
 import { ApiResponse } from '@/types/submissions'
@@ -48,6 +48,14 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
     }
 
     const data = validationResult.data
+
+    // Check if database is configured
+    if (!isSupabaseConfigured() || !supabaseAdmin) {
+      return NextResponse.json(
+        { success: false, message: 'Database not configured' },
+        { status: 503 }
+      )
+    }
 
     const { data: insertedData, error: dbError } = await supabaseAdmin
       .from('support_requests')

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin, isSupabaseConfigured } from '@/lib/supabase'
 import { cookies } from 'next/headers'
 
 // Simple auth check using a session cookie
@@ -12,6 +12,10 @@ async function isAuthenticated(): Promise<boolean> {
 export async function GET(request: NextRequest): Promise<NextResponse> {
   if (!(await isAuthenticated())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  if (!isSupabaseConfigured() || !supabaseAdmin) {
+    return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
   }
 
   const { searchParams } = new URL(request.url)
@@ -70,6 +74,10 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  if (!isSupabaseConfigured() || !supabaseAdmin) {
+    return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
+  }
+
   try {
     const body = await request.json()
     const { type, id, status, notes } = body
@@ -111,6 +119,10 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
 export async function DELETE(request: NextRequest): Promise<NextResponse> {
   if (!(await isAuthenticated())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  if (!isSupabaseConfigured() || !supabaseAdmin) {
+    return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
   }
 
   try {

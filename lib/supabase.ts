@@ -1,16 +1,36 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
+// Helper to create clients only when credentials are available
+function createSupabaseClient(): SupabaseClient | null {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.warn('Supabase credentials not configured. Database features disabled.')
+    return null
+  }
+  return createClient(supabaseUrl, supabaseAnonKey)
+}
+
+function createSupabaseAdminClient(): SupabaseClient | null {
+  if (!supabaseUrl) {
+    return null
+  }
+  if (supabaseServiceKey) {
+    return createClient(supabaseUrl, supabaseServiceKey)
+  }
+  return createSupabaseClient()
+}
+
 // Client for frontend (limited permissions)
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createSupabaseClient()
 
 // Admin client for server-side operations (full permissions)
-export const supabaseAdmin = supabaseServiceKey 
-  ? createClient(supabaseUrl, supabaseServiceKey)
-  : supabase
+export const supabaseAdmin = createSupabaseAdminClient()
+
+// Helper to check if Supabase is configured
+export const isSupabaseConfigured = () => !!supabase
 
 // Database types for better TypeScript support
 export type Database = {
