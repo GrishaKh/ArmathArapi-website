@@ -1,6 +1,9 @@
 import { Resend } from 'resend'
 
-const ADMIN_EMAIL = 'grisha.khachatrian@gmail.com'
+// Admin email - must match your Resend account email for free tier
+// Or set ADMIN_EMAIL env variable to override
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'grisha1999.15@gmail.com'
+
 // Using Resend's default domain (works immediately, no verification needed)
 // TODO: will change this to armath-arapi.am later
 const FROM_EMAIL = 'Armath Arapi <onboarding@resend.dev>'
