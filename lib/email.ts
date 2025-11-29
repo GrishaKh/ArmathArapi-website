@@ -1,9 +1,20 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 const ADMIN_EMAIL = 'grisha.khachatrian@gmail.com'
 const FROM_EMAIL = 'Armath Arapi <notifications@armath-arapi.am>' // You'll configure this in Resend
+
+// Lazy initialization to avoid errors during build
+let resend: Resend | null = null
+
+function getResendClient(): Resend | null {
+  if (!process.env.RESEND_API_KEY) {
+    return null
+  }
+  if (!resend) {
+    resend = new Resend(process.env.RESEND_API_KEY)
+  }
+  return resend
+}
 
 interface EmailOptions {
   subject: string
@@ -11,14 +22,16 @@ interface EmailOptions {
 }
 
 export async function sendAdminNotification(options: EmailOptions) {
-  // Skip if no API key (development)
-  if (!process.env.RESEND_API_KEY) {
+  const client = getResendClient()
+  
+  // Skip if no API key (development/build time)
+  if (!client) {
     console.log('📧 Email would be sent:', options.subject)
-    return { success: true, message: 'Skipped in development' }
+    return { success: true, message: 'Skipped - no API key configured' }
   }
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await client.emails.send({
       from: FROM_EMAIL,
       to: ADMIN_EMAIL,
       subject: options.subject,
