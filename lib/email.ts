@@ -1,7 +1,9 @@
 import { Resend } from 'resend'
 
 const ADMIN_EMAIL = 'grisha.khachatrian@gmail.com'
-const FROM_EMAIL = 'Armath Arapi <notifications@armath-arapi.am>' // You'll configure this in Resend
+// Using Resend's default domain (works immediately, no verification needed)
+// TODO: will change this to armath-arapi.am later
+const FROM_EMAIL = 'Armath Arapi <onboarding@resend.dev>'
 
 // Lazy initialization to avoid errors during build
 let resend: Resend | null = null
