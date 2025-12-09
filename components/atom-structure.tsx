@@ -17,7 +17,7 @@ interface TeamMember {
 }
 
 // --- Sample Data (unchanged, but with ids) ---
-const teamMembers: TeamMember[] = [
+const defaultTeamMembers: TeamMember[] = [
   {
     id: "grisha-kh",
     name: "Grisha Khachatryan",
@@ -163,7 +163,7 @@ const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setA
                 type="button"
                 aria-describedby={activeId === member.id ? tipId : undefined}
                 aria-label={`${member.name}, ${member.role}`}
-                className="relative"
+                className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-armath-blue"
                 initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
                 animate={reduceMotion ? {} : { scale: 1, opacity: 1 }}
                 transition={{ delay: 0.4 + index * 0.2, type: "spring", stiffness: 300 }}
@@ -255,9 +255,7 @@ const Electron: React.FC<ElectronProps> = ({
   const tipId = `tip-${supporter.id}`
 
   const transition = useMemo(() => {
-    if (reduceMotion) {
-      return { duration: 0 as number }
-    }
+    if (reduceMotion) return undefined
     return { duration, ease: "linear" as const, repeat: Number.POSITIVE_INFINITY as number }
   }, [duration, reduceMotion])
 
@@ -269,15 +267,15 @@ const Electron: React.FC<ElectronProps> = ({
       className="absolute left-1/2 top-1/2"
       style={{ transform: "translate(-50%, -50%)" }}
       initial={{ rotate: startingAngle }}
-      animate={{ rotate: startingAngle + 360 }}
-      transition={transition}
+      animate={reduceMotion ? { rotate: startingAngle } : { rotate: startingAngle + 360 }}
+      transition={reduceMotion ? { duration: 0 } : transition}
     >
       <div className="absolute" style={{ left: `${orbitRadius}px`, transform: "translate(-50%, -50%)" }}>
         <motion.button
           type="button"
           aria-describedby={isActive ? tipId : undefined}
           aria-label={`${supporter.name}, ${supporter.role}`}
-          className="relative"
+          className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-armath-red"
           onMouseEnter={() => setActiveId(supporter.id)}
           onMouseLeave={() => setActiveId(null)}
           onFocus={() => setActiveId(supporter.id)}
@@ -287,8 +285,8 @@ const Electron: React.FC<ElectronProps> = ({
           <motion.div
             className="relative"
             initial={{ rotate: -startingAngle }}
-            animate={{ rotate: -(startingAngle + 360) }}
-            transition={transition}
+            animate={reduceMotion ? { rotate: -startingAngle } : { rotate: -(startingAngle + 360) }}
+            transition={reduceMotion ? { duration: 0 } : transition}
           >
             <div
               className="relative flex items-center justify-center rounded-full border-2 border-white bg-armath-red text-sm font-bold text-white shadow-lg cursor-pointer hover:bg-armath-red/90 transition-colors"
@@ -340,8 +338,18 @@ const Legend: React.FC = () => {
   )
 }
 
+type AtomStructureProps = {
+  teamMembers?: TeamMember[]
+  coreMembers?: TeamMember[]
+  supporters?: TeamMember[]
+}
+
 // --- Main Component ---
-export function AtomStructure() {
+export function AtomStructure({
+  teamMembers: providedTeamMembers,
+  coreMembers: providedCoreMembers,
+  supporters: providedSupporters,
+}: AtomStructureProps = {}) {
   const [activeMemberId, setActiveMemberId] = useState<string | null>(null)
 
   // Handle escape key to close tooltip (at component level to avoid multiple listeners)
@@ -349,29 +357,52 @@ export function AtomStructure() {
 
   // Measure container to scale radii proportionally
   const { ref, width, height } = useMeasure<HTMLDivElement>()
-  const shortest = Math.max(0, Math.min(width, height))
-  const baseRadius = shortest / 2
-
-  const isSmall = shortest < 360
-  const isTiny = shortest < 280
-  
-  // Nucleus needs to be larger on mobile to fit core members without overlap
-  const nucleusDiameter = Math.max(
-    MIN_NUCLEUS_DIAMETER, 
-    shortest * (isTiny ? 0.42 : isSmall ? 0.38 : 0.28)
+  const resolvedTeamMembers = useMemo(
+    () => providedTeamMembers ?? defaultTeamMembers,
+    [providedTeamMembers]
   )
-  
-  // Adjust orbit radii to accommodate larger nucleus on mobile
-  const innerOrbit = Math.max(nucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER, baseRadius * (isTiny ? 0.58 : isSmall ? 0.52 : 0.45))
-  const outerOrbit = Math.max(nucleusDiameter * 1.25, baseRadius * (isTiny ? 0.82 : isSmall ? 0.76 : 0.62))
+  const coreMembers = useMemo(
+    () => providedCoreMembers ?? resolvedTeamMembers.filter((m) => m.isCore),
+    [providedCoreMembers, resolvedTeamMembers]
+  )
+  const supporters = useMemo(
+    () => providedSupporters ?? resolvedTeamMembers.filter((m) => !m.isCore),
+    [providedSupporters, resolvedTeamMembers]
+  )
 
-  const orbits = [
-    { radius: innerOrbit, duration: 20 },
-    { radius: outerOrbit, duration: 25 },
-  ]
+  const { nucleusDiameter, orbits, electronSize } = useMemo(() => {
+    const shortest = Math.max(0, Math.min(width, height))
+    const isSmall = shortest < 360
+    const isTiny = shortest < 280
 
-  const coreMembers = teamMembers.filter((m) => m.isCore)
-  const supporters = teamMembers.filter((m) => !m.isCore)
+    const computedNucleusDiameter = Math.max(
+      MIN_NUCLEUS_DIAMETER,
+      shortest * (isTiny ? 0.42 : isSmall ? 0.38 : 0.28)
+    )
+
+    const baseRadius = shortest / 2
+    const innerOrbit = Math.max(
+      computedNucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER,
+      baseRadius * (isTiny ? 0.58 : isSmall ? 0.52 : 0.45)
+    )
+    const outerOrbit = Math.max(
+      computedNucleusDiameter * 1.25,
+      baseRadius * (isTiny ? 0.82 : isSmall ? 0.76 : 0.62)
+    )
+
+    const computedElectronSize = Math.round(
+      Math.max(24, Math.min(44, shortest * (isTiny ? 0.1 : isSmall ? 0.11 : 0.12)))
+    )
+
+    return {
+      nucleusDiameter: computedNucleusDiameter,
+      orbits: [
+        { radius: innerOrbit, duration: 20 },
+        { radius: outerOrbit, duration: 25 },
+      ],
+      electronSize: computedElectronSize,
+    }
+  }, [height, width])
 
   return (
     <div className="w-full">
@@ -398,7 +429,6 @@ export function AtomStructure() {
           supporters.map((supporter, index) => {
             const { radius, duration } = orbits[index % orbits.length]
             const startingAngle = index * GOLDEN_ANGLE
-            const electronSize = Math.round(Math.max(24, Math.min(44, shortest * (isTiny ? 0.1 : isSmall ? 0.11 : 0.12))))
             return (
               <Electron
                 key={supporter.id}
