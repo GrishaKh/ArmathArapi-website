@@ -63,4 +63,3 @@ export const contactMessageSchema = z.object({
 export type StudentApplicationData = z.infer<typeof studentApplicationSchema>
 export type SupportRequestData = z.infer<typeof supportRequestSchema>
 export type ContactMessageData = z.infer<typeof contactMessageSchema>
-

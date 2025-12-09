@@ -17,7 +17,7 @@ All submissions are stored in Supabase and you receive email notifications via R
 2. Create a new project
 3. Go to **SQL Editor** and run the following schema:
 
-```sql
+\`\`\`sql
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -76,7 +76,7 @@ CREATE POLICY "Allow public inserts" ON contact_messages FOR INSERT WITH CHECK (
 CREATE POLICY "Service role access" ON student_applications FOR ALL USING (true);
 CREATE POLICY "Service role access" ON support_requests FOR ALL USING (true);
 CREATE POLICY "Service role access" ON contact_messages FOR ALL USING (true);
-```
+\`\`\`
 
 4. Go to **Settings > API** and copy:
    - Project URL
@@ -99,7 +99,7 @@ CREATE POLICY "Service role access" ON contact_messages FOR ALL USING (true);
 
 Create a `.env.local` file in the project root:
 
-```env
+\`\`\`env
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
@@ -111,12 +111,12 @@ RESEND_API_KEY=re_xxxxxxxx
 # Admin Dashboard
 ADMIN_PASSWORD=your-secure-password
 ADMIN_SESSION_SECRET=generate-a-random-string-here
-```
+\`\`\`
 
 **Generate session secret:**
-```bash
+\`\`\`bash
 openssl rand -base64 32
-```
+\`\`\`
 
 ---
 
@@ -167,14 +167,14 @@ When someone submits a form, you'll receive an email at `grisha.khachatrian@gmai
 
 You need to add Armenian translations for the new form messages in `lib/translations.ts`:
 
-```typescript
+\`\`\`typescript
 // Add these to the `hy` section:
 submitting: " Delays ...",
 sending: " Delays delays ...",
 applicationSubmitted: " Delays delays !",
 applicationThankYou: " Delays delays delays ...",
 // ... etc
-```
+\`\`\`
 
 ---
 
@@ -191,4 +191,3 @@ applicationThankYou: " Delays delays delays ...",
 ## Questions?
 
 Contact: grisha.khachatrian@gmail.com
-

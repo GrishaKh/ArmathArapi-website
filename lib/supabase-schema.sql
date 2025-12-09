@@ -94,4 +94,3 @@ CREATE TRIGGER update_support_requests_updated_at
 CREATE TRIGGER update_contact_messages_updated_at
   BEFORE UPDATE ON contact_messages
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
