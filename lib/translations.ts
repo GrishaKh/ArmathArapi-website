@@ -49,14 +49,18 @@ export const translations = {
     // Events
     eventsTitle: "Our Events & Achievements",
     eventsDescription: "Showcase of our participation in competitions, camps, and exhibitions",
+    viewAllEvents: "View All Events",
+    competition: "Competition",
+    workshop: "Workshop",
+    camp: "Camp",
+    exhibition: "Exhibition",
+    featured: "Featured",
 
     // Projects
     projectsTitle: "Our Projects",
     projectsDescription: "Highlighting the best and most impactful student projects",
     viewProject: "View Project",
     viewAllProjects: "View All Projects",
-    toolsUsed: "Tools Used",
-    viewProject: "View Project",
     toolsUsed: "Tools Used",
 
     // Join as Student
@@ -198,14 +202,18 @@ export const translations = {
     // Events
     eventsTitle: "Մեր միջոցառումները և նվաճումները",
     eventsDescription: "Մեր մասնակցությունը մրցույթներին, ճամբարներին և ցուցահանդեսներին",
+    viewAllEvents: "Դիտել բոլոր միջոցառումները",
+    competition: "Մրցույթ",
+    workshop: "Աշխատարան",
+    camp: "Ճամբար",
+    exhibition: "Ցուցահանդես",
+    featured: "Առանձնացված",
 
     // Projects
     projectsTitle: "Մեր նախագծերը",
     projectsDescription: "Ուսանողների լավագույն նախագծերը",
     viewProject: "Դիտել նախագիծը",
     viewAllProjects: "Դիտել բոլոր նախագծերը",
-    toolsUsed: "Օգտագործված գործիքներ",
-    viewProject: "Դիտել նախագիծը",
     toolsUsed: "Օգտագործված գործիքներ",
 
     // Join as Student
