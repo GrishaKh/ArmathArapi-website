@@ -54,6 +54,9 @@ export const translations = {
     projectsTitle: "Our Projects",
     projectsDescription: "Highlighting the best and most impactful student projects",
     viewProject: "View Project",
+    viewAllProjects: "View All Projects",
+    toolsUsed: "Tools Used",
+    viewProject: "View Project",
     toolsUsed: "Tools Used",
 
     // Join as Student
@@ -115,6 +118,35 @@ export const translations = {
     yourEmail: "Your email",
     yourMessage: "Your message...",
     selectSupportType: "Select support type",
+
+    // Project Detail Page
+    projectDetail: "Project Details",
+    challenge: "Challenge",
+    solution: "Solution",
+    results: "Results",
+    technologies: "Technologies Used",
+    studentCreator: "Student Creator",
+    presentedAt: "Presented At",
+    backToProjects: "Back to Projects",
+    keyHighlights: "Key Highlights",
+    category: "Category",
+    year: "Year",
+    relatedProjects: "Related Projects",
+
+    // Event Detail Page
+    eventDetail: "Event Details",
+    eventChallenge: "The Challenge",
+    eventAchievements: "Key Achievements",
+    eventResults: "Results",
+    eventTechnologies: "Technologies & Tools",
+    eventHighlights: "Highlights",
+    participatingSchools: "Participating Schools",
+    relatedEvents: "More Events",
+    backToEvents: "Back to Events",
+    eventCategory: "Category",
+    eventYear: "Year",
+    eventLocation: "Location",
+    overview: "Overview",
   },
   hy: {
     // Navigation
@@ -170,6 +202,9 @@ export const translations = {
     // Projects
     projectsTitle: "Մեր նախագծերը",
     projectsDescription: "Ուսանողների լավագույն նախագծերը",
+    viewProject: "Դիտել նախագիծը",
+    viewAllProjects: "Դիտել բոլոր նախագծերը",
+    toolsUsed: "Օգտագործված գործիքներ",
     viewProject: "Դիտել նախագիծը",
     toolsUsed: "Օգտագործված գործիքներ",
 
@@ -232,6 +267,35 @@ export const translations = {
     yourEmail: "Ձեր էլ. փոստը",
     yourMessage: "Ձեր հաղորդագրությունը...",
     selectSupportType: "Ընտրեք աջակցության տեսակը",
+
+    // Project Detail Page
+    projectDetail: "Նախագծի մանրամասները",
+    challenge: "Խնդիր",
+    solution: "Լուծում",
+    results: "Արդյունքներ",
+    technologies: "Օգտագործված տեխնոլոգիաներ",
+    studentCreator: "Ուսանողի ստեղծում",
+    presentedAt: "Ներկայացվել է",
+    backToProjects: "Վերադառնալ նախագծերին",
+    keyHighlights: "Հիմնական առանձնահատկությունները",
+    category: "Կատեգորիա",
+    year: "Տարի",
+    relatedProjects: "Կապակցված նախագծեր",
+
+    // Event Detail Page
+    eventDetail: "Միջոցառման մանրամասները",
+    eventChallenge: "Մարտահրավերը",
+    eventAchievements: "Հիմնական նվաճումները",
+    eventResults: "Արդյունքները",
+    eventTechnologies: "Տեխնոլոգիաներ և գործիքներ",
+    eventHighlights: "Հատկանիշներ",
+    participatingSchools: "Մասնակից դպրոցներ",
+    relatedEvents: "Այլ միջոցառումներ",
+    backToEvents: "Վերադառնալ միջոցառումներին",
+    eventCategory: "Կատեգորիա",
+    eventYear: "Տարի",
+    eventLocation: "Գտնվելու վայրը",
+    overview: "Ամփոփ",
   },
 }
 

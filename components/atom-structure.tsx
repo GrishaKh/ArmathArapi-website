@@ -2,14 +2,9 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import type React from "react"
-import { useLayoutEffect, useEffect, useMemo, useRef, useState, createContext, useContext } from "react"
-import { createPortal } from "react-dom"
+import { useLayoutEffect, useEffect, useMemo, useRef, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
-
-// --- Tooltip Portal Context ---
-// This allows tooltips to render outside the stacking context
-const TooltipContainerContext = createContext<HTMLDivElement | null>(null)
 
 // --- Types ---
 interface TeamMember {
@@ -22,7 +17,7 @@ interface TeamMember {
 }
 
 // --- Sample Data (unchanged, but with ids) ---
-const defaultTeamMembers: TeamMember[] = [
+const teamMembers: TeamMember[] = [
   {
     id: "grisha-kh",
     name: "Grisha Khachatryan",
@@ -108,68 +103,6 @@ function useEscapeKey(callback: () => void) {
   }, [callback])
 }
 
-// --- Floating Tooltip Component ---
-// Renders in a portal to escape stacking context issues
-type FloatingTooltipProps = {
-  isVisible: boolean
-  anchorRef: React.RefObject<HTMLElement | null>
-  children: React.ReactNode
-  id: string
-}
-
-const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef, children, id }) => {
-  const container = useContext(TooltipContainerContext)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-
-  useEffect(() => {
-    if (!isVisible || !anchorRef.current) return
-
-    const updatePosition = () => {
-      if (!anchorRef.current || !container) return
-      const rect = anchorRef.current.getBoundingClientRect()
-      const containerRect = container.getBoundingClientRect()
-      
-      setPosition({
-        x: rect.left + rect.width / 2 - containerRect.left,
-        y: rect.top - containerRect.top,
-      })
-    }
-
-    updatePosition()
-    // Update position on scroll/resize
-    const interval = setInterval(updatePosition, 16) // ~60fps for smooth following
-    return () => clearInterval(interval)
-  }, [isVisible, anchorRef, container])
-
-  if (!container) return null
-
-  return createPortal(
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          key={id}
-          id={id}
-          role="tooltip"
-          initial={{ opacity: 0, y: 10, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 10, scale: 0.9 }}
-          className="pointer-events-none absolute z-[9999]"
-          style={{
-            left: position.x,
-            top: position.y,
-            transform: "translate(-50%, -100%)",
-          }}
-        >
-          <div className="mb-3">
-            {children}
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>,
-    container
-  )
-}
-
 // --- Subcomponents ---
 
 type NucleusProps = {
@@ -177,79 +110,6 @@ type NucleusProps = {
   coreMembers: TeamMember[]
   activeId: string | null
   setActiveId: (id: string | null) => void
-}
-
-// Individual core member button with ref for tooltip positioning
-type CoreMemberButtonProps = {
-  member: TeamMember
-  angleDeg: number
-  orbitRadius: number
-  dotSize: number
-  activeId: string | null
-  setActiveId: (id: string | null) => void
-  index: number
-}
-
-const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
-  member,
-  angleDeg,
-  orbitRadius,
-  dotSize,
-  activeId,
-  setActiveId,
-  index,
-}) => {
-  const reduceMotion = useReducedMotion()
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const tipId = `tip-${member.id}`
-  const isActive = activeId === member.id
-
-  return (
-    <div
-      className="absolute left-1/2 top-1/2"
-      style={{ 
-        transform: `translate(-50%, -50%) rotate(${angleDeg}deg)`,
-        zIndex: isActive ? 50 : 1,
-      }}
-    >
-      <div className="absolute" style={{ left: `${orbitRadius}px`, transform: "translate(-50%, -50%)" }}>
-        <motion.button
-          ref={buttonRef}
-          type="button"
-          aria-describedby={isActive ? tipId : undefined}
-          aria-label={`${member.name}, ${member.role}`}
-          className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-armath-blue"
-          initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
-          animate={reduceMotion ? {} : { scale: 1, opacity: 1 }}
-          transition={{ delay: 0.4 + index * 0.2, type: "spring", stiffness: 300 }}
-          onMouseEnter={() => setActiveId(member.id)}
-          onMouseLeave={() => setActiveId(null)}
-          onFocus={() => setActiveId(member.id)}
-          onBlur={() => setActiveId(null)}
-          whileHover={reduceMotion ? undefined : { scale: 1.2 }}
-        >
-          <div style={{ transform: `rotate(${-angleDeg}deg)` }}>
-            <div
-              className="flex flex-col items-center justify-center rounded-full border-2 border-armath-blue/20 bg-white text-xs font-bold text-armath-blue shadow-md cursor-pointer hover:bg-armath-blue/5 transition-colors"
-              style={{ width: dotSize, height: dotSize }}
-            >
-              <span>{getInitials(member.name)}</span>
-            </div>
-          </div>
-        </motion.button>
-        
-        <FloatingTooltip isVisible={isActive} anchorRef={buttonRef} id={tipId}>
-          <Card className="shadow-xl border-armath-blue/20 w-max max-w-[200px] sm:max-w-xs">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm font-bold text-gray-900 mb-1">{member.name}</p>
-              <p className="text-xs font-medium text-armath-blue mb-2">{member.role}</p>
-              <p className="text-xs leading-relaxed text-gray-600">{member.details ?? "—"}</p>
-            </CardContent>
-          </Card>
-        </FloatingTooltip>
-      </div>
-    </div>
-  )
 }
 
 const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setActiveId }) => {
@@ -266,6 +126,9 @@ const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setA
   const dotSize = Math.round(Math.max(20, Math.min(32, diameter * 0.18)))
   
   // Calculate minimum orbit radius needed to prevent overlap
+  // For n items evenly spaced on a circle, the minimum radius to avoid overlap is:
+  // r >= dotSize / (2 * sin(π / n))
+  // We use 0.75 multiplier to add extra breathing room between elements
   const minSafeRadius = count > 1 
     ? (dotSize * 0.75) / Math.sin(Math.PI / count) 
     : 0
@@ -279,7 +142,7 @@ const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setA
 
   return (
     <motion.div
-      className="relative z-20 flex items-center justify-center rounded-full bg-gradient-to-br from-armath-blue to-armath-blue/80 shadow-xl border-4 border-white shadow-[0_0_30px_rgba(59,130,246,0.25)]"
+      className="relative z-10 flex items-center justify-center rounded-full bg-gradient-to-br from-armath-blue to-armath-blue/80 shadow-xl border-4 border-white shadow-[0_0_30px_rgba(59,130,246,0.25)]"
       style={{ width: diameter, height: diameter }}
       initial={reduceMotion ? false : { scale: 0 }}
       animate={reduceMotion ? {} : { scale: 1 }}
@@ -287,17 +150,66 @@ const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setA
     >
       {coreMembers.map((member, index) => {
         const angleDeg = (360 / count) * index - 90
+        const tipId = `tip-${member.id}`
+
         return (
-          <CoreMemberButton
+          <div
             key={member.id}
-            member={member}
-            angleDeg={angleDeg}
-            orbitRadius={orbitRadius}
-            dotSize={dotSize}
-            activeId={activeId}
-            setActiveId={setActiveId}
-            index={index}
-          />
+            className="absolute left-1/2 top-1/2"
+            style={{ transform: `translate(-50%, -50%) rotate(${angleDeg}deg)` }}
+          >
+            <div className="absolute" style={{ left: `${orbitRadius}px`, transform: "translate(-50%, -50%)" }}>
+              <motion.button
+                type="button"
+                aria-describedby={activeId === member.id ? tipId : undefined}
+                aria-label={`${member.name}, ${member.role}`}
+                className="relative"
+                initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
+                animate={reduceMotion ? {} : { scale: 1, opacity: 1 }}
+                transition={{ delay: 0.4 + index * 0.2, type: "spring", stiffness: 300 }}
+                onMouseEnter={() => setActiveId(member.id)}
+                onMouseLeave={() => setActiveId(null)}
+                onFocus={() => setActiveId(member.id)}
+                onBlur={() => setActiveId(null)}
+                whileHover={reduceMotion ? undefined : { scale: 1.2, zIndex: 30 }}
+              >
+                <div style={{ transform: `rotate(${-angleDeg}deg)` }}>
+                  <div
+                    className="flex flex-col items-center justify-center rounded-full border-2 border-armath-blue/20 bg-white text-xs font-bold text-armath-blue shadow-md cursor-pointer hover:bg-armath-blue/5 transition-colors"
+                    style={{ width: dotSize, height: dotSize }}
+                  >
+                    <span>{getInitials(member.name)}</span>
+                  </div>
+
+                  <AnimatePresence>
+                    {activeId === member.id && (
+                      <motion.div
+                        key={tipId}
+                        id={tipId}
+                        role="tooltip"
+                        initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                        className="absolute bottom-full left-1/2 mb-3 w-max max-w-[200px] sm:max-w-xs -translate-x-1/2 z-[100]"
+                        style={{
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                        }}
+                      >
+                        <Card className="shadow-xl border-armath-blue/20">
+                          <CardContent className="p-4 text-center">
+                            <p className="text-sm font-bold text-gray-900 mb-1">{member.name}</p>
+                            <p className="text-xs font-medium text-armath-blue mb-2">{member.role}</p>
+                            <p className="text-xs leading-relaxed text-gray-600">{member.details ?? "—"}</p>
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.button>
+            </div>
+          </div>
         )
       })}
     </motion.div>
@@ -310,7 +222,7 @@ const Orbit: React.FC<OrbitProps> = ({ radius, delay, dashed }) => {
   return (
     <motion.div
       aria-hidden
-      className={`absolute rounded-full border border-armath-blue/20 pointer-events-none z-10 ${dashed ? "border-dashed" : ""}`}
+      className={`absolute rounded-full border border-armath-blue/20 ${dashed ? "border-dashed" : ""}`}
       style={{ width: radius * 2, height: radius * 2 }}
       initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
       animate={reduceMotion ? {} : { scale: 1, opacity: 1 }}
@@ -339,12 +251,13 @@ const Electron: React.FC<ElectronProps> = ({
   size,
 }) => {
   const reduceMotion = useReducedMotion()
-  const buttonRef = useRef<HTMLButtonElement>(null)
   const isActive = activeId === supporter.id
   const tipId = `tip-${supporter.id}`
 
   const transition = useMemo(() => {
-    if (reduceMotion) return undefined
+    if (reduceMotion) {
+      return { duration: 0 as number }
+    }
     return { duration, ease: "linear" as const, repeat: Number.POSITIVE_INFINITY as number }
   }, [duration, reduceMotion])
 
@@ -354,32 +267,28 @@ const Electron: React.FC<ElectronProps> = ({
   return (
     <motion.div
       className="absolute left-1/2 top-1/2"
-      style={{ 
-        transform: "translate(-50%, -50%)",
-        zIndex: isActive ? 40 : 15, // Lift active electron above orbits and other electrons
-      }}
+      style={{ transform: "translate(-50%, -50%)" }}
       initial={{ rotate: startingAngle }}
-      animate={reduceMotion ? { rotate: startingAngle } : { rotate: startingAngle + 360 }}
-      transition={reduceMotion ? { duration: 0 } : transition}
+      animate={{ rotate: startingAngle + 360 }}
+      transition={transition}
     >
       <div className="absolute" style={{ left: `${orbitRadius}px`, transform: "translate(-50%, -50%)" }}>
         <motion.button
-          ref={buttonRef}
           type="button"
           aria-describedby={isActive ? tipId : undefined}
           aria-label={`${supporter.name}, ${supporter.role}`}
-          className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-armath-red"
+          className="relative"
           onMouseEnter={() => setActiveId(supporter.id)}
           onMouseLeave={() => setActiveId(null)}
           onFocus={() => setActiveId(supporter.id)}
           onBlur={() => setActiveId(null)}
-          whileHover={reduceMotion ? undefined : { scale: 1.1 }}
+          whileHover={reduceMotion ? undefined : { scale: 1.1, zIndex: 40 }}
         >
           <motion.div
             className="relative"
             initial={{ rotate: -startingAngle }}
-            animate={reduceMotion ? { rotate: -startingAngle } : { rotate: -(startingAngle + 360) }}
-            transition={reduceMotion ? { duration: 0 } : transition}
+            animate={{ rotate: -(startingAngle + 360) }}
+            transition={transition}
           >
             <div
               className="relative flex items-center justify-center rounded-full border-2 border-white bg-armath-red text-sm font-bold text-white shadow-lg cursor-pointer hover:bg-armath-red/90 transition-colors"
@@ -387,17 +296,32 @@ const Electron: React.FC<ElectronProps> = ({
             >
               {initials}
             </div>
+            <AnimatePresence>
+              {isActive && (
+                <motion.div
+                  key={tipId}
+                  id={tipId}
+                  role="tooltip"
+                  initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                  className="pointer-events-none absolute bottom-full left-1/2 z-[100] mb-3 -translate-x-1/2"
+                  style={{
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                  }}
+                >
+                  <Card className="min-w-max max-w-[200px] sm:max-w-none border-armath-red/20 bg-white shadow-xl">
+                    <CardContent className="p-3 text-center">
+                      <p className="text-sm font-medium text-gray-900 break-words mb-1">{supporter.name}</p>
+                      <p className="text-xs break-words text-gray-600">{supporter.contribution ?? "—"}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         </motion.button>
-        
-        <FloatingTooltip isVisible={isActive} anchorRef={buttonRef} id={tipId}>
-          <Card className="min-w-max max-w-[200px] sm:max-w-none border-armath-red/20 bg-white shadow-xl">
-            <CardContent className="p-3 text-center">
-              <p className="text-sm font-medium text-gray-900 break-words mb-1">{supporter.name}</p>
-              <p className="text-xs break-words text-gray-600">{supporter.contribution ?? "—"}</p>
-            </CardContent>
-          </Card>
-        </FloatingTooltip>
       </div>
     </motion.div>
   )
@@ -416,130 +340,82 @@ const Legend: React.FC = () => {
   )
 }
 
-type AtomStructureProps = {
-  teamMembers?: TeamMember[]
-  coreMembers?: TeamMember[]
-  supporters?: TeamMember[]
-}
-
 // --- Main Component ---
-export function AtomStructure({
-  teamMembers: providedTeamMembers,
-  coreMembers: providedCoreMembers,
-  supporters: providedSupporters,
-}: AtomStructureProps = {}) {
+export function AtomStructure() {
   const [activeMemberId, setActiveMemberId] = useState<string | null>(null)
-  const tooltipContainerRef = useRef<HTMLDivElement>(null)
-  const [tooltipContainer, setTooltipContainer] = useState<HTMLDivElement | null>(null)
-
-  // Set tooltip container after mount
-  useEffect(() => {
-    setTooltipContainer(tooltipContainerRef.current)
-  }, [])
 
   // Handle escape key to close tooltip (at component level to avoid multiple listeners)
   useEscapeKey(() => setActiveMemberId(null))
 
   // Measure container to scale radii proportionally
   const { ref, width, height } = useMeasure<HTMLDivElement>()
-  const resolvedTeamMembers = useMemo(
-    () => providedTeamMembers ?? defaultTeamMembers,
-    [providedTeamMembers]
+  const shortest = Math.max(0, Math.min(width, height))
+  const baseRadius = shortest / 2
+
+  const isSmall = shortest < 360
+  const isTiny = shortest < 280
+  
+  // Nucleus needs to be larger on mobile to fit core members without overlap
+  const nucleusDiameter = Math.max(
+    MIN_NUCLEUS_DIAMETER, 
+    shortest * (isTiny ? 0.42 : isSmall ? 0.38 : 0.28)
   )
-  const coreMembers = useMemo(
-    () => providedCoreMembers ?? resolvedTeamMembers.filter((m) => m.isCore),
-    [providedCoreMembers, resolvedTeamMembers]
-  )
-  const supporters = useMemo(
-    () => providedSupporters ?? resolvedTeamMembers.filter((m) => !m.isCore),
-    [providedSupporters, resolvedTeamMembers]
-  )
+  
+  // Adjust orbit radii to accommodate larger nucleus on mobile
+  const innerOrbit = Math.max(nucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER, baseRadius * (isTiny ? 0.58 : isSmall ? 0.52 : 0.45))
+  const outerOrbit = Math.max(nucleusDiameter * 1.25, baseRadius * (isTiny ? 0.82 : isSmall ? 0.76 : 0.62))
 
-  const { nucleusDiameter, orbits, electronSize } = useMemo(() => {
-    const shortest = Math.max(0, Math.min(width, height))
-    const isSmall = shortest < 360
-    const isTiny = shortest < 280
+  const orbits = [
+    { radius: innerOrbit, duration: 20 },
+    { radius: outerOrbit, duration: 25 },
+  ]
 
-    const computedNucleusDiameter = Math.max(
-      MIN_NUCLEUS_DIAMETER,
-      shortest * (isTiny ? 0.42 : isSmall ? 0.38 : 0.28)
-    )
-
-    const baseRadius = shortest / 2
-    const innerOrbit = Math.max(
-      computedNucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER,
-      baseRadius * (isTiny ? 0.58 : isSmall ? 0.52 : 0.45)
-    )
-    const outerOrbit = Math.max(
-      computedNucleusDiameter * 1.25,
-      baseRadius * (isTiny ? 0.82 : isSmall ? 0.76 : 0.62)
-    )
-
-    const computedElectronSize = Math.round(
-      Math.max(24, Math.min(44, shortest * (isTiny ? 0.1 : isSmall ? 0.11 : 0.12)))
-    )
-
-    return {
-      nucleusDiameter: computedNucleusDiameter,
-      orbits: [
-        { radius: innerOrbit, duration: 20 },
-        { radius: outerOrbit, duration: 25 },
-      ],
-      electronSize: computedElectronSize,
-    }
-  }, [height, width])
+  const coreMembers = teamMembers.filter((m) => m.isCore)
+  const supporters = teamMembers.filter((m) => !m.isCore)
 
   return (
-    <TooltipContainerContext.Provider value={tooltipContainer}>
-      <div className="w-full">
-        {/* Scene container - removed overflow-hidden to prevent tooltip clipping */}
-        <div
-          ref={ref}
-          className="relative mx-auto flex h-[clamp(20rem,65vw,28rem)] max-w-full items-center justify-center touch-pan-y"
-        >
-          {/* Tooltip container - renders tooltips above everything */}
-          <div 
-            ref={tooltipContainerRef} 
-            className="absolute inset-0 pointer-events-none z-[9999]"
-            aria-hidden="true"
-          />
+    <div className="w-full">
+      {/* Scene container */}
+      <div
+        ref={ref}
+        className="relative mx-auto flex h-[clamp(20rem,65vw,28rem)] max-w-full items-center justify-center overflow-hidden touch-pan-y"
+      >
+        {/* Nucleus */}
+        <Nucleus
+          diameter={nucleusDiameter}
+          coreMembers={coreMembers}
+          activeId={activeMemberId}
+          setActiveId={setActiveMemberId}
+        />
 
-          {/* Nucleus */}
-          <Nucleus
-            diameter={nucleusDiameter}
-            coreMembers={coreMembers}
-            activeId={activeMemberId}
-            setActiveId={setActiveMemberId}
-          />
+        {/* Orbits */}
+        {orbits.map((o, i) => (
+          <Orbit key={i} radius={o.radius} delay={0.8 + i * 0.2} dashed={i === orbits.length - 1} />
+        ))}
 
-          {/* Orbits */}
-          {orbits.map((o, i) => (
-            <Orbit key={i} radius={o.radius} delay={0.8 + i * 0.2} dashed={i === orbits.length - 1} />
-          ))}
-
-          {/* Electrons */}
-          {supporters.length > 0 &&
-            supporters.map((supporter, index) => {
-              const { radius, duration } = orbits[index % orbits.length]
-              const startingAngle = index * GOLDEN_ANGLE
-              return (
-                <Electron
-                  key={supporter.id}
-                  supporter={supporter}
-                  orbitRadius={radius}
-                  duration={duration}
-                  startingAngle={startingAngle}
-                  activeId={activeMemberId}
-                  setActiveId={setActiveMemberId}
-                  size={electronSize}
-                />
-              )
-            })}
-        </div>
-
-        {/* Legend (moved outside absolute scene for consistent placement) */}
-        <Legend />
+        {/* Electrons */}
+        {supporters.length > 0 &&
+          supporters.map((supporter, index) => {
+            const { radius, duration } = orbits[index % orbits.length]
+            const startingAngle = index * GOLDEN_ANGLE
+            const electronSize = Math.round(Math.max(24, Math.min(44, shortest * (isTiny ? 0.1 : isSmall ? 0.11 : 0.12))))
+            return (
+              <Electron
+                key={supporter.id}
+                supporter={supporter}
+                orbitRadius={radius}
+                duration={duration}
+                startingAngle={startingAngle}
+                activeId={activeMemberId}
+                setActiveId={setActiveMemberId}
+                size={electronSize}
+              />
+            )
+          })}
       </div>
-    </TooltipContainerContext.Provider>
+
+      {/* Legend (moved outside absolute scene for consistent placement) */}
+      <Legend />
+    </div>
   )
 }
