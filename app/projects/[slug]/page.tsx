@@ -12,6 +12,7 @@ import { ArrowLeft } from "lucide-react"
 import { projects } from "@/lib/projects"
 import { notFound } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { LanguageToggle } from "@/components/language-toggle"
 
 interface Props {
   params: {
@@ -57,6 +58,8 @@ export default function ProjectDetailPage({ params }: Props) {
               <Image src="/logo.png" alt="Logo" fill className="object-contain p-1.5" sizes="48px" />
             </motion.div>
           </Link>
+          {/* Language Toggle */}
+          <LanguageToggle />
         </div>
       </motion.header>
 

@@ -1,11 +1,8 @@
 "use client"
 
 import { CardTitle } from "@/components/ui/card"
-
 import { CardHeader } from "@/components/ui/card"
-
 import { Card } from "@/components/ui/card"
-
 import { useLanguage } from "@/contexts/language-context"
 import { AnimatedSection } from "@/components/animated-section"
 import { getEventBySlug, events } from "@/lib/events"
@@ -15,6 +12,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, MapPin, Award, Users, Zap } from "lucide-react"
 import { notFound } from "next/navigation"
+import { LanguageToggle } from "@/components/language-toggle"
+import { motion } from "framer-motion"
 
 interface PageProps {
   params: {
@@ -46,6 +45,26 @@ export default function EventDetailPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen pt-24 pb-20">
+      <motion.header
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="fixed top-0 z-50 w-full border-b bg-white/30 backdrop-blur-xl supports-[backdrop-filter]:bg-white/20"
+      >
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+            <motion.div
+              className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden border border-armath-blue/20 bg-white shadow-sm"
+              whileHover={{ rotate: 5 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Image src="/logo.png" alt={t("logo")} fill className="object-contain p-1.5" sizes="48px" />
+            </motion.div>
+          </Link>
+          <LanguageToggle />
+        </div>
+      </motion.header>
+
       <div className="container mx-auto px-4">
         {/* Back Button */}
         <AnimatedSection>

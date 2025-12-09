@@ -9,6 +9,7 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { projects } from "@/lib/projects"
 import { cn } from "@/lib/utils"
+import { LanguageToggle } from "@/components/language-toggle"
 
 export default function ProjectsPage() {
   const { t, language } = useLanguage()
@@ -46,6 +47,8 @@ export default function ProjectsPage() {
               <p className="text-sm text-gray-600">{t("ourProjects")}</p>
             </div>
           </Link>
+          {/* Language Toggle */}
+          <LanguageToggle />
         </div>
       </motion.header>
 
