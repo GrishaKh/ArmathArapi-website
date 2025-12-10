@@ -88,7 +88,7 @@ const getFieldsOfStudy = (t: (key: TranslationKey) => string) => [
       {
         subtitle: t("robotics"),
         beginner: "SERob Kit",
-        next: "Custom-built robots",
+        next: t("customBuiltRobots"),
         icon: Bot,
       },
     ],

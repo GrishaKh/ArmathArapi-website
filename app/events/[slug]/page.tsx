@@ -22,18 +22,28 @@ interface PageProps {
 }
 
 export default function EventDetailPage({ params }: PageProps) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const event = getEventBySlug(params.slug)
 
   if (!event) {
     notFound()
   }
 
+  const title = language === "hy" ? event.titleHy : event.title
+  const location = language === "hy" ? event.locationHy : event.location
+  const summary = language === "hy" ? event.summaryHy : event.summary
+  const challenge = language === "hy" ? event.challengeHy : event.challenge
+  const achievements = language === "hy" ? event.achievementsHy : event.achievements
+  const results = language === "hy" ? event.resultsHy : event.results
+  const highlights = language === "hy" ? event.highlightsHy : event.highlights
+  const technologies = language === "hy" ? event.technologiesHy : event.technologies
+  const schools = language === "hy" ? event.participants.schoolsHy : event.participants.schools
+
   const categoryLabels: Record<string, string> = {
-    competition: "Competition",
-    workshop: "Workshop",
-    camp: "Camp",
-    exhibition: "Exhibition",
+    competition: t("competition"),
+    workshop: t("workshop"),
+    camp: t("camp"),
+    exhibition: t("exhibition"),
   }
 
   const categoryColors: Record<string, string> = {
@@ -71,7 +81,7 @@ export default function EventDetailPage({ params }: PageProps) {
           <Link href="/events">
             <Button variant="ghost" className="gap-2 mb-8">
               <ArrowLeft className="w-4 h-4" />
-              Back to Events
+              {t("backToEvents")}
             </Button>
           </Link>
         </AnimatedSection>
@@ -81,7 +91,7 @@ export default function EventDetailPage({ params }: PageProps) {
           <div className="relative w-full h-96 rounded-lg overflow-hidden">
             <Image
               src={event.image || "/placeholder.svg?height=400&width=1200"}
-              alt={event.title}
+              alt={title}
               fill
               className="object-cover"
             />
@@ -90,7 +100,7 @@ export default function EventDetailPage({ params }: PageProps) {
                 <Badge className={`${categoryColors[event.category]} text-white mb-4`}>
                   {categoryLabels[event.category]}
                 </Badge>
-                <h1 className="text-5xl font-bold mb-4">{event.title}</h1>
+                <h1 className="text-5xl font-bold mb-4">{title}</h1>
               </div>
             </div>
           </div>
@@ -105,21 +115,21 @@ export default function EventDetailPage({ params }: PageProps) {
                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
                   <Calendar className="w-6 h-6 text-armath-blue" />
                   <div>
-                    <p className="text-sm text-gray-600">Year</p>
+                    <p className="text-sm text-gray-600">{t("eventYear")}</p>
                     <p className="text-lg font-semibold text-gray-900">{event.year}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
                   <MapPin className="w-6 h-6 text-armath-red" />
                   <div>
-                    <p className="text-sm text-gray-600">Location</p>
-                    <p className="text-lg font-semibold text-gray-900">{event.location}</p>
+                    <p className="text-sm text-gray-600">{t("eventLocation")}</p>
+                    <p className="text-lg font-semibold text-gray-900">{location}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
                   <Award className="w-6 h-6 text-green-600" />
                   <div>
-                    <p className="text-sm text-gray-600">Category</p>
+                    <p className="text-sm text-gray-600">{t("eventCategory")}</p>
                     <p className="text-lg font-semibold text-gray-900">{categoryLabels[event.category]}</p>
                   </div>
                 </div>
@@ -128,21 +138,21 @@ export default function EventDetailPage({ params }: PageProps) {
 
             {/* Summary */}
             <AnimatedSection className="mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Overview</h2>
-              <p className="text-gray-600 text-lg leading-relaxed">{event.summary}</p>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">{t("overview")}</h2>
+              <p className="text-gray-600 text-lg leading-relaxed">{summary}</p>
             </AnimatedSection>
 
             {/* Challenge */}
             <AnimatedSection className="mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">The Challenge</h2>
-              <p className="text-gray-600 text-lg leading-relaxed">{event.challenge}</p>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">{t("eventChallenge")}</h2>
+              <p className="text-gray-600 text-lg leading-relaxed">{challenge}</p>
             </AnimatedSection>
 
             {/* Achievements */}
             <AnimatedSection className="mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Key Achievements</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">{t("eventAchievements")}</h2>
               <ul className="space-y-4">
-                {event.achievements.map((achievement, index) => (
+                {achievements.map((achievement, index) => (
                   <li key={index} className="flex gap-4">
                     <Zap className="w-6 h-6 text-armath-blue flex-shrink-0 mt-1" />
                     <span className="text-gray-600 text-lg">{achievement}</span>
@@ -153,15 +163,15 @@ export default function EventDetailPage({ params }: PageProps) {
 
             {/* Results */}
             <AnimatedSection className="mb-12 p-8 bg-armath-blue/10 rounded-lg">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Results</h2>
-              <p className="text-gray-600 text-lg leading-relaxed">{event.results}</p>
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">{t("eventResults")}</h2>
+              <p className="text-gray-600 text-lg leading-relaxed">{results}</p>
             </AnimatedSection>
 
             {/* Highlights */}
             <AnimatedSection className="mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Highlights</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">{t("eventHighlights")}</h2>
               <div className="grid md:grid-cols-2 gap-4">
-                {event.highlights.map((highlight, index) => (
+                {highlights.map((highlight, index) => (
                   <div key={index} className="p-4 bg-gray-50 rounded-lg border-l-4 border-armath-blue">
                     <p className="text-gray-700 font-semibold">{highlight}</p>
                   </div>
@@ -173,11 +183,11 @@ export default function EventDetailPage({ params }: PageProps) {
           {/* Sidebar */}
           <div>
             {/* Technologies */}
-            {event.technologies.length > 0 && (
+            {technologies.length > 0 && (
               <AnimatedSection className="mb-12 p-6 bg-gray-50 rounded-lg sticky top-28">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Technologies & Tools</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{t("eventTechnologies")}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {event.technologies.map((tech, index) => (
+                  {technologies.map((tech, index) => (
                     <Badge key={index} variant="secondary" className="bg-armath-blue/20 text-armath-blue">
                       {tech}
                     </Badge>
@@ -187,14 +197,14 @@ export default function EventDetailPage({ params }: PageProps) {
             )}
 
             {/* Participants */}
-            {event.participants.schools.length > 0 && (
+            {schools.length > 0 && (
               <AnimatedSection className="mb-12 p-6 bg-gray-50 rounded-lg">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <Users className="w-5 h-5" />
-                  Participating Schools
+                  {t("participatingSchools")}
                 </h3>
                 <ul className="space-y-2">
-                  {event.participants.schools.map((school, index) => (
+                  {schools.map((school, index) => (
                     <li key={index} className="text-gray-600 flex items-start gap-2">
                       <span className="text-armath-blue font-bold">•</span>
                       {school}
@@ -208,7 +218,7 @@ export default function EventDetailPage({ params }: PageProps) {
 
         {/* Related Events */}
         <AnimatedSection className="mt-20 pt-12 border-t">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">More Events</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">{t("relatedEvents")}</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {events
               .filter((e) => e.id !== event.id)
@@ -219,7 +229,7 @@ export default function EventDetailPage({ params }: PageProps) {
                     <div className="relative overflow-hidden">
                       <Image
                         src={relatedEvent.image || "/placeholder.svg"}
-                        alt={relatedEvent.title}
+                        alt={language === "hy" ? relatedEvent.titleHy : relatedEvent.title}
                         width={300}
                         height={200}
                         className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
@@ -227,7 +237,7 @@ export default function EventDetailPage({ params }: PageProps) {
                     </div>
                     <CardHeader>
                       <CardTitle className="text-lg group-hover:text-armath-blue transition-colors line-clamp-2">
-                        {relatedEvent.title}
+                        {language === "hy" ? relatedEvent.titleHy : relatedEvent.title}
                       </CardTitle>
                     </CardHeader>
                   </Card>

@@ -86,7 +86,7 @@ export function ContactSection() {
                     {
                       icon: MapPin,
                       label: t("location"),
-                      value: language === "hy" ? "Առափի, Շիրակի մարզ, Հայաստան" : "Arapi, Shirak Province, Armenia",
+                      value: t("fullAddress"),
                     },
                     {
                       icon: Phone,
@@ -127,7 +127,7 @@ export function ContactSection() {
                 <MultimeterWire startX={50} startY={50} endX={200} endY={150} color="#3EC1CF" animated={true} />
                 <div className="text-center mt-8">
                   <p className="text-sm text-gray-500 italic">
-                    {language === "hy" ? "Մեզ հետ կապվելու համար օգտագործեք վերևի կապի միջոցները" : "Use the contact methods above to connect with us"}
+                    {t("contactHint")}
                   </p>
                 </div>
               </div>

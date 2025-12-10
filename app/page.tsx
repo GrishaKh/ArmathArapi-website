@@ -182,7 +182,7 @@ export default function HomePage() {
             >
               <Image
                 src="/logo.png"
-                alt={language === "hy" ? "Արմաթ Առափի լոգո" : "Armath Arapi logo"}
+                alt={t("armathArapi") + " " + t("logo")}
                 fill
                 className="object-contain p-1.5"
                 sizes="48px"
@@ -191,11 +191,9 @@ export default function HomePage() {
             </motion.div>
             <div>
               <h1 className={cn("font-bold text-gray-900", language === "hy" ? "text-lg tracking-tight" : "text-xl")}>
-                {language === "hy" ? "Արմաթ Առափի" : "Armath Arapi"}
+                {t("armathArapi")}
               </h1>
-              <p className="text-sm text-gray-600">
-                {language === "hy" ? "Ճարտարագիտական աշխատանոց" : "Engineering Makerspace"}
-              </p>
+              <p className="text-sm text-gray-600">{t("engineeringMakerspace")}</p>
             </div>
           </motion.div>
           <nav className="hidden lg:flex items-center space-x-4">

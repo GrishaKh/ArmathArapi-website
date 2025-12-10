@@ -27,6 +27,7 @@ export interface ProjectDetailType {
   technologies: {
     name: string
     description: string
+    descriptionHy: string
   }[]
 }
 
@@ -43,7 +44,7 @@ export const projects: ProjectDetailType[] = [
     shortDescriptionHy: "Սարքերի վերահսկում բնական լեզվի միջոցով",
     image: "/ai-device-control-interface.jpg",
     category: "Artificial Intelligence & IoT",
-    categoryHy: "Հարուածական բանականություն և IoT",
+    categoryHy: "Արհեստական բանականություն և իրերի համացանց",
     year: "2023",
     featured: true,
     tools: ["GPT-3.5", "Arduino", "Relays", "Python", "Natural Language Processing"],
@@ -75,18 +76,22 @@ export const projects: ProjectDetailType[] = [
       {
         name: "GPT-3.5",
         description: "Large language model for natural language understanding and command interpretation",
+        descriptionHy: "Բնական լեզվի և հրամանների ընկալման մեծ լեզվական մոդել",
       },
       {
         name: "Arduino",
         description: "Microcontroller platform for relay control and hardware interfacing",
+        descriptionHy: "Միկրոկոնտրոլերային հարթակ ռելեների կառավարման և սարքերի փոխազդեցության համար",
       },
       {
         name: "Relay Control",
         description: "4 relays controlled through Arduino digital outputs based on AI-interpreted commands",
+        descriptionHy: "4 ռելեներ, որոնք կառավարվում են Arduino թվային ելքերով՝ ԱԲ-ի կողմից ընկալված հրամանների հիման վրա",
       },
       {
         name: "Natural Language Processing",
         description: "Processing user input to extract intent and parameters for device control",
+        descriptionHy: "Օգտատիրոջ մուտքային տվյալների մշակում՝ տեքստի իմաստի ու պարամետրերի դուրսբերման համար՝ սարքի կառավարման նպատակով",
       },
     ],
   },
@@ -110,13 +115,13 @@ export const projects: ProjectDetailType[] = [
     toolsHy: ["Scratch 3", "Տվյալների բազայի դիզայն", "Տրամաբանական դարպասներ", "Նմանակացման ալգորիթմներ"],
     impact:
       "Demonstrates the power of transitioning from tool consumer to tool producer. Teachers can use this in classrooms to visually explain logic gates, while students gain confidence that their learning tools can create real, useful applications.",
-    impactHy: "Ցույց տալիս է 'սպառող' -ից 'արտադրող' -ի անցման ուժը: Ուսուչներն այն կարող են օգտագործել դասերում:",
+    impactHy: "Ցույց է տալիս «սպառողից արտադրող» անցման ուժը: Ուսուցիչներն այն կարող են օգտագործել դասերում տրամաբանական փականները վիզուալ բացատրելու համար, իսկ ուսանողները վստահություն են ձեռք բերում, որ իրենց ուսումնական գործիքները կարող են իրական, օգտակար կիրառություններ ստեղծել:",
     challenge:
       "Creating a complex database-like structure within Scratch's limitations while implementing realistic logic gate simulation with iterative algorithms that handle feedback loops and system stabilization.",
-    challengeHy: "Scratch-ի սահմանափակ ներուժի մեջ բարդ տվյալների բազա ստեղծել:",
+    challengeHy: "Scratch-ի սահմանափակ հնարավորությունների սահմաններում ստեղծել բարդ կառուցվածքայնությամբ տվյալների բազա՝ իրականացնելով տրամաբանական դարպասների ռեալիստիկ սիմուլյացիա՝ իտերատիվ ալգորիթմներով, որոնք կառավարում են հետադարձ կապերը և համակարգի կայունացումը:",
     solution:
       "Designed a sophisticated data structure using Scratch lists to store logical elements, ports, and connections. Implemented an iterative calculation algorithm that updates output values based on inputs until the system reaches a stable state.",
-    solutionHy: "Scratch-ի տիրույթներ օգտագործել տվյալների բազայի նմանակացման համար:",
+    solutionHy: "Օգտագործելով Scratch ցուցակները տրամաբանական տարրերի, պորտերի և կապերի պահպանման համար, ստեղծել է բարդ տվյալների կառուցվածք: Իրականացվել է հաշվարկման իտերատիվ ալգորիթմ, որը թարմացնում է ելքային արժեքները՝ հիմնվելով մուտքերի վրա, մինչև համակարգը հասնի կայուն վիճակի:",
     results: [
       "Successfully simulates any combination of logic gates with realistic behavior",
       "Handles complex feedback loops and system stabilization iteratively",
@@ -126,10 +131,10 @@ export const projects: ProjectDetailType[] = [
     ],
     resultsHy: [
       "Հաջողությամբ նմանակում է տրամաբանական դարպասների ցանկացած համակցություն",
-      "Կարողանում է աշխատել բարդ հետադարձ կապերի հետ",
-      "Բաց կոդ՝ ուսանողների համար ներ վերամիջատվի և սովորելու համար",
-      "Ներկայացվել է DigiCode 2025-ում",
-      "Ստեղծվել ինչպես ուսումնական գործիք",
+      "Կարողանում է աշխատել բարդ հետադարձ կապերի դեպքում",
+      "Բաց կոդով նախագիծ՝ հասանելի վերամշակման և ուսուցման համար",
+      "Ներկայացվել է DigiCode 2025-ի հանրապետական փուլում՝ վիրտուալ լաբորատորիա անվանակարգում",
+      "Ստեղծվել է որպես ուսումնական գործիք՝ ոգեշնչելու ուսանողներին, որ ուսումնական գործիքները կարող են դառնալ իրական պրոդուկտներ",
     ],
     studentName: "Olya Khachatryan",
     presentedAt: "DigiCode 2025",
@@ -137,19 +142,23 @@ export const projects: ProjectDetailType[] = [
       {
         name: "Scratch 3",
         description: "Visual programming environment used to build the entire simulation system",
+        descriptionHy: "Վիզուալ ծրագրավորման միջավայր՝ ամբողջ նմանակման համակարգը կառուցելու համար",
       },
       {
         name: "Database Design",
         description: "Data structure modeling with separate lists for elements, ports, inputs, and outputs",
+        descriptionHy: "Տվյալների կառուցվածքի մոդելավորում՝ առանձին ցուցակներով տարրերի, պորտերի, մուտքերի և ելքերի համար",
       },
       {
         name: "Logic Gate Simulation",
         description: "Implementation of AND, OR, NOT, and other fundamental logic gates",
+        descriptionHy: "ԵՎ, ԿԱՄ, ՈՉ և այլ հիմնարար տրամաբանական փականների իրականացում",
       },
       {
         name: "Iterative Algorithms",
         description:
           "Algorithm that calculates values iteratively until the system reaches stable state, handling feedback loops",
+        descriptionHy: "Ալգորիթմ, որը հաշվարկում է արժեքները իտերատիվ եղանակով՝ մինչև համակարգը հասնի կայուն վիճակի, կառավարելով հետադարձ կապերը",
       },
     ],
   },

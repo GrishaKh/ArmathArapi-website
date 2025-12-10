@@ -23,7 +23,7 @@ export function HeroSection() {
       <motion.div style={{ y: heroY, opacity: heroOpacity }} className="container mx-auto px-4 text-center relative z-10">
         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.2 }}>
           <Badge className="mb-4 bg-armath-blue/10 text-armath-blue hover:bg-armath-blue/10 transform hover:scale-105 transition-all duration-200">
-            {language === "hy" ? "Ճարտարագիտություն • Նորարարություն • Համայնք" : "Engineering • Innovation • Community"}
+            {t("heroBadge")}
           </Badge>
         </motion.div>
 
@@ -36,14 +36,14 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          {language === "hy" ? "Արմաթ Առափի" : "Armath Arapi"}
+          {t("armathArapi")}
           <motion.span
             className="text-armath-red block"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            {language === "hy" ? "Ճարտարագիտական աշխատանոց" : "Engineering Makerspace"}
+            {t("engineeringMakerspace")}
           </motion.span>
         </motion.h1>
 
@@ -56,9 +56,7 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          {language === "hy"
-            ? "ԲՏՃՄ աշխատանոց, որտեղ ուսանողները բացահայտում են իրենց տաղանդները և կառուցում իրենց ու համայնքի ապագան"
-            : "STEM education center where students discover their talents and create the future"}
+          {t("heroSubtitle")}
         </motion.p>
 
         <motion.div className="flex flex-col sm:flex-row gap-4 justify-center" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 1 }}>

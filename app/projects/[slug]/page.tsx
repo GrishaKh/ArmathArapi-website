@@ -55,7 +55,7 @@ export default function ProjectDetailPage({ params }: Props) {
               className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden border border-armath-blue/20 bg-white shadow-sm"
               whileHover={{ rotate: 5 }}
             >
-              <Image src="/logo.png" alt="Logo" fill className="object-contain p-1.5" sizes="48px" />
+              <Image src="/logo.png" alt={t("logo")} fill className="object-contain p-1.5" sizes="48px" />
             </motion.div>
           </Link>
           {/* Language Toggle */}
@@ -140,7 +140,9 @@ export default function ProjectDetailPage({ params }: Props) {
                         <CardTitle className="text-lg">{tech.name}</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <CardDescription className="text-base text-gray-600">{tech.description}</CardDescription>
+                        <CardDescription className="text-base text-gray-600">
+                          {language === "hy" ? tech.descriptionHy : tech.description}
+                        </CardDescription>
                       </CardContent>
                     </Card>
                   ))}
@@ -182,14 +184,8 @@ export default function ProjectDetailPage({ params }: Props) {
       {/* CTA Section */}
       <section className="py-20 bg-armath-blue/5">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            {language === "hy" ? "Փորձել նմանատիպ նախագծ" : "Interested in similar projects?"}
-          </h2>
-          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-            {language === "hy"
-              ? "Միացեք մեր ներուժ ունեցող ուսանողների հետ և ստեղծեք ձեր սեփական նախագիծ"
-              : "Join our community and create your own amazing project"}
-          </p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">{t("interestedInSimilar")}</h2>
+          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">{t("joinCommunityCTA")}</p>
           <Button size="lg" className="bg-armath-red hover:bg-armath-red/90">
             {t("joinAsStudent")}
           </Button>

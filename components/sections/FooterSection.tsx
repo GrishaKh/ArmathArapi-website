@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 import type { TranslationKey } from "@/lib/translations"
 
 export function FooterSection() {
-  const { t, language } = useLanguage()
+  const { t } = useLanguage()
   return (
     <motion.footer className="bg-armath-black text-white py-12" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.8 }} viewport={{ once: true }}>
       <div className="container mx-auto px-4">
@@ -17,26 +17,26 @@ export function FooterSection() {
                 <Cog className="w-5 h-5 text-white" />
               </motion.div>
               <div>
-                <h3 className="font-bold">{language === "hy" ? "Արմաթ Առափի" : "Armath Arapi"}</h3>
-                <p className="text-sm text-gray-400">{language === "hy" ? "Ճարտարագիտական լաբորատորիա" : "Engineering Lab"}</p>
+                <h3 className="font-bold">{t("armathArapi")}</h3>
+                <p className="text-sm text-gray-400">{t("engineeringLab")}</p>
               </div>
             </div>
             <p className="text-gray-400 text-sm">
-              {language === "hy" ? "Կերտելով Առափիի ճարտարագետների և ստեղծագործների հաջորդ սերունդը:" : "Empowering the next generation of engineers and makers in Arapi."}
+              {t("footerDescription")}
             </p>
           </AnimatedSection>
 
           {[
             {
-              title: language === "hy" ? "Արագ հղումներ" : "Quick Links",
+              title: t("quickLinks"),
               links: ["aboutUs", "structure", "fieldsOfStudy", "events"] as TranslationKey[],
             },
             {
-              title: language === "hy" ? "Ծրագրեր" : "Programs",
+              title: t("programs"),
               links: ["ourProjects", "joinAsStudent", "supportArmath"] as TranslationKey[],
             },
             {
-              title: language === "hy" ? "Կապ" : "Connect",
+              title: t("connect"),
               links: [] as TranslationKey[],
             },
           ].map((section, index) => (
@@ -54,7 +54,7 @@ export function FooterSection() {
                 </ul>
               ) : (
                 <ul className="space-y-2 text-sm text-gray-400">
-                  <li>{language === "hy" ? "Առափի, Շիրակի մարզ" : "Arapi, Shirak Province"}</li>
+                  <li>{t("address")}</li>
                   <li>+374 XX XXX XXX</li>
                   <li>info@armath-arapi.am</li>
                 </ul>
@@ -68,7 +68,7 @@ export function FooterSection() {
         <AnimatedSection animation="fadeInUp" delay={0.5}>
           <div className="text-center text-sm text-gray-400">
             <p>
-              © 2025 {language === "hy" ? "Առափիի Արմաթ ճարտարագիտական աշխատանոց" : "Armath Arapi Engineering Makerspace"}. {language === "hy" ? " Բոլոր իրավունքները պաշտպանված են:" : " All rights reserved."}
+              © 2025 {t("footerRights")}
             </p>
           </div>
         </AnimatedSection>

@@ -86,6 +86,8 @@ export const translations = {
     supportType: "Type of Support",
 
     // Contact
+    fullAddress: "Arapi, Shirak Province, Armenia",
+    contactHint: "Use the contact methods above to connect with us",
     contactTitle: "Contact Us",
     getInTouch: "Get in Touch",
     location: "Location",
@@ -97,9 +99,26 @@ export const translations = {
     send: "Send",
 
     // Common
+    logo: "Logo",
+    armathArapi: "Armath Arapi",
+    engineeringMakerspace: "Engineering Makerspace",
+    customBuiltRobots: "Custom-built robots",
     learnMore: "Learn More",
+
+    // Hero Section
+    heroBadge: "Engineering • Innovation • Community",
+    heroSubtitle: "STEM education center where students discover their talents and create the future",
     readMore: "Read More",
     close: "Close",
+
+    // Footer
+    engineeringLab: "Engineering Lab",
+    footerDescription: "Empowering the next generation of engineers and makers in Arapi.",
+    quickLinks: "Quick Links",
+    programs: "Programs",
+    connect: "Connect",
+    address: "Arapi, Shirak Province",
+    footerRights: "Armath Arapi Engineering Makerspace. All rights reserved.",
 
     // Form Messages
     submitting: "Submitting...",
@@ -151,6 +170,10 @@ export const translations = {
     eventYear: "Year",
     eventLocation: "Location",
     overview: "Overview",
+
+    // Projects CTA
+    interestedInSimilar: "Interested in similar projects?",
+    joinCommunityCTA: "Join our community and create your own amazing project",
   },
   hy: {
     // Navigation
@@ -229,9 +252,9 @@ export const translations = {
 
     // Support Armath
     supportTitle: "Աջակցեք Արմաթին",
-    supportDescription: "Օգնեք մեզ զարգանալ",
+    supportDescription: "Օգնեք մեզ զարգանալ և աջակցել համայնքի ուսանողներին",
     waysToSupport: "Աջակցության ձևերը",
-    hostWorkshop: "Կազմակերպել արվեստանոց կամ սեմինար",
+    hostWorkshop: "Կազմակերպել աշխատարան կամ սեմինար",
     donateEquipment: "Նվիրաբերել սարքավորումներ կամ գործիքներ",
     financialSupport: "Տրամադրել ֆինանսական աջակցություն",
     mentoring: "Տրամադրել մենթորություն կամ տեխնիկական խորհրդատվություն",
@@ -239,6 +262,8 @@ export const translations = {
     supportType: "Աջակցության տեսակը",
 
     // Contact
+    fullAddress: "Առափի, Շիրակի մարզ, Հայաստան",
+    contactHint: "Մեզ հետ կապվելու համար օգտագործեք վերևում նշված կապի միջոցները",
     contactTitle: "Կապվեք մեզ հետ",
     getInTouch: "Կապվեք մեզ հետ",
     location: "Գտնվելու վայրը",
@@ -250,9 +275,26 @@ export const translations = {
     send: "Ուղարկել",
 
     // Common
+    logo: "Պատկերանշան",
+    armathArapi: "Արմաթ Առափի",
+    engineeringMakerspace: "Ճարտարագիտական աշխատանոց",
+    customBuiltRobots: "Ինքնաշեն ռոբոտներ",
     learnMore: "Իմացեք ավելին",
+
+    // Hero Section
+    heroBadge: "Ճարտարագիտություն • Նորարարություն • Համայնք",
+    heroSubtitle: "ԲՏՃՄ աշխատանոց, որտեղ ուսանողները բացահայտում են իրենց տաղանդները և կառուցում իրենց ու համայնքի ապագան",
     readMore: "Կարդալ ավելին",
     close: "Փակել",
+
+    // Footer
+    engineeringLab: "Ճարտարագիտական աշխատանոց",
+    footerDescription: "Կերտելով Առափիի ճարտարագետների և ստեղծագործների հաջորդ սերունդը:",
+    quickLinks: "Արագ հղումներ",
+    programs: "Ծրագրեր",
+    connect: "Կապ",
+    address: "Առափի, Շիրակի մարզ",
+    footerRights: "Առափիի Արմաթ ճարտարագիտական աշխատանոց: Բոլոր իրավունքները պաշտպանված են:",
 
     // Form Messages
     submitting: "Ուղարկվում է...",
@@ -266,11 +308,11 @@ export const translations = {
     errorRequired: "Այս դաշտը պարտադիր է",
     errorSelectAge: "Խնդրում ենք ընտրել տարիքը",
     errorConnection: "Կապի խափանում: Խնդրում ենք փորձել կրկին:",
-    studentNamePlaceholder: "Ուսանողի անունը",
+    studentNamePlaceholder: "Ուսանողի անուն, ազգանուն",
     selectAgePlaceholder: "Ընտրեք տարիքը",
     yearsOld: "տարեկան",
     parentContactPlaceholder: "Ծնողի հեռախոսահամար",
-    interestsPlaceholder: "Ինչ ոլորտներն են հետաքրքրում...",
+    interestsPlaceholder: "Ո՞ր ոլորտներն են ձեզ հետաքրքրում...",
     yourName: "Ձեր անունը",
     yourEmail: "Ձեր էլ. փոստը",
     yourMessage: "Ձեր հաղորդագրությունը...",
@@ -282,7 +324,7 @@ export const translations = {
     solution: "Լուծում",
     results: "Արդյունքներ",
     technologies: "Օգտագործված տեխնոլոգիաներ",
-    studentCreator: "Ուսանողի ստեղծում",
+    studentCreator: "Նախագծի հեղինակ",
     presentedAt: "Ներկայացվել է",
     backToProjects: "Վերադառնալ նախագծերին",
     keyHighlights: "Հիմնական առանձնահատկությունները",
@@ -296,14 +338,18 @@ export const translations = {
     eventAchievements: "Հիմնական նվաճումները",
     eventResults: "Արդյունքները",
     eventTechnologies: "Տեխնոլոգիաներ և գործիքներ",
-    eventHighlights: "Հատկանիշներ",
+    eventHighlights: "Կարևոր դրվագներ",
     participatingSchools: "Մասնակից դպրոցներ",
     relatedEvents: "Այլ միջոցառումներ",
     backToEvents: "Վերադառնալ միջոցառումներին",
     eventCategory: "Կատեգորիա",
     eventYear: "Տարի",
     eventLocation: "Գտնվելու վայրը",
-    overview: "Ամփոփ",
+    overview: "Ամփոփում",
+
+    // Projects CTA
+    interestedInSimilar: "Հետաքրքրվա՞ծ եք նմանատիպ նախագծերով",
+    joinCommunityCTA: "Միացեք մեր համայնքին և ստեղծեք ձեր սեփական հրաշալի նախագիծը",
   },
 }
 
