@@ -55,7 +55,7 @@ export function FooterSection() {
               ) : (
                 <ul className="space-y-2 text-sm text-gray-400">
                   <li>{t("address")}</li>
-                  <li>+374 XX XXX XXX</li>
+                  <li>+374 77 44 18 40</li>
                   <li>info@armath-arapi.am</li>
                 </ul>
               )}

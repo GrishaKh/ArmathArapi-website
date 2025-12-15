@@ -9,50 +9,15 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { projects } from "@/lib/projects"
 import { cn } from "@/lib/utils"
-import { LanguageToggle } from "@/components/language-toggle"
+import { Header } from "@/components/Header"
 
 export default function ProjectsPage() {
   const { t, language } = useLanguage()
 
-  const categories = Array.from(new Set(projects.map((p) => (language === "hy" ? p.categoryHy : p.category))))
-
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <motion.header
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="sticky top-0 z-50 border-b bg-white/30 backdrop-blur-xl supports-[backdrop-filter]:bg-white/20"
-      >
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-            <motion.div
-              className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden border border-armath-blue/20 bg-white shadow-sm"
-              whileHover={{ rotate: 5 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Image
-                src="/logo.png"
-                alt={language === "hy" ? "Արմաթ Առափի լոգո" : "Armath Arapi logo"}
-                fill
-                className="object-contain p-1.5"
-                sizes="48px"
-              />
-            </motion.div>
-            <div>
-              <h1 className="font-bold text-gray-900 text-lg sm:text-xl">
-                {language === "hy" ? "Արմաթ Առափի" : "Armath Arapi"}
-              </h1>
-              <p className="text-sm text-gray-600">{t("ourProjects")}</p>
-            </div>
-          </Link>
-          {/* Language Toggle */}
-          <LanguageToggle />
-        </div>
-      </motion.header>
+      <Header subtitle={t("ourProjects")} showNav={false} />
 
-      {/* Hero Section */}
       <section className="py-20 bg-gradient-to-br from-armath-blue/5 to-transparent">
         <div className="container mx-auto px-4">
           <AnimatedSection className="text-center mb-16">
@@ -64,7 +29,6 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      {/* Projects Grid */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

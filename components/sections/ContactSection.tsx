@@ -91,7 +91,7 @@ export function ContactSection() {
                     {
                       icon: Phone,
                       label: t("phone"),
-                      value: "+374 XX XXX XXX",
+                      value: "+374 77 44 18 40",
                     },
                     {
                       icon: Mail,

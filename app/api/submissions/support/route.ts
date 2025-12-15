@@ -3,33 +3,12 @@ import { supabaseAdmin, isSupabaseConfigured } from '@/lib/supabase'
 import { supportRequestSchema } from '@/lib/validations'
 import { sendAdminNotification, supportRequestEmail } from '@/lib/email'
 import { ApiResponse } from '@/types/submissions'
-
-// Rate limiting
-const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
-const RATE_LIMIT = 5
-const RATE_WINDOW = 60 * 60 * 1000
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now()
-  const record = rateLimitMap.get(ip)
-  
-  if (!record || now > record.resetTime) {
-    rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_WINDOW })
-    return true
-  }
-  
-  if (record.count >= RATE_LIMIT) {
-    return false
-  }
-  
-  record.count++
-  return true
-}
+import { rateLimiter } from '@/lib/rate-limit'
 
 export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse>> {
   try {
     const ip = request.headers.get('x-forwarded-for') || 'unknown'
-    if (!checkRateLimit(ip)) {
+    if (!rateLimiter.check(ip)) {
       return NextResponse.json(
         { success: false, message: 'Too many requests. Please try again later.' },
         { status: 429 }
