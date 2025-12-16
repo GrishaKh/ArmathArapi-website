@@ -10,6 +10,15 @@ export const translations = {
     supportArmath: "Support Armath",
     contact: "Contact",
 
+    // Team
+    roleLeadCoach: "Lead Coach",
+    roleCoach: "Coach",
+    roleSupporter: "Supporter",
+    detailsLead: "Leads the lab, coordinates projects, and mentors students in advanced engineering concepts.",
+    detailsCoach: "Assistant to the Lead Coach; Beginners' coach.",
+    contributionScientific: "Scientific researcher; Provided equipment",
+    contributionWeb: "Volunteering as website developer",
+
     // About Us
     vision: "Vision",
     visionText:
@@ -195,7 +204,7 @@ export const translations = {
       "Ծառայել «Արմաթ»-ի առաքելությանը՝ համայնքում և մարզում նպաստելով նորարար և համայնքին նվիրված տեխնոլոգիական սերնդի կայացմանը:",
     whatWeDo: "Ինչ ենք անում",
     whatWeDoText:
-      "Մենք նպատակ ունենք ստեղծել ԲՏՃՄ փորձարարական միջավայր, որտեղ ուսանողները կարող են՝ բացահայտել իրենց տաղանդները, սիրահարվել գիտությանն ու մաթեմատիկային, կողմնորոշվել ապագա կարիերայի հարցում, իրականացնել իրենց գաղափարները և կայանալ որպես իրենց համայնքի և երկրի հոգատար ու պատասխանատու քաղաքացիներ:",
+      "Մենք ստեղծում ենք ԲՏՃՄ փորձարարական միջավայր, որտեղ ուսանողները կարող են բացահայտել իրենց տաղանդները, սիրահարվել գիտությանն ու մաթեմատիկային, կողմնորոշվել ապագա կարիերայի հարցում, իրականացնել իրենց գաղափարները և կայանալ որպես իրենց համայնքի և երկրի հոգատար ու պատասխանատու քաղաքացիներ:",
 
     // Structure
     ourAtom: "Մեր ատոմը",
@@ -214,10 +223,10 @@ export const translations = {
     modeling3d: "3D մոդելավորում",
     printing3d: "3D տպագրություն",
     vectorGraphics: "Վեկտորային գրաֆիկա",
-    cncLaser: "CNC / Լազերային փորագրման գործիքներ",
+    cncLaser: "CNC / Լազերային փորագրություն",
     robotics: "Ռոբոտաշինություն",
     otherTools: "Այլ գործիքներ և ոլորտներ",
-    openToNew: "Վերը նշվածներից բացի մենք բաց ենք նաև նոր գործիքների և ուղղությունների համար:",
+    openToNew: "Բացի վերը նշվածներից, մենք պատրաստ ենք ուսումնասիրել նաև նոր գործիքներ և ուղղություններ:",
     beginner: "Սկսնակ",
     next: "Հաջորդ",
     advanced: "Առաջադեմ",
@@ -294,7 +303,7 @@ export const translations = {
     programs: "Ծրագրեր",
     connect: "Կապ",
     address: "Առափի, Շիրակի մարզ",
-    footerRights: "Առափիի Արմաթ ճարտարագիտական աշխատանոց: Բոլոր իրավունքները պաշտպանված են:",
+    footerRights: "Առափիի «Արմաթ» ճարտարագիտական աշխատանոց: Բոլոր իրավունքները պաշտպանված են:",
 
     // Form Messages
     submitting: "Ուղարկվում է...",
@@ -355,3 +364,4 @@ export const translations = {
 
 export type Language = keyof typeof translations
 export type TranslationKey = keyof typeof translations.en
+                                                                                                                                                                                       

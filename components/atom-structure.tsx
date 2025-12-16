@@ -7,6 +7,8 @@ import { createPortal } from "react-dom"
 import { Card, CardContent } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
 
+import { type TranslationKey } from "@/lib/translations"
+
 // --- Tooltip Portal Context ---
 // This allows tooltips to render outside the stacking context
 const TooltipContainerContext = createContext<HTMLDivElement | null>(null)
@@ -21,42 +23,42 @@ interface TeamMember {
   details?: string
 }
 
-// --- Sample Data (unchanged, but with ids) ---
-const teamMembers: TeamMember[] = [
+// --- Sample Data ---
+const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
   {
     id: "grisha-kh",
     name: "Grisha Khachatryan",
-    role: "Lead Coach",
+    role: t("roleLeadCoach"),
     isCore: true,
-    details: "Leads the lab, coordinates projects, and mentors students in advanced engineering concepts.",
+    details: t("detailsLead"),
   },
   {
     id: "olya-kh",
     name: "Olya Khachatryan",
-    role: "Coach",
+    role: t("roleCoach"),
     isCore: true,
-    details: "Assistant to the Lead Coach; Beginners' coach.",
+    details: t("detailsCoach"),
   },
   {
     id: "narek-sar",
     name: "Narek Saroyan",
-    role: "Coach",
+    role: t("roleCoach"),
     isCore: true,
-    details: "Assistant to the Lead Coach; Beginners' coach.",
+    details: t("detailsCoach"),
   },
   {
     id: "edgar-har",
     name: "Edgar Harutyunyan",
-    role: "Supporter",
+    role: t("roleSupporter"),
     isCore: false,
-    contribution: "Scientific researcher; Provided equipment",
+    contribution: t("contributionScientific"),
   },
   {
     id: "narek-har",
     name: "Narek Harutyunyan",
-    role: "Supporter",
+    role: t("roleSupporter"),
     isCore: false,
-    contribution: "Volunteering as website developer",
+    contribution: t("contributionWeb"),
   },
 ]
 
