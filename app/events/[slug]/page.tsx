@@ -54,14 +54,18 @@ export default function EventDetailPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen pt-24 pb-20">
+    <main className="min-h-screen">
       <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="fixed top-0 z-50 w-full border-b bg-white/30 backdrop-blur-xl supports-[backdrop-filter]:bg-white/20"
+        className="sticky top-0 z-50 border-b bg-white/30 backdrop-blur-xl supports-[backdrop-filter]:bg-white/20"
       >
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/events" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <ArrowLeft className="w-5 h-5" />
+            <span className="text-sm font-medium">{t("backToEvents")}</span>
+          </Link>
           <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             <motion.div
               className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden border border-armath-blue/20 bg-white shadow-sm"
@@ -75,16 +79,7 @@ export default function EventDetailPage({ params }: PageProps) {
         </div>
       </motion.header>
 
-      <div className="container mx-auto px-4">
-        {/* Back Button */}
-        <AnimatedSection>
-          <Link href="/events">
-            <Button variant="ghost" className="gap-2 mb-8">
-              <ArrowLeft className="w-4 h-4" />
-              {t("backToEvents")}
-            </Button>
-          </Link>
-        </AnimatedSection>
+      <div className="container mx-auto px-4 py-8">
 
         {/* Hero Image */}
         <AnimatedSection className="mb-12">

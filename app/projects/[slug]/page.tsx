@@ -38,7 +38,6 @@ export default function ProjectDetailPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
       <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -54,11 +53,11 @@ export default function ProjectDetailPage({ params }: Props) {
             <motion.div
               className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden border border-armath-blue/20 bg-white shadow-sm"
               whileHover={{ rotate: 5 }}
+              transition={{ duration: 0.3 }}
             >
               <Image src="/logo.png" alt={t("logo")} fill className="object-contain p-1.5" sizes="48px" />
             </motion.div>
           </Link>
-          {/* Language Toggle */}
           <LanguageToggle />
         </div>
       </motion.header>
