@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     description: "A state-of-the-art makerspace where engineers, makers, and innovators create and learn.",
     type: "website",
   },
+    generator: 'v0.app'
 }
 
 export default function RootLayout({
