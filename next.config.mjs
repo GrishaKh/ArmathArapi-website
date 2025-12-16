@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  poweredByHeader: false,
   images: {
     remotePatterns: [
       {
@@ -7,6 +9,9 @@ const nextConfig = {
         hostname: '**',
       },
     ],
+  },
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
 }
 
