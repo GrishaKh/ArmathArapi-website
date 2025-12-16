@@ -1,5 +1,6 @@
 "use client"
 
+import { use } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AnimatedSection } from "@/components/animated-section"
@@ -15,14 +16,13 @@ import { cn } from "@/lib/utils"
 import { LanguageToggle } from "@/components/language-toggle"
 
 interface Props {
-  params: {
-    slug: string
-  }
+  params: Promise<{ slug: string }>
 }
 
 export default function ProjectDetailPage({ params }: Props) {
+  const { slug } = use(params)
   const { t, language } = useLanguage()
-  const project = projects.find((p) => p.slug === params.slug)
+  const project = projects.find((p) => p.slug === slug)
 
   if (!project) {
     notFound()

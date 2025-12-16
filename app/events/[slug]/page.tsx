@@ -1,5 +1,6 @@
 "use client"
 
+import { use } from "react"
 import { CardTitle } from "@/components/ui/card"
 import { CardHeader } from "@/components/ui/card"
 import { Card } from "@/components/ui/card"
@@ -16,14 +17,13 @@ import { LanguageToggle } from "@/components/language-toggle"
 import { motion } from "framer-motion"
 
 interface PageProps {
-  params: {
-    slug: string
-  }
+  params: Promise<{ slug: string }>
 }
 
 export default function EventDetailPage({ params }: PageProps) {
+  const { slug } = use(params)
   const { t, language } = useLanguage()
-  const event = getEventBySlug(params.slug)
+  const event = getEventBySlug(slug)
 
   if (!event) {
     notFound()
