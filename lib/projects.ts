@@ -39,25 +39,25 @@ export const projects: ProjectDetailType[] = [
     titleHy: "TalkFreely",
     description:
       "An AI-powered natural language interface for controlling physical devices and systems using conversational commands.",
-    descriptionHy: "Իսկական բառերով սարքեր վերահսկելու համակարգ՝ GPT-3.5 լեզվական մոդելի հիման վրա",
+    descriptionHy: "Բնական խոսքով սարքեր կառավարելու համակարգ՝ GPT-3.5 լեզվական մոդելի հիման վրա",
     shortDescription: "Control devices using natural language and AI",
-    shortDescriptionHy: "Սարքերի վերահսկում բնական լեզվի միջոցով",
+    shortDescriptionHy: "Սարքերի կառավարում բնական լեզվի միջոցով",
     image: "/ai-device-control-interface.jpg",
     category: "Artificial Intelligence & IoT",
     categoryHy: "Արհեստական բանականություն և իրերի համացանց",
     year: "2023",
     featured: true,
     tools: ["GPT-3.5", "Arduino", "Relays", "Python", "Natural Language Processing"],
-    toolsHy: ["GPT-3.5", "Arduino", "Relay", "Python", "Natural Language Processing"],
+    toolsHy: ["GPT-3.5", "Arduino", "Ռելե", "Python", "Բնական լեզվի մշակում"],
     impact:
       "Demonstrated the practical application of AI in device control, pioneering a new level of human-device interaction through conversational interfaces.",
-    impactHy: "Ցույց տվեց AI-ի գործնական կիրառումը սարքերի վերահսկման ժամանակ",
+    impactHy: "Ցույց տվեց ԱԲ-ի գործնական կիրառումը սարքերի կառավարման գործում",
     challenge:
       "Creating a system that understands natural language commands with various phrasings and contexts while reliably controlling physical relay hardware.",
-    challengeHy: "Ստեղծել համակարգ, որը հասկանա բազմաթիվ ձևերով արտահայտված հրամանները",
+    challengeHy: "Ստեղծել համակարգ, որը կհասկանա բազմաթիվ ձևերով արտահայտված հրամանները",
     solution:
       "Integrated GPT-3.5 API with Arduino relay control to create a bidirectional communication system that interprets user commands and executes physical actions.",
-    solutionHy: "Ինտեգրեցինք GPT-3.5-ը Arduino relay վերահսկման հետ",
+    solutionHy: "Ինտեգրեցինք GPT-3.5-ը Arduino ռելեների կառավարման հետ",
     results: [
       "Successfully controlled 4 relay outputs with natural language commands",
       "System understood context-based commands like 'turn off all' or 'toggle the last connected relay'",
@@ -65,7 +65,7 @@ export const projects: ProjectDetailType[] = [
       "Presented at DigiCode 2023 to showcase AI capabilities in device automation",
     ],
     resultsHy: [
-      "4 relay-ի հաջող վերահսկում բնական լեզվի միջոցով",
+      "4 ռելեների հաջող կառավարում բնական լեզվի միջոցով",
       "Համակարգը հասկանում էր համատեքստային հրամանները",
       "Ստեղծվեց անբաժանելի երկխոսություն համակարգի հետ",
       "Ներկայացվել է DigiCode 2023-ում",
@@ -115,10 +115,10 @@ export const projects: ProjectDetailType[] = [
     toolsHy: ["Scratch 3", "Տվյալների բազայի դիզայն", "Տրամաբանական դարպասներ", "Նմանակացման ալգորիթմներ"],
     impact:
       "Demonstrates the power of transitioning from tool consumer to tool producer. Teachers can use this in classrooms to visually explain logic gates, while students gain confidence that their learning tools can create real, useful applications.",
-    impactHy: "Ցույց է տալիս «սպառողից արտադրող» անցման ուժը: Ուսուցիչներն այն կարող են օգտագործել դասերում տրամաբանական փականները վիզուալ բացատրելու համար, իսկ ուսանողները վստահություն են ձեռք բերում, որ իրենց ուսումնական գործիքները կարող են իրական, օգտակար կիրառություններ ստեղծել:",
+    impactHy: "Ցույց է տալիս «սպառողից դեպի ստեղծող» անցման ուժը: Ուսուցիչներն այն կարող են օգտագործել դասերում տրամաբանական փականները վիզուալ բացատրելու համար, իսկ ուսանողները վստահություն են ձեռք բերում, որ իրենց ուսումնական գործիքները կարող են իրական, օգտակար կիրառություններ ստեղծել:",
     challenge:
       "Creating a complex database-like structure within Scratch's limitations while implementing realistic logic gate simulation with iterative algorithms that handle feedback loops and system stabilization.",
-    challengeHy: "Scratch-ի սահմանափակ հնարավորությունների սահմաններում ստեղծել բարդ կառուցվածքայնությամբ տվյալների բազա՝ իրականացնելով տրամաբանական դարպասների ռեալիստիկ սիմուլյացիա՝ իտերատիվ ալգորիթմներով, որոնք կառավարում են հետադարձ կապերը և համակարգի կայունացումը:",
+    challengeHy: "Scratch-ի սահմանափակ հնարավորությունների սահմաններում ստեղծել բարդ կառուցվածքով տվյալների բազա՝ իրականացնելով տրամաբանական փականների ռեալիստիկ սիմուլյացիա՝ իտերատիվ ալգորիթմներով, որոնք կառավարում են հետադարձ կապերը և համակարգի կայունացումը:",
     solution:
       "Designed a sophisticated data structure using Scratch lists to store logical elements, ports, and connections. Implemented an iterative calculation algorithm that updates output values based on inputs until the system reaches a stable state.",
     solutionHy: "Օգտագործելով Scratch ցուցակները տրամաբանական տարրերի, պորտերի և կապերի պահպանման համար, ստեղծել է բարդ տվյալների կառուցվածք: Իրականացվել է հաշվարկման իտերատիվ ալգորիթմ, որը թարմացնում է ելքային արժեքները՝ հիմնվելով մուտքերի վրա, մինչև համակարգը հասնի կայուն վիճակի:",
@@ -130,10 +130,10 @@ export const projects: ProjectDetailType[] = [
       "Created as educational tool to inspire students that learning tools can become real products",
     ],
     resultsHy: [
-      "Հաջողությամբ նմանակում է տրամաբանական դարպասների ցանկացած համակցություն",
+      "Հաջողությամբ նմանակում է տրամաբանական փականների ցանկացած համակցություն",
       "Կարողանում է աշխատել բարդ հետադարձ կապերի դեպքում",
       "Բաց կոդով նախագիծ՝ հասանելի վերամշակման և ուսուցման համար",
-      "Ներկայացվել է DigiCode 2025-ի հանրապետական փուլում՝ վիրտուալ լաբորատորիա անվանակարգում",
+      "Ներկայացվել է DigiCode 2025-ի հանրապետական փուլում՝ «Վիրտուալ լաբորատորիա» անվանակարգում",
       "Ստեղծվել է որպես ուսումնական գործիք՝ ոգեշնչելու ուսանողներին, որ ուսումնական գործիքները կարող են դառնալ իրական պրոդուկտներ",
     ],
     studentName: "Olya Khachatryan",

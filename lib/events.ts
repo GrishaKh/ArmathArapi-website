@@ -250,11 +250,11 @@ export const events: Event[] = [
     id: "digicamp-2022",
     slug: "digicamp-2022",
     title: "DigiCamp 2022: Mind-Culture-Physical Education Triathlon",
-    titleHy: "DigiCamp 2022: Միտք-Մշակույթ-Ֆիզիկական կրթություն եռամրցաշար",
+    titleHy: "DigiCamp 2022: Միտք-Մշակույթ-Սպորտ եռամարտ",
     description:
       "An immersive triathlon camp combining digital innovation, cultural exploration, and physical education in the mountains of Dilijan",
     descriptionHy:
-      "Եռամրցաշար ճամբար Դիլիջանի լեռներում, որը համատեղում է թվային նորարարությունը, մշակութային բացահայտումները և ֆիզիկական կրթությունը",
+      "Եռամարտ ճամբար Դիլիջանի լեռներում, որը համատեղում է թվային նորարարությունը, մշակութային բացահայտումները և սպորտը",
     year: 2022,
     date: "July 2022",
     location: "Dilijan, Armenia",
@@ -298,7 +298,7 @@ export const events: Event[] = [
       "Partnership with prestigious institutions (UATE and Goethe Center)",
     ],
     highlightsHy: [
-      "Եռամարտի եզակի ձևաչափ, որը համատեղում է երեք կրթական հիմնասյուներ՝ միտք, մշակույթ և ֆիզիկական կրթություն",
+      "Եռամրցաշարի եզակի ձևաչափ, որը համատեղում է երեք կրթական հիմնասյուներ՝ միտք, մշակույթ և սպորտ",
       "Համագործակցային մասնակցություն երեք դպրոցներից",
       "Գործընկերություն հեղինակավոր հաստատությունների հետ",
     ],
