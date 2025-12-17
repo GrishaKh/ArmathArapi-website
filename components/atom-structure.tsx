@@ -130,7 +130,7 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
       if (!anchorRef.current || !container) return
       const rect = anchorRef.current.getBoundingClientRect()
       const containerRect = container.getBoundingClientRect()
-      
+
       setPosition({
         x: rect.left + rect.width / 2 - containerRect.left,
         y: rect.top - containerRect.top,
@@ -209,7 +209,7 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
   return (
     <div
       className="absolute left-1/2 top-1/2"
-      style={{ 
+      style={{
         transform: `translate(-50%, -50%) rotate(${angleDeg}deg)`,
         zIndex: isActive ? 50 : 1,
       }}
@@ -239,7 +239,7 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
             </div>
           </div>
         </motion.button>
-        
+
         <FloatingTooltip isVisible={isActive} anchorRef={buttonRef} id={tipId}>
           <Card className="shadow-xl border-armath-blue/20 w-max max-w-[200px] sm:max-w-xs">
             <CardContent className="p-4 text-center">
@@ -263,22 +263,22 @@ const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setA
   }
 
   const count = coreMembers.length
-  
+
   // Calculate dot size - smaller minimum for mobile, scales with diameter
   const dotSize = Math.round(Math.max(20, Math.min(32, diameter * 0.18)))
-  
+
   // Calculate minimum orbit radius needed to prevent overlap
   // For n items evenly spaced on a circle, the minimum radius to avoid overlap is:
   // r >= dotSize / (2 * sin(π / n))
   // We use 0.75 multiplier to add extra breathing room between elements
-  const minSafeRadius = count > 1 
-    ? (dotSize * 0.75) / Math.sin(Math.PI / count) 
+  const minSafeRadius = count > 1
+    ? (dotSize * 0.75) / Math.sin(Math.PI / count)
     : 0
-  
+
   // Available radius from nucleus edge
   const padding = 6
   const maxRadius = diameter / 2 - dotSize / 2 - padding
-  
+
   // Use the larger of minimum safe radius or 70% of max, capped at max
   const orbitRadius = Math.min(maxRadius, Math.max(minSafeRadius, maxRadius * 0.7))
 
@@ -361,7 +361,7 @@ const Electron: React.FC<ElectronProps> = ({
   return (
     <motion.div
       className="absolute left-1/2 top-1/2"
-      style={{ 
+      style={{
         transform: "translate(-50%, -50%)",
         zIndex: isActive ? 40 : 15, // Lift active electron above orbits and other electrons
       }}
@@ -396,7 +396,7 @@ const Electron: React.FC<ElectronProps> = ({
             </div>
           </motion.div>
         </motion.button>
-        
+
         <FloatingTooltip isVisible={isActive} anchorRef={buttonRef} id={tipId}>
           <Card className="min-w-max max-w-[200px] sm:max-w-none border-armath-red/20 bg-white shadow-xl">
             <CardContent className="p-3 text-center">
@@ -444,13 +444,13 @@ export function AtomStructure() {
 
   const isSmall = shortest < 360
   const isTiny = shortest < 280
-  
+
   // Nucleus needs to be larger on mobile to fit core members without overlap
   const nucleusDiameter = Math.max(
-    MIN_NUCLEUS_DIAMETER, 
+    MIN_NUCLEUS_DIAMETER,
     shortest * (isTiny ? 0.42 : isSmall ? 0.38 : 0.28)
   )
-  
+
   // Adjust orbit radii to accommodate larger nucleus on mobile
   const innerOrbit = Math.max(nucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER, baseRadius * (isTiny ? 0.58 : isSmall ? 0.52 : 0.45))
   const outerOrbit = Math.max(nucleusDiameter * 1.25, baseRadius * (isTiny ? 0.82 : isSmall ? 0.76 : 0.62))
@@ -460,6 +460,8 @@ export function AtomStructure() {
     { radius: outerOrbit, duration: 25 },
   ]
 
+  const { t } = useLanguage()
+  const teamMembers = useMemo(() => getTeamMembers(t), [t])
   const coreMembers = teamMembers.filter((m) => m.isCore)
   const supporters = teamMembers.filter((m) => !m.isCore)
 
@@ -472,8 +474,8 @@ export function AtomStructure() {
           className="relative mx-auto flex h-[clamp(20rem,65vw,28rem)] max-w-full items-center justify-center touch-pan-y"
         >
           {/* Tooltip container - renders tooltips above everything */}
-          <div 
-            ref={tooltipContainerRef} 
+          <div
+            ref={tooltipContainerRef}
             className="absolute inset-0 pointer-events-none z-[9999]"
             aria-hidden="true"
           />
