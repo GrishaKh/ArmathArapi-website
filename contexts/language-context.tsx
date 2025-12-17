@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
-import { translations, type Language, type TranslationKey } from "@/lib/translations"
+import { translations, type Language, type TranslationKey, type TranslationData } from "@/lib/translations"
 
 interface LanguageContextType {
   language: Language
@@ -28,7 +28,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }
 
   const t = (key: TranslationKey): string => {
-    return translations[language][key] || translations.en[key] || key
+    const currentTranslations = translations[language] as TranslationData
+    return currentTranslations[key] || translations.en[key] || key
   }
 
   return (

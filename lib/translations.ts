@@ -195,6 +195,15 @@ export const translations = {
     supportArmath: "Աջակցեք Արմաթին",
     contact: "Կապ",
 
+    // Team
+    roleLeadCoach: "Գլխավոր խմբավար",
+    roleCoach: "Խմբավար",
+    roleSupporter: "Աջակից",
+    detailsLead: "Ղեկավարում է աշխատանոցը, համակարգում է նախագծերը և ուղղորդում ուսանողներին ճարտարագիտական բարդ հասկացություններում:",
+    detailsCoach: "Գլխավոր խմբավարի օգնական, սկսնակների խմբավար:",
+    contributionScientific: "Գիտական հետազոտող, տրամադրել է սարքավորումներ",
+    contributionWeb: "Կամավորական աշխատանք որպես վեբ կայքի մշակող",
+
     // About Us
     vision: "Տեսլական",
     visionText:
@@ -363,4 +372,5 @@ export const translations = {
 }
 
 export type Language = keyof typeof translations
-export type TranslationKey = keyof typeof translations.en
+export type TranslationData = (typeof translations)["en"]
+export type TranslationKey = keyof TranslationData
