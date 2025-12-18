@@ -43,21 +43,21 @@ export function EventsSection() {
                   <div className="relative overflow-hidden">
                     <Image
                       src={event.image || "/placeholder.svg"}
-                      alt={event.title}
+                      alt={language === "hy" ? event.titleHy : event.title}
                       width={400}
                       height={250}
                       className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     {/* Gradient overlay on hover */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    
+
                     {/* Category & Year badges */}
                     <div className="absolute top-4 right-4 flex flex-col gap-2">
                       <Badge className={`${categoryColors[event.category]} text-white shadow-lg`}>
                         {getCategoryName(event.category)}
                       </Badge>
                     </div>
-                    
+
                     {/* Year badge */}
                     <div className="absolute top-4 left-4">
                       <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm text-gray-700 shadow-lg">
@@ -66,28 +66,32 @@ export function EventsSection() {
                       </Badge>
                     </div>
                   </div>
-                  
+
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg group-hover:text-armath-blue transition-colors line-clamp-2">
-                      {event.title}
+                      {language === "hy" ? event.titleHy : event.title}
                     </CardTitle>
                   </CardHeader>
-                  
+
                   <CardContent className="space-y-3">
-                    <p className="text-gray-600 text-sm line-clamp-2">{event.description}</p>
-                    
+                    <p className="text-gray-600 text-sm line-clamp-2">
+                      {language === "hy" ? event.descriptionHy : event.description}
+                    </p>
+
                     {/* Location */}
                     <div className="flex items-center text-sm text-gray-500 gap-1">
                       <MapPin className="w-4 h-4 flex-shrink-0" />
-                      <span className="truncate">{event.location}</span>
+                      <span className="truncate">
+                        {language === "hy" ? event.locationHy : event.location}
+                      </span>
                     </div>
-                    
+
                     {/* Learn More link */}
-                    <motion.div 
+                    <motion.div
                       className="flex items-center text-armath-blue font-semibold text-sm gap-1 pt-2"
                       whileHover={{ x: 4 }}
                     >
-                      {t("learnMore")} 
+                      {t("learnMore")}
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </motion.div>
                   </CardContent>

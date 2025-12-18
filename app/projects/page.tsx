@@ -47,7 +47,7 @@ export default function ProjectsPage() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       {project.featured && (
                         <div className="absolute top-4 right-4">
-                          <Badge className="bg-armath-red text-white">Featured</Badge>
+                          <Badge className="bg-armath-red text-white">{t("featured")}</Badge>
                         </div>
                       )}
                     </div>

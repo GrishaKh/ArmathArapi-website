@@ -11,7 +11,7 @@ import { Calendar, MapPin } from "lucide-react"
 import { Header } from "@/components/Header"
 
 export default function EventsPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
 
   const categoryColors: Record<string, string> = {
     competition: "bg-armath-red",
@@ -26,9 +26,9 @@ export default function EventsPage() {
 
       <div className="container mx-auto px-4 pt-8">
         <AnimatedSection className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">Events & Achievements</h1>
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">{t("eventsAndAchievements")}</h1>
           <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-            Explore our participation in competitions, workshops, and educational programs that shaped our community.
+            {t("eventsDescriptionLong")}
           </p>
         </AnimatedSection>
 
@@ -40,7 +40,7 @@ export default function EventsPage() {
                   <div className="relative overflow-hidden">
                     <Image
                       src={event.image || "/placeholder.svg?height=200&width=300"}
-                      alt={event.title}
+                      alt={language === "hy" ? event.titleHy : event.title}
                       width={300}
                       height={200}
                       className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
@@ -54,14 +54,16 @@ export default function EventsPage() {
                   </div>
                   <CardHeader>
                     <CardTitle className="text-lg group-hover:text-armath-blue transition-colors line-clamp-2">
-                      {event.title}
+                      {language === "hy" ? event.titleHy : event.title}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-600 text-sm line-clamp-3">{event.description}</p>
+                    <p className="text-gray-600 text-sm line-clamp-3">
+                      {language === "hy" ? event.descriptionHy : event.description}
+                    </p>
                     <div className="mt-4 flex items-center text-sm text-gray-500 gap-1">
                       <MapPin className="w-4 h-4" />
-                      {event.location}
+                      {language === "hy" ? event.locationHy : event.location}
                     </div>
                   </CardContent>
                 </Card>
@@ -71,9 +73,9 @@ export default function EventsPage() {
         </div>
 
         <AnimatedSection className="text-center py-12 bg-gradient-to-r from-armath-blue/10 to-armath-red/10 rounded-lg">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">More Events Coming Soon</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("moreEventsComingSoon")}</h2>
           <p className="text-gray-600">
-            We're constantly participating in new competitions and workshops. Check back for updates!
+            {t("checkBackForUpdates")}
           </p>
         </AnimatedSection>
       </div>

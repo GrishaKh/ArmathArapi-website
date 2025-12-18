@@ -64,6 +64,10 @@ export const translations = {
     camp: "Camp",
     exhibition: "Exhibition",
     featured: "Featured",
+    eventsAndAchievements: "Events & Achievements",
+    eventsDescriptionLong: "Explore our participation in competitions, workshops, and educational programs that shaped our community.",
+    moreEventsComingSoon: "More Events Coming Soon",
+    checkBackForUpdates: "We're constantly participating in new competitions and workshops. Check back for updates!",
 
     // Projects
     projectsTitle: "Our Projects",
@@ -141,6 +145,9 @@ export const translations = {
     errorRequired: "This field is required",
     errorSelectAge: "Please select an age",
     errorConnection: "Connection error. Please try again.",
+    pageNotFound: "Page Not Found",
+    pageNotFoundMessage: "The page you are looking for does not exist or has been moved.",
+    goHome: "Go Home",
     studentNamePlaceholder: "Student's full name",
     selectAgePlaceholder: "Select age",
     yearsOld: "years old",
@@ -249,6 +256,10 @@ export const translations = {
     camp: "Ճամբար",
     exhibition: "Ցուցահանդես",
     featured: "Առանձնացված",
+    eventsAndAchievements: "Միջոցառումներ և նվաճումներ",
+    eventsDescriptionLong: "Բացահայտեք մեր մասնակցությունը մրցույթներին, աշխատարաններին և կրթական ծրագրերին, որոնք կերտեցին մեր համայնքը:",
+    moreEventsComingSoon: "Այլ միջոցառումներ՝ շուտով",
+    checkBackForUpdates: "Մենք անընդհատ մասնակցում ենք նոր մրցույթների և աշխատարանների: Հետևեք թարմացումներին:",
 
     // Projects
     projectsTitle: "Մեր նախագծերը",
@@ -326,6 +337,9 @@ export const translations = {
     errorRequired: "Այս դաշտը պարտադիր է",
     errorSelectAge: "Խնդրում ենք ընտրել տարիքը",
     errorConnection: "Կապի խափանում: Խնդրում ենք փորձել կրկին:",
+    pageNotFound: "Էջը չի գտնվել",
+    pageNotFoundMessage: "Էջը, որը փնտրում եք, գոյություն չունի կամ տեղափոխվել է:",
+    goHome: "Գնալ գլխավոր էջ",
     studentNamePlaceholder: "Ուսանողի անուն, ազգանուն",
     selectAgePlaceholder: "Ընտրեք տարիքը",
     yearsOld: "տարեկան",
