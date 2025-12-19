@@ -21,6 +21,7 @@ interface TeamMember {
   isCore: boolean
   contribution?: string
   details?: string
+  image?: string
 }
 
 // --- Sample Data ---
@@ -31,6 +32,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
     role: t("roleLeadCoach"),
     isCore: true,
     details: t("detailsLead"),
+    image: "/team/grisha-kh.png",
   },
   {
     id: "olya-kh",
@@ -38,6 +40,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
     role: t("roleCoach"),
     isCore: true,
     details: t("detailsCoach"),
+    image: "/team/olya-kh.png",
   },
   {
     id: "narek-sar",
@@ -45,6 +48,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
     role: t("roleCoach"),
     isCore: true,
     details: t("detailsCoach"),
+    image: "/team/narek-sar.png",
   },
   {
     id: "edgar-har",
@@ -52,6 +56,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
     role: t("roleSupporter"),
     isCore: false,
     contribution: t("contributionScientific"),
+    image: "/team/edgar-har.png",
   },
   {
     id: "narek-har",
@@ -59,6 +64,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
     role: t("roleSupporter"),
     isCore: false,
     contribution: t("contributionWeb"),
+    image: "/team/narek-har.png",
   },
 ]
 
@@ -110,6 +116,23 @@ function useEscapeKey(callback: () => void) {
   }, [callback])
 }
 
+// Hook to detect touch devices for tap-to-toggle behavior
+function useIsTouchDevice() {
+  const [isTouch, setIsTouch] = useState(false)
+
+  useEffect(() => {
+    // Check for coarse pointer (touch) OR no fine pointer (hover)
+    const touchQuery = window.matchMedia("(pointer: coarse)")
+    setIsTouch(touchQuery.matches)
+
+    const handler = (e: MediaQueryListEvent) => setIsTouch(e.matches)
+    touchQuery.addEventListener("change", handler)
+    return () => touchQuery.removeEventListener("change", handler)
+  }, [])
+
+  return isTouch
+}
+
 // --- Floating Tooltip Component ---
 // Renders in a portal to escape stacking context issues
 type FloatingTooltipProps = {
@@ -117,11 +140,13 @@ type FloatingTooltipProps = {
   anchorRef: React.RefObject<HTMLElement | null>
   children: React.ReactNode
   id: string
+  accentColor?: "blue" | "red"
 }
 
-const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef, children, id }) => {
+const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef, children, id, accentColor = "blue" }) => {
   const container = useContext(TooltipContainerContext)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [position, setPosition] = useState({ x: 0, y: 0, flipToBottom: false })
+  const tooltipRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!isVisible || !anchorRef.current) return
@@ -131,9 +156,23 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
       const rect = anchorRef.current.getBoundingClientRect()
       const containerRect = container.getBoundingClientRect()
 
+      // Calculate x position, clamping to prevent horizontal overflow
+      const tooltipWidth = 280 // Approximate tooltip width
+      let x = rect.left + rect.width / 2 - containerRect.left
+      const minX = tooltipWidth / 2 + 8
+      const maxX = containerRect.width - tooltipWidth / 2 - 8
+      x = Math.max(minX, Math.min(maxX, x))
+
+      // Determine if we need to flip to bottom (when too close to top of viewport)
+      const spaceAbove = rect.top
+      const flipToBottom = spaceAbove < 200 // Flip if less than 200px above
+
       setPosition({
-        x: rect.left + rect.width / 2 - containerRect.left,
-        y: rect.top - containerRect.top,
+        x,
+        y: flipToBottom
+          ? rect.bottom - containerRect.top + 12
+          : rect.top - containerRect.top - 12,
+        flipToBottom,
       })
     }
 
@@ -145,24 +184,41 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
 
   if (!container) return null
 
+  const arrowColor = accentColor === "red" ? "border-t-armath-red" : "border-t-armath-blue"
+  const arrowColorBottom = accentColor === "red" ? "border-b-armath-red" : "border-b-armath-blue"
+
   return createPortal(
     <AnimatePresence>
       {isVisible && (
         <motion.div
+          ref={tooltipRef}
           key={id}
           id={id}
           role="tooltip"
-          initial={{ opacity: 0, y: 10, scale: 0.9 }}
+          initial={{ opacity: 0, y: position.flipToBottom ? -10 : 10, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 10, scale: 0.9 }}
+          exit={{ opacity: 0, y: position.flipToBottom ? -10 : 10, scale: 0.95 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
           className="pointer-events-none absolute z-[9999]"
           style={{
             left: position.x,
             top: position.y,
-            transform: "translate(-50%, -100%)",
+            transform: position.flipToBottom
+              ? "translate(-50%, 0)"
+              : "translate(-50%, -100%)",
           }}
         >
-          <div className="mb-3">
+          <div className="relative">
+            {/* Arrow pointing to element */}
+            {position.flipToBottom ? (
+              <div
+                className={`absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent ${arrowColorBottom}`}
+              />
+            ) : (
+              <div
+                className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent ${arrowColor}`}
+              />
+            )}
             {children}
           </div>
         </motion.div>
@@ -205,6 +261,14 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
   const buttonRef = useRef<HTMLButtonElement>(null)
   const tipId = `tip-${member.id}`
   const isActive = activeId === member.id
+  const isTouch = useIsTouchDevice()
+
+  // Handle click for touch devices (tap to toggle)
+  const handleClick = () => {
+    if (isTouch) {
+      setActiveId(isActive ? null : member.id)
+    }
+  }
 
   return (
     <div
@@ -224,10 +288,11 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
           initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
           animate={reduceMotion ? {} : { scale: 1, opacity: 1 }}
           transition={{ delay: 0.4 + index * 0.2, type: "spring", stiffness: 300 }}
-          onMouseEnter={() => setActiveId(member.id)}
-          onMouseLeave={() => setActiveId(null)}
+          onClick={handleClick}
+          onMouseEnter={() => !isTouch && setActiveId(member.id)}
+          onMouseLeave={() => !isTouch && setActiveId(null)}
           onFocus={() => setActiveId(member.id)}
-          onBlur={() => setActiveId(null)}
+          onBlur={() => !isTouch && setActiveId(null)}
           whileHover={reduceMotion ? undefined : { scale: 1.2 }}
         >
           <div style={{ transform: `rotate(${-angleDeg}deg)` }}>
@@ -240,12 +305,34 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
           </div>
         </motion.button>
 
-        <FloatingTooltip isVisible={isActive} anchorRef={buttonRef} id={tipId}>
-          <Card className="shadow-xl border-armath-blue/20 w-max max-w-[200px] sm:max-w-xs">
-            <CardContent className="p-4 text-center">
-              <p className="text-sm font-bold text-gray-900 mb-1">{member.name}</p>
-              <p className="text-xs font-medium text-armath-blue mb-2">{member.role}</p>
-              <p className="text-xs leading-relaxed text-gray-600">{member.details ?? "—"}</p>
+        <FloatingTooltip isVisible={isActive} anchorRef={buttonRef} id={tipId} accentColor="blue">
+          <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
+            {/* Gradient header */}
+            <div className="h-2 bg-gradient-to-r from-armath-blue to-armath-blue/70" />
+            <CardContent className="p-5">
+              <div className="flex flex-col items-center text-center">
+                {/* Profile image */}
+                <div className="relative mb-3">
+                  <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-blue/20 ring-offset-2 shadow-lg">
+                    {member.image ? (
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-armath-blue to-armath-blue/70 flex items-center justify-center text-white text-lg font-bold">
+                        {getInitials(member.name)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {/* Name and role */}
+                <h3 className="text-base font-bold text-gray-900 mb-1">{member.name}</h3>
+                <p className="text-sm font-semibold text-armath-blue mb-3">{member.role}</p>
+                {/* Details */}
+                <p className="text-sm leading-relaxed text-gray-600">{member.details ?? "—"}</p>
+              </div>
             </CardContent>
           </Card>
         </FloatingTooltip>
@@ -347,6 +434,7 @@ const Electron: React.FC<ElectronProps> = ({
   const buttonRef = useRef<HTMLButtonElement>(null)
   const isActive = activeId === supporter.id
   const tipId = `tip-${supporter.id}`
+  const isTouch = useIsTouchDevice()
 
   const transition = useMemo(() => {
     if (reduceMotion) {
@@ -357,6 +445,13 @@ const Electron: React.FC<ElectronProps> = ({
 
   // Memoize initials to avoid recalculating on every render
   const initials = useMemo(() => getInitials(supporter.name), [supporter.name])
+
+  // Handle click for touch devices (tap to toggle)
+  const handleClick = () => {
+    if (isTouch) {
+      setActiveId(isActive ? null : supporter.id)
+    }
+  }
 
   return (
     <motion.div
@@ -376,10 +471,11 @@ const Electron: React.FC<ElectronProps> = ({
           aria-describedby={isActive ? tipId : undefined}
           aria-label={`${supporter.name}, ${supporter.role}`}
           className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-armath-red"
-          onMouseEnter={() => setActiveId(supporter.id)}
-          onMouseLeave={() => setActiveId(null)}
+          onClick={handleClick}
+          onMouseEnter={() => !isTouch && setActiveId(supporter.id)}
+          onMouseLeave={() => !isTouch && setActiveId(null)}
           onFocus={() => setActiveId(supporter.id)}
-          onBlur={() => setActiveId(null)}
+          onBlur={() => !isTouch && setActiveId(null)}
           whileHover={reduceMotion ? undefined : { scale: 1.1 }}
         >
           <motion.div
@@ -397,11 +493,34 @@ const Electron: React.FC<ElectronProps> = ({
           </motion.div>
         </motion.button>
 
-        <FloatingTooltip isVisible={isActive} anchorRef={buttonRef} id={tipId}>
-          <Card className="min-w-max max-w-[200px] sm:max-w-none border-armath-red/20 bg-white shadow-xl">
-            <CardContent className="p-3 text-center">
-              <p className="text-sm font-medium text-gray-900 break-words mb-1">{supporter.name}</p>
-              <p className="text-xs break-words text-gray-600">{supporter.contribution ?? "—"}</p>
+        <FloatingTooltip isVisible={isActive} anchorRef={buttonRef} id={tipId} accentColor="red">
+          <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
+            {/* Gradient header */}
+            <div className="h-2 bg-gradient-to-r from-armath-red to-armath-red/70" />
+            <CardContent className="p-5">
+              <div className="flex flex-col items-center text-center">
+                {/* Profile image */}
+                <div className="relative mb-3">
+                  <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-red/20 ring-offset-2 shadow-lg">
+                    {supporter.image ? (
+                      <img
+                        src={supporter.image}
+                        alt={supporter.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-armath-red to-armath-red/70 flex items-center justify-center text-white text-lg font-bold">
+                        {initials}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {/* Name and role */}
+                <h3 className="text-base font-bold text-gray-900 mb-1">{supporter.name}</h3>
+                <p className="text-sm font-semibold text-armath-red mb-3">{supporter.role}</p>
+                {/* Contribution */}
+                <p className="text-sm leading-relaxed text-gray-600">{supporter.contribution ?? "—"}</p>
+              </div>
             </CardContent>
           </Card>
         </FloatingTooltip>
