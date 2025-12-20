@@ -9,22 +9,24 @@ import { ArrowRight, Star } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { projects } from "@/lib/projects"
+import { getProjectsSortedByYear } from "@/lib/projects"
+
+const projects = getProjectsSortedByYear()
 
 export function ProjectsSection() {
   const { t, language } = useLanguage()
 
   // Get localized project content
-  const getProjectTitle = (project: typeof projects[0]) => 
+  const getProjectTitle = (project: typeof projects[0]) =>
     language === "hy" ? project.titleHy : project.title
-  
-  const getProjectDescription = (project: typeof projects[0]) => 
+
+  const getProjectDescription = (project: typeof projects[0]) =>
     language === "hy" ? project.shortDescriptionHy : project.shortDescription
-  
-  const getProjectCategory = (project: typeof projects[0]) => 
+
+  const getProjectCategory = (project: typeof projects[0]) =>
     language === "hy" ? project.categoryHy : project.category
-  
-  const getProjectTools = (project: typeof projects[0]) => 
+
+  const getProjectTools = (project: typeof projects[0]) =>
     language === "hy" ? project.toolsHy : project.tools
 
   return (
@@ -50,7 +52,7 @@ export function ProjectsSection() {
                     />
                     {/* Gradient overlay on hover */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    
+
                     {/* Featured badge */}
                     {project.featured && (
                       <div className="absolute top-4 right-4">
@@ -60,7 +62,7 @@ export function ProjectsSection() {
                         </Badge>
                       </div>
                     )}
-                    
+
                     {/* Year badge */}
                     <div className="absolute top-4 left-4">
                       <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm text-gray-700 shadow-lg">
@@ -68,7 +70,7 @@ export function ProjectsSection() {
                       </Badge>
                     </div>
                   </div>
-                  
+
                   <CardHeader className="pb-2">
                     <div className="space-y-2">
                       {/* Category badge */}
@@ -83,7 +85,7 @@ export function ProjectsSection() {
                       {getProjectDescription(project)}
                     </CardDescription>
                   </CardHeader>
-                  
+
                   <CardContent>
                     <div className="space-y-4">
                       {/* Tools used */}
@@ -102,7 +104,7 @@ export function ProjectsSection() {
                           )}
                         </div>
                       </div>
-                      
+
                       {/* View Project link */}
                       <motion.div whileHover={{ x: 4 }}>
                         <div className="flex items-center text-sm font-medium text-armath-blue">

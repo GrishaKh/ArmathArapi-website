@@ -7,9 +7,11 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-import { projects } from "@/lib/projects"
+import { getProjectsSortedByYear } from "@/lib/projects"
 import { cn } from "@/lib/utils"
 import { Header } from "@/components/Header"
+
+const projects = getProjectsSortedByYear()
 
 export default function ProjectsPage() {
   const { t, language } = useLanguage()

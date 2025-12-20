@@ -312,3 +312,7 @@ export function getEventBySlug(slug: string): Event | undefined {
 export function getEventById(id: string): Event | undefined {
   return events.find((event) => event.id === id)
 }
+
+export function getEventsSortedByYear(): Event[] {
+  return [...events].sort((a, b) => b.year - a.year)
+}

@@ -2,13 +2,15 @@
 
 import { useLanguage } from "@/contexts/language-context"
 import { AnimatedSection } from "@/components/animated-section"
-import { events } from "@/lib/events"
+import { getEventsSortedByYear } from "@/lib/events"
 import Link from "next/link"
 import Image from "next/image"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, MapPin } from "lucide-react"
 import { Header } from "@/components/Header"
+
+const events = getEventsSortedByYear()
 
 export default function EventsPage() {
   const { t, language } = useLanguage()

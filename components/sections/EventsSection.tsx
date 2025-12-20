@@ -9,7 +9,9 @@ import { Calendar, MapPin, ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { events } from "@/lib/events"
+import { getEventsSortedByYear } from "@/lib/events"
+
+const events = getEventsSortedByYear()
 
 export function EventsSection() {
   const { t, language } = useLanguage()

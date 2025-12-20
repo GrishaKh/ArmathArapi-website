@@ -163,3 +163,7 @@ export const projects: ProjectDetailType[] = [
     ],
   },
 ]
+
+export function getProjectsSortedByYear(): ProjectDetailType[] {
+  return [...projects].sort((a, b) => parseInt(b.year) - parseInt(a.year))
+}

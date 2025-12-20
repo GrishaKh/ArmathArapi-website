@@ -145,7 +145,7 @@ type FloatingTooltipProps = {
 
 const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef, children, id, accentColor = "blue" }) => {
   const container = useContext(TooltipContainerContext)
-  const [position, setPosition] = useState({ x: 0, y: 0, flipToBottom: false })
+  const [position, setPosition] = useState({ x: 0, y: 0, flipToBottom: false, arrowOffset: 0 })
   const tooltipRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -156,23 +156,29 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
       const rect = anchorRef.current.getBoundingClientRect()
       const containerRect = container.getBoundingClientRect()
 
-      // Calculate x position, clamping to prevent horizontal overflow
+      // Calculate the element's true center position
       const tooltipWidth = 280 // Approximate tooltip width
-      let x = rect.left + rect.width / 2 - containerRect.left
+      const elementCenterX = rect.left + rect.width / 2 - containerRect.left
+
+      // Clamp tooltip position to prevent horizontal overflow
       const minX = tooltipWidth / 2 + 8
       const maxX = containerRect.width - tooltipWidth / 2 - 8
-      x = Math.max(minX, Math.min(maxX, x))
+      const clampedX = Math.max(minX, Math.min(maxX, elementCenterX))
+
+      // Calculate arrow offset (how much the tooltip was shifted from element center)
+      const arrowOffset = elementCenterX - clampedX
 
       // Determine if we need to flip to bottom (when too close to top of viewport)
       const spaceAbove = rect.top
       const flipToBottom = spaceAbove < 200 // Flip if less than 200px above
 
       setPosition({
-        x,
+        x: clampedX,
         y: flipToBottom
           ? rect.bottom - containerRect.top + 12
           : rect.top - containerRect.top - 12,
         flipToBottom,
+        arrowOffset,
       })
     }
 
@@ -186,6 +192,10 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
 
   const arrowColor = accentColor === "red" ? "border-t-armath-red" : "border-t-armath-blue"
   const arrowColorBottom = accentColor === "red" ? "border-b-armath-red" : "border-b-armath-blue"
+
+  // Clamp arrow offset to stay within tooltip bounds (with some padding)
+  const maxArrowOffset = (280 / 2) - 20 // Half tooltip width minus padding
+  const clampedArrowOffset = Math.max(-maxArrowOffset, Math.min(maxArrowOffset, position.arrowOffset))
 
   return createPortal(
     <AnimatePresence>
@@ -209,14 +219,22 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
           }}
         >
           <div className="relative">
-            {/* Arrow pointing to element */}
+            {/* Arrow pointing to element - offset to follow the actual element position */}
             {position.flipToBottom ? (
               <div
-                className={`absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent ${arrowColorBottom}`}
+                className={`absolute -top-2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent ${arrowColorBottom}`}
+                style={{
+                  left: '50%',
+                  transform: `translateX(calc(-50% + ${clampedArrowOffset}px))`
+                }}
               />
             ) : (
               <div
-                className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent ${arrowColor}`}
+                className={`absolute -bottom-2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent ${arrowColor}`}
+                style={{
+                  left: '50%',
+                  transform: `translateX(calc(-50% + ${clampedArrowOffset}px))`
+                }}
               />
             )}
             {children}
