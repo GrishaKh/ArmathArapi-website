@@ -1,10 +1,8 @@
-"use client"
-
 import { AnimatedSection } from "@/components/animated-section"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
 import { Eye, Lightbulb, Target } from "lucide-react"
-import { motion } from "motion/react"
+import { motion } from "framer-motion"
 
 export function AboutSection() {
   const { t } = useLanguage()

@@ -1,7 +1,5 @@
 "use client"
 
-import type React from "react"
-
 import { AnimatedSection } from "@/components/animated-section"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -10,10 +8,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/language-context"
 import { BookOpen, DollarSign, Heart, UserCheck, Wrench, Loader2, CheckCircle, XCircle } from "lucide-react"
-import { motion, AnimatePresence } from "motion/react"
+import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
 
-type SubmitStatus = "idle" | "loading" | "success" | "error"
+type SubmitStatus = 'idle' | 'loading' | 'success' | 'error'
 
 export function SupportSection() {
   const { t, language } = useLanguage()
@@ -23,30 +21,25 @@ export function SupportSection() {
     supportType: "",
     message: "",
   })
-  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle")
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle')
   const [errorMessage, setErrorMessage] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    if (
-      !supportFormData.name.trim() ||
-      !supportFormData.email.trim() ||
-      !supportFormData.supportType ||
-      !supportFormData.message.trim()
-    ) {
+    
+    if (!supportFormData.name.trim() || !supportFormData.email.trim() || !supportFormData.supportType || !supportFormData.message.trim()) {
       setErrorMessage(t("errorRequired"))
-      setSubmitStatus("error")
+      setSubmitStatus('error')
       return
     }
 
-    setSubmitStatus("loading")
+    setSubmitStatus('loading')
     setErrorMessage("")
 
     try {
-      const response = await fetch("/api/submissions/support", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/submissions/support', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...supportFormData,
           language,
@@ -56,24 +49,24 @@ export function SupportSection() {
       const data = await response.json()
 
       if (response.ok && data.success) {
-        setSubmitStatus("success")
+        setSubmitStatus('success')
         setTimeout(() => {
           setSupportFormData({ name: "", email: "", supportType: "", message: "" })
-          setSubmitStatus("idle")
+          setSubmitStatus('idle')
         }, 3000)
       } else {
         setErrorMessage(data.error || data.message || t("errorConnection"))
-        setSubmitStatus("error")
+        setSubmitStatus('error')
       }
     } catch (error) {
-      console.error("Submission error:", error)
+      console.error('Submission error:', error)
       setErrorMessage(t("errorConnection"))
-      setSubmitStatus("error")
+      setSubmitStatus('error')
     }
   }
 
   const resetForm = () => {
-    setSubmitStatus("idle")
+    setSubmitStatus('idle')
     setErrorMessage("")
   }
 
@@ -128,7 +121,7 @@ export function SupportSection() {
               </CardHeader>
               <CardContent>
                 <AnimatePresence mode="wait">
-                  {submitStatus === "success" ? (
+                  {submitStatus === 'success' ? (
                     <motion.div
                       key="success"
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -144,8 +137,12 @@ export function SupportSection() {
                       >
                         <CheckCircle className="w-8 h-8 text-emerald-600" />
                       </motion.div>
-                      <h3 className="text-xl font-semibold text-gray-900">{t("supportSubmitted")}</h3>
-                      <p className="text-gray-600 text-center">{t("supportThankYou")}</p>
+                      <h3 className="text-xl font-semibold text-gray-900">
+                        {t("supportSubmitted")}
+                      </h3>
+                      <p className="text-gray-600 text-center">
+                        {t("supportThankYou")}
+                      </p>
                     </motion.div>
                   ) : (
                     <motion.form
@@ -163,7 +160,7 @@ export function SupportSection() {
                           onChange={(e) => setSupportFormData({ ...supportFormData, name: e.target.value })}
                           placeholder={t("yourName")}
                           className="focus:ring-armath-blue"
-                          disabled={submitStatus === "loading"}
+                          disabled={submitStatus === 'loading'}
                         />
                       </div>
 
@@ -175,19 +172,19 @@ export function SupportSection() {
                           onChange={(e) => setSupportFormData({ ...supportFormData, email: e.target.value })}
                           placeholder={t("yourEmail")}
                           className="focus:ring-armath-blue"
-                          disabled={submitStatus === "loading"}
+                          disabled={submitStatus === 'loading'}
                         />
                       </div>
 
                       <div>
                         <label className="text-sm font-medium text-gray-700 block mb-1">{t("supportType")}</label>
-                        <Select
-                          value={supportFormData.supportType}
+                        <Select 
+                          value={supportFormData.supportType} 
                           onValueChange={(value) => setSupportFormData({ ...supportFormData, supportType: value })}
-                          disabled={submitStatus === "loading"}
+                          disabled={submitStatus === 'loading'}
                         >
                           <SelectTrigger className="focus:ring-armath-blue">
-                            <SelectValue placeholder={t("selectSupportType")} />
+                          <SelectValue placeholder={t("selectSupportType")} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="workshop">{t("hostWorkshop")}</SelectItem>
@@ -206,11 +203,11 @@ export function SupportSection() {
                           placeholder={t("yourMessage")}
                           className="focus:ring-armath-blue resize-none"
                           rows={4}
-                          disabled={submitStatus === "loading"}
+                          disabled={submitStatus === 'loading'}
                         />
                       </div>
 
-                      {submitStatus === "error" && errorMessage && (
+                      {submitStatus === 'error' && errorMessage && (
                         <motion.div
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -218,19 +215,23 @@ export function SupportSection() {
                         >
                           <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
                           <p className="text-sm text-red-600">{errorMessage}</p>
-                          <button type="button" onClick={resetForm} className="ml-auto text-red-500 hover:text-red-700">
+                          <button 
+                            type="button" 
+                            onClick={resetForm}
+                            className="ml-auto text-red-500 hover:text-red-700"
+                          >
                             ✕
                           </button>
                         </motion.div>
                       )}
 
                       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                        <Button
+                        <Button 
                           type="submit"
                           className="w-full bg-armath-blue hover:bg-armath-blue/90 shadow-lg hover:shadow-xl transition-all duration-300"
-                          disabled={submitStatus === "loading"}
+                          disabled={submitStatus === 'loading'}
                         >
-                          {submitStatus === "loading" ? (
+                          {submitStatus === 'loading' ? (
                             <span className="flex items-center space-x-2">
                               <Loader2 className="w-4 h-4 animate-spin" />
                               <span>{t("sending")}</span>

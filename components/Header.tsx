@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { LanguageToggle } from "@/components/language-toggle"
 import { useLanguage } from "@/contexts/language-context"
-import { motion } from "motion/react"
+import { motion } from "framer-motion"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import type { TranslationKey } from "@/lib/translations"
@@ -71,7 +71,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
                   href={`/#${item}`}
                   className={cn(
                     "text-gray-600 hover:text-gray-900 transition-colors relative",
-                    language === "hy" ? "text-xs tracking-tight" : "text-sm",
+                    language === "hy" ? "text-xs tracking-tight" : "text-sm"
                   )}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -132,7 +132,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
                   href={`/#${item}`}
                   className={cn(
                     "block py-2 px-3 rounded-lg text-gray-800 hover:bg-white/40 transition-colors",
-                    language === "hy" ? "text-sm tracking-tight" : "text-base",
+                    language === "hy" ? "text-sm tracking-tight" : "text-base"
                   )}
                   onClick={() => setMobileOpen(false)}
                 >

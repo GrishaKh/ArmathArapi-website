@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
 import type { TranslationKey } from "@/lib/translations"
-import { motion } from "motion/react"
+import { motion } from "framer-motion"
 import { Bot, Code, Box, Boxes, Gamepad2, Scissors, Wrench, Zap } from "lucide-react"
 import { useMemo } from "react"
 

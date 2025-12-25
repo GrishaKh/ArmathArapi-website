@@ -1,31 +1,19 @@
-"use client"
-
 import { AnimatedSection } from "@/components/animated-section"
 import { Separator } from "@/components/ui/separator"
 import { useLanguage } from "@/contexts/language-context"
 import { Cog } from "lucide-react"
-import { motion } from "motion/react"
+import { motion } from "framer-motion"
 import type { TranslationKey } from "@/lib/translations"
 
 export function FooterSection() {
   const { t } = useLanguage()
   return (
-    <motion.footer
-      className="bg-armath-black text-white py-12"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true }}
-    >
+    <motion.footer className="bg-armath-black text-white py-12" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.8 }} viewport={{ once: true }}>
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           <AnimatedSection animation="fadeInUp">
             <div className="flex items-center space-x-2 mb-4">
-              <motion.div
-                className="w-8 h-8 bg-armath-blue rounded-lg flex items-center justify-center"
-                whileHover={{ rotate: 180 }}
-                transition={{ duration: 0.3 }}
-              >
+              <motion.div className="w-8 h-8 bg-armath-blue rounded-lg flex items-center justify-center" whileHover={{ rotate: 180 }} transition={{ duration: 0.3 }}>
                 <Cog className="w-5 h-5 text-white" />
               </motion.div>
               <div>
@@ -33,7 +21,9 @@ export function FooterSection() {
                 <p className="text-sm text-gray-400">{t("engineeringLab")}</p>
               </div>
             </div>
-            <p className="text-gray-400 text-sm">{t("footerDescription")}</p>
+            <p className="text-gray-400 text-sm">
+              {t("footerDescription")}
+            </p>
           </AnimatedSection>
 
           {[
@@ -55,12 +45,7 @@ export function FooterSection() {
               {section.links.length > 0 ? (
                 <ul className="space-y-2 text-sm text-gray-400">
                   {section.links.map((link, linkIndex) => (
-                    <motion.li
-                      key={link}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: linkIndex * 0.1 }}
-                    >
+                    <motion.li key={link} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ delay: linkIndex * 0.1 }}>
                       <motion.a href={`#${link}`} className="hover:text-white transition-colors" whileHover={{ x: 5 }}>
                         {t(link)}
                       </motion.a>
@@ -82,7 +67,9 @@ export function FooterSection() {
 
         <AnimatedSection animation="fadeInUp" delay={0.5}>
           <div className="text-center text-sm text-gray-400">
-            <p>© 2025 {t("footerRights")}</p>
+            <p>
+              © 2025 {t("footerRights")}
+            </p>
           </div>
         </AnimatedSection>
       </div>

@@ -10,10 +10,11 @@ import { getEventBySlug, events } from "@/lib/events"
 import Link from "next/link"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { ArrowLeft, Calendar, MapPin, Award, Users, Zap } from "lucide-react"
 import { notFound } from "next/navigation"
 import { LanguageToggle } from "@/components/language-toggle"
-import { motion } from "motion/react"
+import { motion } from "framer-motion"
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -79,6 +80,7 @@ export default function EventDetailPage({ params }: PageProps) {
       </motion.header>
 
       <div className="container mx-auto px-4 py-8">
+
         {/* Hero Image */}
         <AnimatedSection className="mb-12">
           <div className="relative w-full h-96 rounded-lg overflow-hidden">

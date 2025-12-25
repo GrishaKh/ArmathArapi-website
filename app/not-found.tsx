@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useLanguage } from "@/contexts/language-context"
 import { LanguageToggle } from "@/components/language-toggle"
-import { motion } from "motion/react"
+import { motion } from "framer-motion"
 
 export default function NotFound() {
   const { t } = useLanguage()
