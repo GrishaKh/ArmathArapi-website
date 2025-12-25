@@ -8,7 +8,7 @@ import { useLanguage } from "@/contexts/language-context"
 import { ArrowRight, Star } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { getProjectsSortedByYear } from "@/lib/projects"
 
 const projects = getProjectsSortedByYear()
@@ -17,17 +17,15 @@ export function ProjectsSection() {
   const { t, language } = useLanguage()
 
   // Get localized project content
-  const getProjectTitle = (project: typeof projects[0]) =>
-    language === "hy" ? project.titleHy : project.title
+  const getProjectTitle = (project: (typeof projects)[0]) => (language === "hy" ? project.titleHy : project.title)
 
-  const getProjectDescription = (project: typeof projects[0]) =>
+  const getProjectDescription = (project: (typeof projects)[0]) =>
     language === "hy" ? project.shortDescriptionHy : project.shortDescription
 
-  const getProjectCategory = (project: typeof projects[0]) =>
+  const getProjectCategory = (project: (typeof projects)[0]) =>
     language === "hy" ? project.categoryHy : project.category
 
-  const getProjectTools = (project: typeof projects[0]) =>
-    language === "hy" ? project.toolsHy : project.tools
+  const getProjectTools = (project: (typeof projects)[0]) => (language === "hy" ? project.toolsHy : project.tools)
 
   return (
     <section id="ourProjects" className="py-20 bg-white">
@@ -81,9 +79,7 @@ export function ProjectsSection() {
                         {getProjectTitle(project)}
                       </CardTitle>
                     </div>
-                    <CardDescription className="line-clamp-2">
-                      {getProjectDescription(project)}
-                    </CardDescription>
+                    <CardDescription className="line-clamp-2">{getProjectDescription(project)}</CardDescription>
                   </CardHeader>
 
                   <CardContent>
@@ -92,11 +88,13 @@ export function ProjectsSection() {
                       <div>
                         <p className="text-xs font-semibold text-gray-500 mb-2">{t("toolsUsed")}:</p>
                         <div className="flex flex-wrap gap-1">
-                          {getProjectTools(project).slice(0, 3).map((tool) => (
-                            <Badge key={tool} variant="secondary" className="text-xs">
-                              {tool}
-                            </Badge>
-                          ))}
+                          {getProjectTools(project)
+                            .slice(0, 3)
+                            .map((tool) => (
+                              <Badge key={tool} variant="secondary" className="text-xs">
+                                {tool}
+                              </Badge>
+                            ))}
                           {getProjectTools(project).length > 3 && (
                             <Badge variant="secondary" className="text-xs bg-armath-blue/10 text-armath-blue">
                               +{getProjectTools(project).length - 3}

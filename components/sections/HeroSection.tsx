@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { FloatingElement } from "@/components/floating-element"
 import { useLanguage } from "@/contexts/language-context"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { motion, useScroll, useTransform } from "motion/react"
 import { useRef } from "react"
 import { cn } from "@/lib/utils"
 import { ArrowRight, Bot, Cog, Cpu } from "lucide-react"
@@ -22,8 +22,15 @@ export function HeroSection() {
 
   return (
     <section ref={heroRef} className="py-20 bg-gradient-to-br from-blue-50 to-red-50 relative overflow-hidden">
-      <motion.div style={{ y: heroY, opacity: heroOpacity }} className="container mx-auto px-4 text-center relative z-10">
-        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.2 }}>
+      <motion.div
+        style={{ y: heroY, opacity: heroOpacity }}
+        className="container mx-auto px-4 text-center relative z-10"
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
           <Badge className="mb-4 bg-armath-blue/10 text-armath-blue hover:bg-armath-blue/10 transform hover:scale-105 transition-all duration-200">
             {t("heroBadge")}
           </Badge>
@@ -32,7 +39,7 @@ export function HeroSection() {
         <motion.h1
           className={cn(
             "font-bold text-gray-900 mb-6",
-            language === "hy" ? "text-3xl md:text-5xl tracking-tight" : "text-4xl md:text-6xl"
+            language === "hy" ? "text-3xl md:text-5xl tracking-tight" : "text-4xl md:text-6xl",
           )}
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -52,7 +59,7 @@ export function HeroSection() {
         <motion.p
           className={cn(
             "text-gray-600 mb-8 max-w-3xl mx-auto",
-            language === "hy" ? "text-lg tracking-tight" : "text-xl"
+            language === "hy" ? "text-lg tracking-tight" : "text-xl",
           )}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -61,7 +68,12 @@ export function HeroSection() {
           {t("heroSubtitle")}
         </motion.p>
 
-        <motion.div className="flex flex-col sm:flex-row gap-4 justify-center" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 1 }}>
+        <motion.div
+          className="flex flex-col sm:flex-row gap-4 justify-center"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1 }}
+        >
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
               size="lg"

@@ -1,17 +1,13 @@
 "use client"
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import { AnimatePresence, motion, useReducedMotion } from "motion/react"
 import type React from "react"
-import { useLayoutEffect, useEffect, useMemo, useRef, useState, createContext, useContext } from "react"
+import { useLayoutEffect, useEffect, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { Card, CardContent } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
 
-import { type TranslationKey } from "@/lib/translations"
-
-// --- Tooltip Portal Context ---
-// This allows tooltips to render outside the stacking context
-const TooltipContainerContext = createContext<HTMLDivElement | null>(null)
+import type { TranslationKey } from "@/lib/translations"
 
 // --- Types ---
 interface TeamMember {
@@ -134,49 +130,52 @@ function useIsTouchDevice() {
 }
 
 // --- Floating Tooltip Component ---
-// Renders in a portal to escape stacking context issues
 type FloatingTooltipProps = {
   isVisible: boolean
   anchorRef: React.RefObject<HTMLElement | null>
   children: React.ReactNode
   id: string
   accentColor?: "blue" | "red"
+  portalContainer: HTMLDivElement | null
 }
 
-const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef, children, id, accentColor = "blue" }) => {
-  const container = useContext(TooltipContainerContext)
+const FloatingTooltip: React.FC<FloatingTooltipProps> = ({
+  isVisible,
+  anchorRef,
+  children,
+  id,
+  accentColor = "blue",
+  portalContainer,
+}) => {
   const [position, setPosition] = useState({ x: 0, y: 0, flipToBottom: false, arrowOffset: 0 })
   const tooltipRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!isVisible || !anchorRef.current) return
+    if (!isVisible || !anchorRef.current || !portalContainer) return
 
     const updatePosition = () => {
-      if (!anchorRef.current || !container) return
+      if (!anchorRef.current || !portalContainer) return
       const rect = anchorRef.current.getBoundingClientRect()
-      const containerRect = container.getBoundingClientRect()
+      const containerRect = portalContainer.getBoundingClientRect()
 
-      // Calculate the element's true center position
-      const tooltipWidth = 280 // Approximate tooltip width
+      const tooltipWidth = 280
       const elementCenterX = rect.left + rect.width / 2 - containerRect.left
+      const elementCenterY = rect.top + rect.height / 2 - containerRect.top
 
       // Clamp tooltip position to prevent horizontal overflow
-      const minX = tooltipWidth / 2 + 8
-      const maxX = containerRect.width - tooltipWidth / 2 - 8
+      const minX = tooltipWidth / 2 + 16
+      const maxX = containerRect.width - tooltipWidth / 2 - 16
       const clampedX = Math.max(minX, Math.min(maxX, elementCenterX))
 
       // Calculate arrow offset (how much the tooltip was shifted from element center)
       const arrowOffset = elementCenterX - clampedX
 
-      // Determine if we need to flip to bottom (when too close to top of viewport)
       const spaceAbove = rect.top
-      const flipToBottom = spaceAbove < 200 // Flip if less than 200px above
+      const flipToBottom = spaceAbove < 240
 
       setPosition({
         x: clampedX,
-        y: flipToBottom
-          ? rect.bottom - containerRect.top + 12
-          : rect.top - containerRect.top - 12,
+        y: flipToBottom ? rect.bottom - containerRect.top + 20 : rect.top - containerRect.top - 20,
         flipToBottom,
         arrowOffset,
       })
@@ -186,15 +185,14 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
     // Update position on scroll/resize
     const interval = setInterval(updatePosition, 16) // ~60fps for smooth following
     return () => clearInterval(interval)
-  }, [isVisible, anchorRef, container])
+  }, [isVisible, anchorRef, portalContainer])
 
-  if (!container) return null
+  if (!portalContainer) return null
 
   const arrowColor = accentColor === "red" ? "border-t-armath-red" : "border-t-armath-blue"
   const arrowColorBottom = accentColor === "red" ? "border-b-armath-red" : "border-b-armath-blue"
 
-  // Clamp arrow offset to stay within tooltip bounds (with some padding)
-  const maxArrowOffset = (280 / 2) - 20 // Half tooltip width minus padding
+  const maxArrowOffset = 280 / 2 - 32
   const clampedArrowOffset = Math.max(-maxArrowOffset, Math.min(maxArrowOffset, position.arrowOffset))
 
   return createPortal(
@@ -205,17 +203,15 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
           key={id}
           id={id}
           role="tooltip"
-          initial={{ opacity: 0, y: position.flipToBottom ? -10 : 10, scale: 0.95 }}
+          initial={{ opacity: 0, y: position.flipToBottom ? -8 : 8, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: position.flipToBottom ? -10 : 10, scale: 0.95 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
+          exit={{ opacity: 0, y: position.flipToBottom ? -8 : 8, scale: 0.96 }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
           className="pointer-events-none absolute z-[9999]"
           style={{
             left: position.x,
             top: position.y,
-            transform: position.flipToBottom
-              ? "translate(-50%, 0)"
-              : "translate(-50%, -100%)",
+            transform: position.flipToBottom ? "translate(-50%, 0)" : "translate(-50%, -100%)",
           }}
         >
           <div className="relative">
@@ -224,16 +220,16 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
               <div
                 className={`absolute -top-2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent ${arrowColorBottom}`}
                 style={{
-                  left: '50%',
-                  transform: `translateX(calc(-50% + ${clampedArrowOffset}px))`
+                  left: "50%",
+                  transform: `translateX(calc(-50% + ${clampedArrowOffset}px))`,
                 }}
               />
             ) : (
               <div
                 className={`absolute -bottom-2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent ${arrowColor}`}
                 style={{
-                  left: '50%',
-                  transform: `translateX(calc(-50% + ${clampedArrowOffset}px))`
+                  left: "50%",
+                  transform: `translateX(calc(-50% + ${clampedArrowOffset}px))`,
                 }}
               />
             )}
@@ -242,7 +238,7 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
         </motion.div>
       )}
     </AnimatePresence>,
-    container
+    portalContainer,
   )
 }
 
@@ -253,6 +249,7 @@ type NucleusProps = {
   coreMembers: TeamMember[]
   activeId: string | null
   setActiveId: (id: string | null) => void
+  portalContainer: HTMLDivElement | null
 }
 
 // Individual core member button with ref for tooltip positioning
@@ -264,6 +261,7 @@ type CoreMemberButtonProps = {
   activeId: string | null
   setActiveId: (id: string | null) => void
   index: number
+  portalContainer: HTMLDivElement | null
 }
 
 const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
@@ -274,6 +272,7 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
   activeId,
   setActiveId,
   index,
+  portalContainer,
 }) => {
   const reduceMotion = useReducedMotion()
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -323,7 +322,13 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
           </div>
         </motion.button>
 
-        <FloatingTooltip isVisible={isActive} anchorRef={buttonRef} id={tipId} accentColor="blue">
+        <FloatingTooltip
+          isVisible={isActive}
+          anchorRef={buttonRef}
+          id={tipId}
+          accentColor="blue"
+          portalContainer={portalContainer}
+        >
           <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
             {/* Gradient header */}
             <div className="h-2 bg-gradient-to-r from-armath-blue to-armath-blue/70" />
@@ -334,7 +339,7 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
                   <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-blue/20 ring-offset-2 shadow-lg">
                     {member.image ? (
                       <img
-                        src={member.image}
+                        src={member.image || "/placeholder.svg"}
                         alt={member.name}
                         className="w-full h-full object-cover"
                       />
@@ -359,7 +364,7 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
   )
 }
 
-const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setActiveId }) => {
+const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setActiveId, portalContainer }) => {
   const reduceMotion = useReducedMotion()
 
   // Early return if no core members
@@ -376,9 +381,7 @@ const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setA
   // For n items evenly spaced on a circle, the minimum radius to avoid overlap is:
   // r >= dotSize / (2 * sin(π / n))
   // We use 0.75 multiplier to add extra breathing room between elements
-  const minSafeRadius = count > 1
-    ? (dotSize * 0.75) / Math.sin(Math.PI / count)
-    : 0
+  const minSafeRadius = count > 1 ? (dotSize * 0.75) / Math.sin(Math.PI / count) : 0
 
   // Available radius from nucleus edge
   const padding = 6
@@ -407,6 +410,7 @@ const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setA
             activeId={activeId}
             setActiveId={setActiveId}
             index={index}
+            portalContainer={portalContainer}
           />
         )
       })}
@@ -437,6 +441,7 @@ type ElectronProps = {
   activeId: string | null
   setActiveId: (id: string | null) => void
   size: number
+  portalContainer: HTMLDivElement | null
 }
 
 const Electron: React.FC<ElectronProps> = ({
@@ -447,6 +452,7 @@ const Electron: React.FC<ElectronProps> = ({
   activeId,
   setActiveId,
   size,
+  portalContainer,
 }) => {
   const reduceMotion = useReducedMotion()
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -511,7 +517,13 @@ const Electron: React.FC<ElectronProps> = ({
           </motion.div>
         </motion.button>
 
-        <FloatingTooltip isVisible={isActive} anchorRef={buttonRef} id={tipId} accentColor="red">
+        <FloatingTooltip
+          isVisible={isActive}
+          anchorRef={buttonRef}
+          id={tipId}
+          accentColor="red"
+          portalContainer={portalContainer}
+        >
           <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
             {/* Gradient header */}
             <div className="h-2 bg-gradient-to-r from-armath-red to-armath-red/70" />
@@ -522,7 +534,7 @@ const Electron: React.FC<ElectronProps> = ({
                   <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-red/20 ring-offset-2 shadow-lg">
                     {supporter.image ? (
                       <img
-                        src={supporter.image}
+                        src={supporter.image || "/placeholder.svg"}
                         alt={supporter.name}
                         className="w-full h-full object-cover"
                       />
@@ -583,13 +595,13 @@ export function AtomStructure() {
   const isTiny = shortest < 280
 
   // Nucleus needs to be larger on mobile to fit core members without overlap
-  const nucleusDiameter = Math.max(
-    MIN_NUCLEUS_DIAMETER,
-    shortest * (isTiny ? 0.42 : isSmall ? 0.38 : 0.28)
-  )
+  const nucleusDiameter = Math.max(MIN_NUCLEUS_DIAMETER, shortest * (isTiny ? 0.42 : isSmall ? 0.38 : 0.28))
 
   // Adjust orbit radii to accommodate larger nucleus on mobile
-  const innerOrbit = Math.max(nucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER, baseRadius * (isTiny ? 0.58 : isSmall ? 0.52 : 0.45))
+  const innerOrbit = Math.max(
+    nucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER,
+    baseRadius * (isTiny ? 0.58 : isSmall ? 0.52 : 0.45),
+  )
   const outerOrbit = Math.max(nucleusDiameter * 1.25, baseRadius * (isTiny ? 0.82 : isSmall ? 0.76 : 0.62))
 
   const orbits = [
@@ -603,57 +615,55 @@ export function AtomStructure() {
   const supporters = teamMembers.filter((m) => !m.isCore)
 
   return (
-    <TooltipContainerContext.Provider value={tooltipContainer}>
-      <div className="w-full">
-        {/* Scene container - removed overflow-hidden to prevent tooltip clipping */}
-        <div
-          ref={ref}
-          className="relative mx-auto flex h-[clamp(20rem,65vw,28rem)] max-w-full items-center justify-center touch-pan-y"
-        >
-          {/* Tooltip container - renders tooltips above everything */}
-          <div
-            ref={tooltipContainerRef}
-            className="absolute inset-0 pointer-events-none z-[9999]"
-            aria-hidden="true"
-          />
+    <div className="w-full">
+      {/* Scene container - removed overflow-hidden to prevent tooltip clipping */}
+      <div
+        ref={ref}
+        className="relative mx-auto flex h-[clamp(20rem,65vw,28rem)] max-w-full items-center justify-center touch-pan-y"
+      >
+        {/* Tooltip container - renders tooltips above everything */}
+        <div ref={tooltipContainerRef} className="absolute inset-0 pointer-events-none z-[9999]" aria-hidden="true" />
 
-          {/* Nucleus */}
-          <Nucleus
-            diameter={nucleusDiameter}
-            coreMembers={coreMembers}
-            activeId={activeMemberId}
-            setActiveId={setActiveMemberId}
-          />
+        {/* Nucleus */}
+        <Nucleus
+          diameter={nucleusDiameter}
+          coreMembers={coreMembers}
+          activeId={activeMemberId}
+          setActiveId={setActiveMemberId}
+          portalContainer={tooltipContainer}
+        />
 
-          {/* Orbits */}
-          {orbits.map((o, i) => (
-            <Orbit key={i} radius={o.radius} delay={0.8 + i * 0.2} dashed={i === orbits.length - 1} />
-          ))}
+        {/* Orbits */}
+        {orbits.map((o, i) => (
+          <Orbit key={i} radius={o.radius} delay={0.8 + i * 0.2} dashed={i === orbits.length - 1} />
+        ))}
 
-          {/* Electrons */}
-          {supporters.length > 0 &&
-            supporters.map((supporter, index) => {
-              const { radius, duration } = orbits[index % orbits.length]
-              const startingAngle = index * GOLDEN_ANGLE
-              const electronSize = Math.round(Math.max(24, Math.min(44, shortest * (isTiny ? 0.1 : isSmall ? 0.11 : 0.12))))
-              return (
-                <Electron
-                  key={supporter.id}
-                  supporter={supporter}
-                  orbitRadius={radius}
-                  duration={duration}
-                  startingAngle={startingAngle}
-                  activeId={activeMemberId}
-                  setActiveId={setActiveMemberId}
-                  size={electronSize}
-                />
-              )
-            })}
-        </div>
-
-        {/* Legend (moved outside absolute scene for consistent placement) */}
-        <Legend />
+        {/* Electrons */}
+        {supporters.length > 0 &&
+          supporters.map((supporter, index) => {
+            const { radius, duration } = orbits[index % orbits.length]
+            const startingAngle = index * GOLDEN_ANGLE
+            const electronSize = Math.round(
+              Math.max(24, Math.min(44, shortest * (isTiny ? 0.1 : isSmall ? 0.11 : 0.12))),
+            )
+            return (
+              <Electron
+                key={supporter.id}
+                supporter={supporter}
+                orbitRadius={radius}
+                duration={duration}
+                startingAngle={startingAngle}
+                activeId={activeMemberId}
+                setActiveId={setActiveMemberId}
+                size={electronSize}
+                portalContainer={tooltipContainer}
+              />
+            )
+          })}
       </div>
-    </TooltipContainerContext.Provider>
+
+      {/* Legend (moved outside absolute scene for consistent placement) */}
+      <Legend />
+    </div>
   )
 }

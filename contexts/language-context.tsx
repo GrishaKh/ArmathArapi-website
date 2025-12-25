@@ -13,18 +13,25 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>("en")
+  const [language, setLanguage] = useState<Language>(() => {
+    // Server-side: always return default
+    if (typeof window === "undefined") return "en"
+    // Client-side: try to get from localStorage
+    const saved = localStorage.getItem("language") as Language
+    return saved === "en" || saved === "hy" ? saved : "en"
+  })
+
+  const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("language") as Language
-    if (savedLanguage && (savedLanguage === "en" || savedLanguage === "hy")) {
-      setLanguage(savedLanguage)
-    }
+    setIsHydrated(true)
   }, [])
 
   const handleSetLanguage = (lang: Language) => {
     setLanguage(lang)
-    localStorage.setItem("language", lang)
+    if (typeof window !== "undefined") {
+      localStorage.setItem("language", lang)
+    }
   }
 
   const t = (key: TranslationKey): string => {
@@ -32,11 +39,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     return currentTranslations[key] || translations.en[key] || key
   }
 
-  return (
-    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
-      {children}
-    </LanguageContext.Provider>
-  )
+  const value = {
+    language,
+    setLanguage: handleSetLanguage,
+    t,
+  }
+
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
 }
 
 export function useLanguage() {

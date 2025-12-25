@@ -59,34 +59,34 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 ### Installation
 
 1. **Clone the repository**
-   ```bash
+   \`\`\`bash
    git clone https://github.com/GrishaKh/ArmathArapi-website.git
    cd ArmathArapi-website
-   ```
+   \`\`\`
 
 2. **Install dependencies**
-   ```bash
+   \`\`\`bash
    pnpm install
-   ```
+   \`\`\`
 
 3. **Set up environment variables**
-   ```bash
+   \`\`\`bash
    cp .env.example .env.local
-   ```
+   \`\`\`
    
    Fill in the required values:
-   ```env
+   \`\`\`env
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
    SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
    RESEND_API_KEY=your_resend_api_key
    ADMIN_EMAIL=admin@example.com
-   ```
+   \`\`\`
 
 4. **Run the development server**
-   ```bash
+   \`\`\`bash
    pnpm dev
-   ```
+   \`\`\`
 
 5. **Open [http://localhost:3000](http://localhost:3000)**
 
@@ -94,7 +94,7 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 
 ## Project Structure
 
-```
+\`\`\`
 ├── app/
 │   ├── api/              # API routes (submissions, admin)
 │   ├── admin/            # Admin dashboard
@@ -115,7 +115,7 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 │   ├── supabase.ts       # Database client
 │   └── validations.ts    # Zod schemas
 └── public/               # Static assets
-```
+\`\`\`
 
 ---
 

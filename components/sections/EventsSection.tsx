@@ -8,7 +8,7 @@ import { useLanguage } from "@/contexts/language-context"
 import { Calendar, MapPin, ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { motion } from "framer-motion"
+import { motion } from "motion/react" // Updated import from framer-motion to motion/react for React 19 compatibility
 import { getEventsSortedByYear } from "@/lib/events"
 
 const events = getEventsSortedByYear()
@@ -83,9 +83,7 @@ export function EventsSection() {
                     {/* Location */}
                     <div className="flex items-center text-sm text-gray-500 gap-1">
                       <MapPin className="w-4 h-4 flex-shrink-0" />
-                      <span className="truncate">
-                        {language === "hy" ? event.locationHy : event.location}
-                      </span>
+                      <span className="truncate">{language === "hy" ? event.locationHy : event.location}</span>
                     </div>
 
                     {/* Learn More link */}
