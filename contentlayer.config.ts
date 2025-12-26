@@ -27,14 +27,17 @@ export const Event = defineDocumentType(() => ({
         highlights: { type: 'list', of: { type: 'string' }, required: false },
         highlightsHy: { type: 'list', of: { type: 'string' }, required: false },
         relatedProjects: { type: 'list', of: { type: 'string' }, required: false },
-        language: { type: 'enum', options: ['en', 'hy'], default: 'en' },
         id: { type: 'string', required: true },
     },
     computedFields: {
         slug: {
             type: 'string',
-            resolve: (doc) => doc._raw.flattenedPath.replace(/^events\//, ''),
+            resolve: (doc) => doc._raw.flattenedPath.split('/')[1],
         },
+        language: {
+            type: 'string', // Override the enum field if needed, or keep it as computed to ensure correct value
+            resolve: (doc) => doc._raw.sourceFileName.replace(/\.mdx$/, '') as 'en' | 'hy',
+        }
     },
 }))
 
