@@ -10,10 +10,10 @@ import { Badge } from "@/components/ui/badge"
 import { Calendar, MapPin } from "lucide-react"
 import { Header } from "@/components/Header"
 
-const events = getEventsSortedByYear()
 
 export default function EventsPage() {
   const { t, language } = useLanguage()
+  const events = getEventsSortedByYear(language)
 
   const categoryColors: Record<string, string> = {
     competition: "bg-armath-red",
@@ -37,12 +37,12 @@ export default function EventsPage() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {events.map((event, index) => (
             <AnimatedSection key={event.id} animation="fadeInUp" delay={index * 0.1}>
-              <Link href={`/events/${event.slug}`}>
+              <Link href={`/events/${event.slug.split('/').pop()}`}>
                 <Card className="hover:shadow-xl transition-all duration-500 hover:scale-105 group h-full overflow-hidden cursor-pointer">
                   <div className="relative overflow-hidden">
                     <Image
                       src={event.image || "/placeholder.svg?height=200&width=300"}
-                      alt={language === "hy" ? event.titleHy : event.title}
+                      alt={event.title}
                       width={300}
                       height={200}
                       className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
@@ -56,16 +56,16 @@ export default function EventsPage() {
                   </div>
                   <CardHeader>
                     <CardTitle className="text-lg group-hover:text-armath-blue transition-colors line-clamp-2">
-                      {language === "hy" ? event.titleHy : event.title}
+                      {event.title}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-gray-600 text-sm line-clamp-3">
-                      {language === "hy" ? event.descriptionHy : event.description}
+                      {event.description || ""}
                     </p>
                     <div className="mt-4 flex items-center text-sm text-gray-500 gap-1">
                       <MapPin className="w-4 h-4" />
-                      {language === "hy" ? event.locationHy : event.location}
+                      {event.location}
                     </div>
                   </CardContent>
                 </Card>

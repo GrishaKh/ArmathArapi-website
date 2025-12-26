@@ -1,12 +1,11 @@
 "use client"
 
 import { use } from "react"
-import { CardTitle } from "@/components/ui/card"
-import { CardHeader } from "@/components/ui/card"
-import { Card } from "@/components/ui/card"
+import { useMDXComponent } from "next-contentlayer/hooks"
+import { CardTitle, CardHeader, Card } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
 import { AnimatedSection } from "@/components/animated-section"
-import { getEventBySlug, events } from "@/lib/events"
+import { getEventBySlug, getEventsSortedByYear } from "@/lib/events"
 import Link from "next/link"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
@@ -23,21 +22,18 @@ interface PageProps {
 export default function EventDetailPage({ params }: PageProps) {
   const { slug } = use(params)
   const { t, language } = useLanguage()
-  const event = getEventBySlug(slug)
+  const event = getEventBySlug(slug, language)
 
   if (!event) {
     notFound()
   }
 
-  const title = language === "hy" ? event.titleHy : event.title
-  const location = language === "hy" ? event.locationHy : event.location
-  const summary = language === "hy" ? event.summaryHy : event.summary
-  const challenge = language === "hy" ? event.challengeHy : event.challenge
-  const achievements = language === "hy" ? event.achievementsHy : event.achievements
-  const results = language === "hy" ? event.resultsHy : event.results
-  const highlights = language === "hy" ? event.highlightsHy : event.highlights
-  const technologies = language === "hy" ? event.technologiesHy : event.technologies
-  const schools = language === "hy" ? event.participants.schoolsHy : event.participants.schools
+  const MDXContent = useMDXComponent(event.body.code)
+
+  // Fetch related events (excluding current one)
+  const relatedEvents = getEventsSortedByYear(language)
+    .filter((e) => e.id !== event.id)
+    .slice(0, 3)
 
   const categoryLabels: Record<string, string> = {
     competition: t("competition"),
@@ -51,6 +47,19 @@ export default function EventDetailPage({ params }: PageProps) {
     workshop: "bg-armath-blue",
     camp: "bg-green-600",
     exhibition: "bg-purple-600",
+  }
+
+  // Custom MDX components to match current styling
+  const mdxComponents = {
+    h2: (props: any) => <h2 className="text-3xl font-bold text-gray-900 mb-4 mt-8" {...props} />,
+    p: (props: any) => <p className="text-gray-600 text-lg leading-relaxed mb-4" {...props} />,
+    ul: (props: any) => <ul className="space-y-4 mb-6" {...props} />,
+    li: (props: any) => (
+      <li className="flex gap-4" {...props}>
+        <Zap className="w-6 h-6 text-armath-blue flex-shrink-0 mt-1" />
+        <span className="text-gray-600 text-lg">{props.children}</span>
+      </li>
+    ),
   }
 
   return (
@@ -86,16 +95,16 @@ export default function EventDetailPage({ params }: PageProps) {
           <div className="relative w-full h-96 rounded-lg overflow-hidden">
             <Image
               src={event.image || "/placeholder.svg?height=400&width=1200"}
-              alt={title}
+              alt={event.title}
               fill
               className="object-cover"
             />
             <div className="absolute inset-0 bg-black/40 flex items-end p-8">
               <div className="text-white">
                 <Badge className={`${categoryColors[event.category]} text-white mb-4`}>
-                  {categoryLabels[event.category]}
+                  {categoryLabels[event.category] || event.category}
                 </Badge>
-                <h1 className="text-5xl font-bold mb-4">{title}</h1>
+                <h1 className="text-5xl font-bold mb-4">{event.title}</h1>
               </div>
             </div>
           </div>
@@ -104,7 +113,7 @@ export default function EventDetailPage({ params }: PageProps) {
         <div className="grid lg:grid-cols-3 gap-12">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            {/* Event Overview */}
+            {/* Metadata Bar */}
             <AnimatedSection className="mb-12">
               <div className="grid md:grid-cols-3 gap-6 mb-12">
                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
@@ -118,71 +127,49 @@ export default function EventDetailPage({ params }: PageProps) {
                   <MapPin className="w-6 h-6 text-armath-red" />
                   <div>
                     <p className="text-sm text-gray-600">{t("eventLocation")}</p>
-                    <p className="text-lg font-semibold text-gray-900">{location}</p>
+                    <p className="text-lg font-semibold text-gray-900">{event.location}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
                   <Award className="w-6 h-6 text-green-600" />
                   <div>
                     <p className="text-sm text-gray-600">{t("eventCategory")}</p>
-                    <p className="text-lg font-semibold text-gray-900">{categoryLabels[event.category]}</p>
+                    <p className="text-lg font-semibold text-gray-900">{categoryLabels[event.category] || event.category}</p>
                   </div>
                 </div>
               </div>
             </AnimatedSection>
 
-            {/* Summary */}
+            {/* MDX Content */}
             <AnimatedSection className="mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">{t("overview")}</h2>
-              <p className="text-gray-600 text-lg leading-relaxed">{summary}</p>
+              <article className="prose prose-lg max-w-none">
+                <MDXContent components={mdxComponents} />
+              </article>
             </AnimatedSection>
 
-            {/* Challenge */}
-            <AnimatedSection className="mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">{t("eventChallenge")}</h2>
-              <p className="text-gray-600 text-lg leading-relaxed">{challenge}</p>
-            </AnimatedSection>
-
-            {/* Achievements */}
-            <AnimatedSection className="mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">{t("eventAchievements")}</h2>
-              <ul className="space-y-4">
-                {achievements.map((achievement, index) => (
-                  <li key={index} className="flex gap-4">
-                    <Zap className="w-6 h-6 text-armath-blue flex-shrink-0 mt-1" />
-                    <span className="text-gray-600 text-lg">{achievement}</span>
-                  </li>
-                ))}
-              </ul>
-            </AnimatedSection>
-
-            {/* Results */}
-            <AnimatedSection className="mb-12 p-8 bg-armath-blue/10 rounded-lg">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">{t("eventResults")}</h2>
-              <p className="text-gray-600 text-lg leading-relaxed">{results}</p>
-            </AnimatedSection>
-
-            {/* Highlights */}
-            <AnimatedSection className="mb-12">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">{t("eventHighlights")}</h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                {highlights.map((highlight, index) => (
-                  <div key={index} className="p-4 bg-gray-50 rounded-lg border-l-4 border-armath-blue">
-                    <p className="text-gray-700 font-semibold">{highlight}</p>
-                  </div>
-                ))}
-              </div>
-            </AnimatedSection>
+            {/* Highlights (from Frontmatter) */}
+            {event.highlights && event.highlights.length > 0 && (
+              <AnimatedSection className="mb-12">
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">{t("eventHighlights")}</h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {event.highlights.map((highlight, index) => (
+                    <div key={index} className="p-4 bg-gray-50 rounded-lg border-l-4 border-armath-blue">
+                      <p className="text-gray-700 font-semibold">{highlight}</p>
+                    </div>
+                  ))}
+                </div>
+              </AnimatedSection>
+            )}
           </div>
 
           {/* Sidebar */}
           <div>
             {/* Technologies */}
-            {technologies.length > 0 && (
+            {event.technologies && event.technologies.length > 0 && (
               <AnimatedSection className="mb-12 p-6 bg-gray-50 rounded-lg sticky top-28">
                 <h3 className="text-xl font-bold text-gray-900 mb-4">{t("eventTechnologies")}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {technologies.map((tech, index) => (
+                  {event.technologies.map((tech, index) => (
                     <Badge key={index} variant="secondary" className="bg-armath-blue/20 text-armath-blue">
                       {tech}
                     </Badge>
@@ -192,14 +179,14 @@ export default function EventDetailPage({ params }: PageProps) {
             )}
 
             {/* Participants */}
-            {schools.length > 0 && (
+            {event.participants && Array.isArray((event.participants as any).schools) && (
               <AnimatedSection className="mb-12 p-6 bg-gray-50 rounded-lg">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <Users className="w-5 h-5" />
                   {t("participatingSchools")}
                 </h3>
                 <ul className="space-y-2">
-                  {schools.map((school, index) => (
+                  {((event.participants as any).schools as string[]).map((school, index) => (
                     <li key={index} className="text-gray-600 flex items-start gap-2">
                       <span className="text-armath-blue font-bold">•</span>
                       {school}
@@ -212,19 +199,17 @@ export default function EventDetailPage({ params }: PageProps) {
         </div>
 
         {/* Related Events */}
-        <AnimatedSection className="mt-20 pt-12 border-t">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">{t("relatedEvents")}</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {events
-              .filter((e) => e.id !== event.id)
-              .slice(0, 3)
-              .map((relatedEvent, index) => (
-                <Link key={relatedEvent.id} href={`/events/${relatedEvent.slug}`}>
+        {relatedEvents.length > 0 && (
+          <AnimatedSection className="mt-20 pt-12 border-t">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8">{t("relatedEvents")}</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {relatedEvents.map((relatedEvent) => (
+                <Link key={relatedEvent.id} href={`/events/${relatedEvent.slug.split('/').pop()}`}>
                   <Card className="hover:shadow-xl transition-all duration-500 hover:scale-105 group overflow-hidden cursor-pointer h-full">
                     <div className="relative overflow-hidden">
                       <Image
                         src={relatedEvent.image || "/placeholder.svg"}
-                        alt={language === "hy" ? relatedEvent.titleHy : relatedEvent.title}
+                        alt={relatedEvent.title}
                         width={300}
                         height={200}
                         className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
@@ -232,14 +217,15 @@ export default function EventDetailPage({ params }: PageProps) {
                     </div>
                     <CardHeader>
                       <CardTitle className="text-lg group-hover:text-armath-blue transition-colors line-clamp-2">
-                        {language === "hy" ? relatedEvent.titleHy : relatedEvent.title}
+                        {relatedEvent.title}
                       </CardTitle>
                     </CardHeader>
                   </Card>
                 </Link>
               ))}
-          </div>
-        </AnimatedSection>
+            </div>
+          </AnimatedSection>
+        )}
       </div>
     </main>
   )

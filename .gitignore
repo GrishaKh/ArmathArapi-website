@@ -32,3 +32,6 @@ next-env.d.ts
 ._*
 .Spotlight-V100
 .Trashes
+
+# Contentlayer
+.contentlayer

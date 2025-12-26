@@ -11,10 +11,10 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { getEventsSortedByYear } from "@/lib/events"
 
-const events = getEventsSortedByYear()
 
 export function EventsSection() {
   const { t, language } = useLanguage()
+  const events = getEventsSortedByYear(language)
 
   const categoryColors: Record<string, string> = {
     competition: "bg-armath-red",
@@ -40,12 +40,12 @@ export function EventsSection() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {events.slice(0, 3).map((event, index) => (
             <AnimatedSection key={event.id} animation="fadeInUp" delay={index * 0.15}>
-              <Link href={`/events/${event.slug}`} className="block h-full">
+              <Link href={`/events/${event.slug.split('/').pop()}`} className="block h-full">
                 <Card className="hover:shadow-xl transition-all duration-500 hover:scale-[1.02] group h-full overflow-hidden cursor-pointer border-transparent hover:border-armath-blue/20">
                   <div className="relative overflow-hidden">
                     <Image
                       src={event.image || "/placeholder.svg"}
-                      alt={language === "hy" ? event.titleHy : event.title}
+                      alt={event.title}
                       width={400}
                       height={250}
                       className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
@@ -71,20 +71,20 @@ export function EventsSection() {
 
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg group-hover:text-armath-blue transition-colors line-clamp-2">
-                      {language === "hy" ? event.titleHy : event.title}
+                      {event.title}
                     </CardTitle>
                   </CardHeader>
 
                   <CardContent className="space-y-3">
                     <p className="text-gray-600 text-sm line-clamp-2">
-                      {language === "hy" ? event.descriptionHy : event.description}
+                      {event.description || ""}
                     </p>
 
                     {/* Location */}
                     <div className="flex items-center text-sm text-gray-500 gap-1">
                       <MapPin className="w-4 h-4 flex-shrink-0" />
                       <span className="truncate">
-                        {language === "hy" ? event.locationHy : event.location}
+                        {event.location}
                       </span>
                     </div>
 

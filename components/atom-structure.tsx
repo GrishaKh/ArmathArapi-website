@@ -6,6 +6,7 @@ import { useLayoutEffect, useEffect, useMemo, useRef, useState, createContext, u
 import { createPortal } from "react-dom"
 import { Card, CardContent } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
+import Image from "next/image"
 
 import { type TranslationKey } from "@/lib/translations"
 
@@ -333,9 +334,11 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
                 <div className="relative mb-3">
                   <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-blue/20 ring-offset-2 shadow-lg">
                     {member.image ? (
-                      <img
+                      <Image
                         src={member.image}
                         alt={member.name}
+                        width={64}
+                        height={64}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -521,9 +524,11 @@ const Electron: React.FC<ElectronProps> = ({
                 <div className="relative mb-3">
                   <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-red/20 ring-offset-2 shadow-lg">
                     {supporter.image ? (
-                      <img
+                      <Image
                         src={supporter.image}
                         alt={supporter.name}
+                        width={64}
+                        height={64}
                         className="w-full h-full object-cover"
                       />
                     ) : (

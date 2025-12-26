@@ -1,12 +1,14 @@
 import { MetadataRoute } from 'next'
-import { events } from '@/lib/events'
+import { allEvents } from 'contentlayer/generated'
 import { projects } from '@/lib/projects'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://armatharapi.vercel.app'
 
-  const eventUrls = events.map((event) => ({
-    url: `${baseUrl}/events/${event.slug}`,
+  // Use only English events for sitemap to avoid duplicates
+  const englishEvents = allEvents.filter(e => e.language === 'en')
+  const eventUrls = englishEvents.map((event) => ({
+    url: `${baseUrl}/events/${event.slug.split('/').pop()}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
