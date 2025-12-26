@@ -33,7 +33,7 @@ export const Event = defineDocumentType(() => ({
     computedFields: {
         slug: {
             type: 'string',
-            resolve: (doc) => doc._raw.sourceFileName.replace(/\.mdx$/, ''),
+            resolve: (doc) => doc._raw.flattenedPath.replace(/^events\//, ''),
         },
     },
 }))
