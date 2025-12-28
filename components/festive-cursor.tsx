@@ -13,6 +13,11 @@ export function FestiveCursor() {
     const cursorYSpring = useSpring(cursorY, springConfig)
 
     useEffect(() => {
+        // Don't enable on touch devices or devices without hover capability
+        if (window.matchMedia("(pointer: coarse)").matches || window.matchMedia("(hover: none)").matches) {
+            return
+        }
+
         const moveCursor = (e: MouseEvent) => {
             cursorX.set(e.clientX)
             cursorY.set(e.clientY)
@@ -34,12 +39,7 @@ export function FestiveCursor() {
         }
     }, [cursorX, cursorY, isVisible])
 
-    // Don't render on touch devices (basic check)
-    useEffect(() => {
-        if (window.matchMedia("(pointer: coarse)").matches) {
-            setIsVisible(false)
-        }
-    }, [])
+
 
     if (!isVisible) return null
 
