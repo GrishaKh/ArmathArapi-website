@@ -11,7 +11,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { getProjectsSortedByYear } from "@/lib/projects"
 
-const projects = getProjectsSortedByYear()
+const projects = getProjectsSortedByYear().filter(project => project.image)
 
 export function ProjectsSection() {
   const { t, language } = useLanguage()

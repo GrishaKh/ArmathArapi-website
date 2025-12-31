@@ -33,7 +33,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
     role: t("roleLeadCoach"),
     isCore: true,
     details: t("detailsLead"),
-    image: "/team/grisha-kh.png",
+    image: "/team/grisha_khachatryan.jpg",
   },
   {
     id: "olya-kh",
@@ -41,7 +41,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
     role: t("roleCoach"),
     isCore: true,
     details: t("detailsCoach"),
-    image: "/team/olya-kh.png",
+    image: "/team/olya_khachatryan.jpg",
   },
   {
     id: "narek-sar",
@@ -49,7 +49,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
     role: t("roleCoach"),
     isCore: true,
     details: t("detailsCoach"),
-    image: "/team/narek-sar.png",
+    image: "/team/narek_saroyan.jpg",
   },
   {
     id: "edgar-har",
@@ -57,7 +57,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
     role: t("roleSupporter"),
     isCore: false,
     contribution: t("contributionScientific"),
-    image: "/team/edgar-har.png",
+    image: "/team/edgar_harutyunyan.jpg",
   },
   {
     id: "narek-har",
@@ -65,7 +65,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
     role: t("roleSupporter"),
     isCore: false,
     contribution: t("contributionWeb"),
-    image: "/team/narek-har.png",
+    image: "/team/narek_harutyunyan.jpg",
   },
 ]
 

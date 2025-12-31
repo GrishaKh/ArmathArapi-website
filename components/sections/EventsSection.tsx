@@ -14,7 +14,7 @@ import { getEventsSortedByYear } from "@/lib/events"
 
 export function EventsSection() {
   const { t, language } = useLanguage()
-  const events = getEventsSortedByYear(language)
+  const events = getEventsSortedByYear(language).filter(event => event.image)
 
   const categoryColors: Record<string, string> = {
     competition: "bg-armath-red",
