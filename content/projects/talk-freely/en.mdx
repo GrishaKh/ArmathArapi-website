@@ -1,21 +1,21 @@
 ---
 id: "1"
 title: "TalkFreely"
-description: "An AI-powered natural language interface for controlling physical devices and systems using conversational commands."
-shortDescription: "Control devices using natural language and AI"
+description: "TalkFreely is an innovative project aiming to provide a natural language-based interface for controlling various devices and receiving assistance with everyday tasks. The project was created to meet the diverse needs of users across different domains and applications."
+shortDescription: "Device control via natural language using Artificial Intelligence tools"
 image: "projects/TalkFreely.png"
 category: "Artificial Intelligence & IoT"
 year: 2023
 featured: true
 tools: ["GPT-3.5", "ESP8266", "Relays", "Python", "Natural Language Processing"]
-challenge: "Creating a system that understands natural language commands with various phrasings and contexts while reliably controlling physical relay hardware."
-solution: "Integrated GPT-3.5 API with Arduino relay control to create a bidirectional communication system that interprets user commands and executes physical actions."
-impact: "Demonstrated the practical application of AI in device control, pioneering a new level of human-device interaction through conversational interfaces."
+challenge: "We have always considered it a drawback that systems mainly work with specific texts or speech meeting certain criteria."
+solution: "Using the OpenAI API and gpt-3.5-turbo model, TalkFreely understands user commands and controls devices. The project is divided into two modules: natural language processing (Python) and device control (ESP8266)."
+impact: "The idea of TalkFreely arose from the desire to make devices user-friendly and adaptable to different speech contexts for the technology user."
 results:
-  - "Successfully controlled 4 relay outputs with natural language commands"
-  - "System understood context-based commands like 'turn off all' or 'toggle the last connected relay'"
-  - "Created seamless user dialogue with the system for device management"
-  - "Presented at DigiCode 2023 to showcase AI capabilities in device automation"
+  - "Multilingual support (googletrans)"
+  - "OpenAI API (gpt-3.5-turbo) integration"
+  - "Modular design (Python + ESP8266)"
+  - "Personalization and scalability"
 studentName: "Narek Saroyan"
 presentedAt: "DigiCode 2023"
 technologies:
@@ -24,17 +24,39 @@ technologies:
   - name: "ESP8266"
     description: "Microcontroller platform for relay control and hardware interfacing"
   - name: "Relay Control"
-    description: "4 relays controlled through Arduino digital outputs based on AI-interpreted commands"
+    description: "4 relays controlled through digital outputs based on AI-interpreted commands"
   - name: "Natural Language Processing"
     description: "Processing user input to extract intent and parameters for device control"
 ---
 
 ## Overview
 
-TalkFreely is an innovative project that aims to provide a natural language-based interface for controlling various devices and getting assistance with everyday tasks. The project was created to meet the diverse needs of users across different domains and applications.
+TalkFreely is an innovative project aiming to provide a natural language-based interface for controlling various devices and receiving assistance with everyday tasks. The project was created to meet the diverse needs of users across different domains and applications.
 
-## Project Details
+## Background and Motivation
 
-TalkFreely represents a breakthrough in human-device interaction. By leveraging OpenAI's GPT-3.5 API and the gpt-3.5-turbo model, TalkFreely understands user commands and controls devices. The project is divided into two modules: natural language processing (Python) and device control (ESP8266).
+We previously explored voice control possibilities for devices and creating the most user-friendly interface. We always viewed it as a limitation that systems primarily worked with specific text or speech meeting certain criteria. Later, tools incorporating AI solutions appeared (e.g., we studied Amazon Alexa's AI modules).
 
-The system's ability to understand context-based commands and various phrasings makes it intuitive and user-friendly. Users can communicate with their devices in natural language, making technology more accessible and convenient.
+When OpenAI introduced its language models, the idea was born that we could somehow give it another capability: device control. Thus, the idea of TalkFreely was born.
+
+The idea for TalkFreely stemmed from a desire to make devices convenient for the technology user and adaptable to various speech contexts. We realized that despite the abundance of devices and applications on the market, there is still a gap in intuitive communication between users and their devices.
+
+## Key Features
+
+Some of the key features of the project include:
+
+1.  **Multilingual Support**: TalkFreely uses the `googletrans` package to automatically detect and translate user inputs in various languages, expanding its accessibility and applicability.
+2.  **OpenAI API Integration**: Using the OpenAI API and `gpt-3.5-turbo` model, TalkFreely is capable of understanding user commands, controlling devices, and providing assistance with general responses.
+3.  **Modular Design**: The project is divided into two main modules: natural language processing (implemented in Python) and device control (using ESP8266). These modules communicate via WiFi connection.
+4.  **Personalization and Scalability**: TalkFreely is designed with compatibility for various devices in mind, making it applicable to different sectors ranging from home automation to agriculture.
+
+## Future Development
+
+We have several key plans that we wish to incorporate into the system:
+
+-   **Expanded Hardware Compatibility**: Support for a wider range of devices to meet diverse user needs.
+-   **Voice Command Integration**: A more convenient option for interacting with the system.
+-   **Complex Configurations and Actions via Natural Language**: Ability to automatically configure more complex commands and parameters using natural language.
+-   **Improved Security Measures**: Implementing additional features for device control security and user data privacy protection.
+
+Pursuing these development plans, we aim to create a more powerful and versatile tool that can serve users in various fields.
