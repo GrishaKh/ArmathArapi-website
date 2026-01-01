@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import type React from "react"
-import { useLayoutEffect, useEffect, useMemo, useRef, useState, createContext, useContext } from "react"
+import { useLayoutEffect, useEffect, useMemo, useRef, useState, createContext, useContext, useCallback } from "react"
 import { createPortal } from "react-dom"
 import { Card, CardContent } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
@@ -12,7 +12,7 @@ import { type TranslationKey } from "@/lib/translations"
 
 // --- Tooltip Portal Context ---
 // This allows tooltips to render outside the stacking context
-const TooltipContainerContext = createContext<HTMLDivElement | null>(null)
+const TooltipContainerContext = createContext<HTMLElement | null>(null)
 
 // --- Types ---
 interface TeamMember {
@@ -157,36 +157,55 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
       const rect = anchorRef.current.getBoundingClientRect()
       const containerRect = container.getBoundingClientRect()
 
-      // Calculate the element's true center position
-      const tooltipWidth = 280 // Approximate tooltip width
+      // Measure tooltip if possible (fallback to the known width)
+      const tooltipWidth = tooltipRef.current?.offsetWidth ?? 280
+      const tooltipHeight = tooltipRef.current?.offsetHeight ?? 0
+      const gap = 12
+      const margin = 8
+
+      // Calculate the element's true center position (relative to portal container)
       const elementCenterX = rect.left + rect.width / 2 - containerRect.left
 
       // Clamp tooltip position to prevent horizontal overflow
-      const minX = tooltipWidth / 2 + 8
-      const maxX = containerRect.width - tooltipWidth / 2 - 8
+      const minX = tooltipWidth / 2 + margin
+      const maxX = containerRect.width - tooltipWidth / 2 - margin
       const clampedX = Math.max(minX, Math.min(maxX, elementCenterX))
 
       // Calculate arrow offset (how much the tooltip was shifted from element center)
       const arrowOffset = elementCenterX - clampedX
 
-      // Determine if we need to flip to bottom (when too close to top of viewport)
-      const spaceAbove = rect.top
-      const flipToBottom = spaceAbove < 200 // Flip if less than 200px above
+      // Determine if we need to flip (prefer top, but pick the side that fits best)
+      const spaceAbove = rect.top - containerRect.top
+      const spaceBelow = containerRect.height - (rect.bottom - containerRect.top)
+      const needed = tooltipHeight > 0 ? tooltipHeight + gap : 200
+      const canFitAbove = spaceAbove >= needed
+      const canFitBelow = spaceBelow >= needed
+
+      let flipToBottom = false
+      if (!canFitAbove && canFitBelow) flipToBottom = true
+      else if (canFitAbove && !canFitBelow) flipToBottom = false
+      else if (!canFitAbove && !canFitBelow) flipToBottom = spaceBelow > spaceAbove
+      else flipToBottom = false
 
       setPosition({
         x: clampedX,
         y: flipToBottom
-          ? rect.bottom - containerRect.top + 12
-          : rect.top - containerRect.top - 12,
+          ? rect.bottom - containerRect.top + gap
+          : rect.top - containerRect.top - gap,
         flipToBottom,
         arrowOffset,
       })
     }
 
     updatePosition()
-    // Update position on scroll/resize
-    const interval = setInterval(updatePosition, 16) // ~60fps for smooth following
-    return () => clearInterval(interval)
+    // Follow moving electrons smoothly (and stay in sync with rAF-driven motion)
+    let rafId = 0
+    const loop = () => {
+      updatePosition()
+      rafId = window.requestAnimationFrame(loop)
+    }
+    rafId = window.requestAnimationFrame(loop)
+    return () => window.cancelAnimationFrame(rafId)
   }, [isVisible, anchorRef, container])
 
   if (!container) return null
@@ -254,6 +273,7 @@ type NucleusProps = {
   coreMembers: TeamMember[]
   activeId: string | null
   setActiveId: (id: string | null) => void
+  togglePin: (id: string) => void
 }
 
 // Individual core member button with ref for tooltip positioning
@@ -264,6 +284,7 @@ type CoreMemberButtonProps = {
   dotSize: number
   activeId: string | null
   setActiveId: (id: string | null) => void
+  togglePin: (id: string) => void
   index: number
 }
 
@@ -274,6 +295,7 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
   dotSize,
   activeId,
   setActiveId,
+  togglePin,
   index,
 }) => {
   const reduceMotion = useReducedMotion()
@@ -282,12 +304,8 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
   const isActive = activeId === member.id
   const isTouch = useIsTouchDevice()
 
-  // Handle click for touch devices (tap to toggle)
-  const handleClick = () => {
-    if (isTouch) {
-      setActiveId(isActive ? null : member.id)
-    }
-  }
+  // Click-to-pin works on all devices (needed for orbiting electrons and accessibility)
+  const handleClick = () => togglePin(member.id)
 
   return (
     <div
@@ -301,6 +319,8 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
         <motion.button
           ref={buttonRef}
           type="button"
+          data-atom-member-button="true"
+          data-member-id={member.id}
           aria-describedby={isActive ? tipId : undefined}
           aria-label={`${member.name}, ${member.role}`}
           className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-armath-blue"
@@ -362,7 +382,7 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
   )
 }
 
-const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setActiveId }) => {
+const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setActiveId, togglePin }) => {
   const reduceMotion = useReducedMotion()
 
   // Early return if no core members
@@ -409,6 +429,7 @@ const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setA
             dotSize={dotSize}
             activeId={activeId}
             setActiveId={setActiveId}
+            togglePin={togglePin}
             index={index}
           />
         )
@@ -439,6 +460,7 @@ type ElectronProps = {
   startingAngle: number
   activeId: string | null
   setActiveId: (id: string | null) => void
+  togglePin: (id: string) => void
   size: number
 }
 
@@ -449,6 +471,7 @@ const Electron: React.FC<ElectronProps> = ({
   startingAngle,
   activeId,
   setActiveId,
+  togglePin,
   size,
 }) => {
   const reduceMotion = useReducedMotion()
@@ -467,12 +490,8 @@ const Electron: React.FC<ElectronProps> = ({
   // Memoize initials to avoid recalculating on every render
   const initials = useMemo(() => getInitials(supporter.name), [supporter.name])
 
-  // Handle click for touch devices (tap to toggle)
-  const handleClick = () => {
-    if (isTouch) {
-      setActiveId(isActive ? null : supporter.id)
-    }
-  }
+  // Click-to-pin works on all devices (hover can't reliably stay on a moving electron)
+  const handleClick = () => togglePin(supporter.id)
 
   return (
     <motion.div
@@ -489,6 +508,8 @@ const Electron: React.FC<ElectronProps> = ({
         <motion.button
           ref={buttonRef}
           type="button"
+          data-atom-member-button="true"
+          data-member-id={supporter.id}
           aria-describedby={isActive ? tipId : undefined}
           aria-label={`${supporter.name}, ${supporter.role}`}
           className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-armath-red"
@@ -567,17 +588,52 @@ const Legend: React.FC = () => {
 
 // --- Main Component ---
 export function AtomStructure() {
-  const [activeMemberId, setActiveMemberId] = useState<string | null>(null)
-  const tooltipContainerRef = useRef<HTMLDivElement>(null)
-  const [tooltipContainer, setTooltipContainer] = useState<HTMLDivElement | null>(null)
+  const [hoveredMemberId, setHoveredMemberId] = useState<string | null>(null)
+  const [pinnedMemberId, setPinnedMemberId] = useState<string | null>(null)
+  const activeMemberId = pinnedMemberId ?? hoveredMemberId
 
-  // Set tooltip container after mount
-  useEffect(() => {
-    setTooltipContainer(tooltipContainerRef.current)
+  const [tooltipContainer, setTooltipContainer] = useState<HTMLElement | null>(null)
+
+  const togglePin = useCallback((id: string) => {
+    setPinnedMemberId((prev) => (prev === id ? null : id))
+    setHoveredMemberId(null)
   }, [])
 
+  // Create a fixed full-viewport tooltip layer so coordinates are always viewport-correct.
+  useEffect(() => {
+    const layer = document.createElement("div")
+    layer.setAttribute("data-atom-tooltip-layer", "true")
+    layer.className = "pointer-events-none fixed inset-0 z-[9999]"
+    document.body.appendChild(layer)
+    setTooltipContainer(layer)
+
+    return () => {
+      document.body.removeChild(layer)
+    }
+  }, [])
+
+  // Close pinned tooltip on outside click/tap.
+  useEffect(() => {
+    if (!pinnedMemberId) return
+
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as HTMLElement | null
+      if (!target) return
+      if (target.closest?.('[data-atom-member-button="true"]')) return
+      setPinnedMemberId(null)
+      setHoveredMemberId(null)
+    }
+
+    window.addEventListener("pointerdown", onPointerDown)
+    return () => window.removeEventListener("pointerdown", onPointerDown)
+  }, [pinnedMemberId])
+
   // Handle escape key to close tooltip (at component level to avoid multiple listeners)
-  useEscapeKey(() => setActiveMemberId(null))
+  const closeAllTooltips = useCallback(() => {
+    setHoveredMemberId(null)
+    setPinnedMemberId(null)
+  }, [])
+  useEscapeKey(closeAllTooltips)
 
   // Measure container to scale radii proportionally
   const { ref, width, height } = useMeasure<HTMLDivElement>()
@@ -615,19 +671,13 @@ export function AtomStructure() {
           ref={ref}
           className="relative mx-auto flex h-[clamp(20rem,65vw,28rem)] max-w-full items-center justify-center touch-pan-y"
         >
-          {/* Tooltip container - renders tooltips above everything */}
-          <div
-            ref={tooltipContainerRef}
-            className="absolute inset-0 pointer-events-none z-[9999]"
-            aria-hidden="true"
-          />
-
           {/* Nucleus */}
           <Nucleus
             diameter={nucleusDiameter}
             coreMembers={coreMembers}
             activeId={activeMemberId}
-            setActiveId={setActiveMemberId}
+            setActiveId={setHoveredMemberId}
+            togglePin={togglePin}
           />
 
           {/* Orbits */}
@@ -649,7 +699,8 @@ export function AtomStructure() {
                   duration={duration}
                   startingAngle={startingAngle}
                   activeId={activeMemberId}
-                  setActiveId={setActiveMemberId}
+                  setActiveId={setHoveredMemberId}
+                  togglePin={togglePin}
                   size={electronSize}
                 />
               )
