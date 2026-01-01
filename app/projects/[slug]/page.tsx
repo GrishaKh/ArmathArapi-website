@@ -1,6 +1,7 @@
 "use client"
 
 import { use } from "react"
+import { useMDXComponent } from "next-contentlayer/hooks"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AnimatedSection } from "@/components/animated-section"
@@ -9,8 +10,8 @@ import { useLanguage } from "@/contexts/language-context"
 import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
-import { projects } from "@/lib/projects"
+import { ArrowLeft, Zap } from "lucide-react"
+import { getProjectBySlug } from "@/lib/projects"
 import { notFound } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { LanguageToggle } from "@/components/language-toggle"
@@ -22,19 +23,36 @@ interface Props {
 export default function ProjectDetailPage({ params }: Props) {
   const { slug } = use(params)
   const { t, language } = useLanguage()
-  const project = projects.find((p) => p.slug === slug)
+  const project = getProjectBySlug(slug, language)
 
   if (!project) {
     notFound()
   }
 
-  const title = language === "hy" ? project.titleHy : project.title
-  const description = language === "hy" ? project.descriptionHy : project.description
-  const category = language === "hy" ? project.categoryHy : project.category
-  const challenge = language === "hy" ? project.challengeHy : project.challenge
-  const solution = language === "hy" ? project.solutionHy : project.solution
-  const results = language === "hy" ? project.resultsHy : project.results
-  const impact = language === "hy" ? project.impactHy : project.impact
+  const MDXContent = useMDXComponent(project.body.code)
+
+  // Custom MDX components to match current styling
+  const mdxComponents = {
+    h2: (props: any) => <h2 className="text-3xl font-bold text-gray-900 mb-4 mt-8" {...props} />,
+    p: (props: any) => <p className="text-gray-600 text-lg leading-relaxed mb-4" {...props} />,
+    ul: (props: any) => <ul className="space-y-4 mb-6" {...props} />,
+    li: (props: any) => (
+      <li className="flex gap-4" {...props}>
+        <Zap className="w-6 h-6 text-armath-blue flex-shrink-0 mt-1" />
+        <span className="text-gray-600 text-lg">{props.children}</span>
+      </li>
+    ),
+  }
+
+  const title = project.title
+  const description = project.description || ""
+  const category = project.categoryHy && language === "hy" ? project.categoryHy : project.category
+  const challenge = project.challengeHy && language === "hy" ? project.challengeHy : project.challenge
+  const solution = project.solutionHy && language === "hy" ? project.solutionHy : project.solution
+  const results = project.resultsHy && language === "hy" ? (project.resultsHy || []) : (project.results || [])
+  const impact = project.impactHy && language === "hy" ? project.impactHy : project.impact
+  const tools = project.toolsHy && language === "hy" ? (project.toolsHy || []) : (project.tools || [])
+  const technologies = project.technologies ? (Array.isArray(project.technologies) ? project.technologies : []) : []
 
   return (
     <div className="min-h-screen bg-white">
@@ -70,13 +88,15 @@ export default function ProjectDetailPage({ params }: Props) {
               <Badge className="mb-4 bg-armath-blue text-white">{category}</Badge>
               <h1 className={cn("text-5xl font-bold text-gray-900 mb-4", language === "hy" && "text-4xl")}>{title}</h1>
               <p className="text-xl text-gray-600 mb-8">{description}</p>
-              <div className="flex flex-wrap gap-2">
-                {(language === "hy" ? project.toolsHy : project.tools).map((tool) => (
-                  <Badge key={tool} variant="secondary" className="text-sm">
-                    {tool}
-                  </Badge>
-                ))}
-              </div>
+              {tools.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {tools.map((tool) => (
+                    <Badge key={tool} variant="secondary" className="text-sm">
+                      {tool}
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </AnimatedSection>
             <AnimatedSection animation="fadeInUp" delay={0.2}>
               <div className="relative aspect-video rounded-xl overflow-hidden shadow-lg">
@@ -91,71 +111,88 @@ export default function ProjectDetailPage({ params }: Props) {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto space-y-16">
-            {/* Challenge */}
+            {/* MDX Content */}
             <AnimatedSection>
-              <div className="space-y-4">
-                <h2 className="text-3xl font-bold text-gray-900">{t("challenge")}</h2>
-                <p className="text-lg text-gray-600 leading-relaxed">{challenge}</p>
-              </div>
+              <article className="prose prose-lg max-w-none">
+                <MDXContent components={mdxComponents} />
+              </article>
             </AnimatedSection>
+
+            {/* Challenge */}
+            {challenge && (
+              <AnimatedSection>
+                <div className="space-y-4">
+                  <h2 className="text-3xl font-bold text-gray-900">{t("challenge")}</h2>
+                  <p className="text-lg text-gray-600 leading-relaxed">{challenge}</p>
+                </div>
+              </AnimatedSection>
+            )}
 
             {/* Solution */}
-            <AnimatedSection animation="fadeInUp" delay={0.1}>
-              <div className="space-y-4">
-                <h2 className="text-3xl font-bold text-gray-900">{t("solution")}</h2>
-                <p className="text-lg text-gray-600 leading-relaxed">{solution}</p>
-              </div>
-            </AnimatedSection>
+            {solution && (
+              <AnimatedSection animation="fadeInUp" delay={0.1}>
+                <div className="space-y-4">
+                  <h2 className="text-3xl font-bold text-gray-900">{t("solution")}</h2>
+                  <p className="text-lg text-gray-600 leading-relaxed">{solution}</p>
+                </div>
+              </AnimatedSection>
+            )}
 
             {/* Results */}
-            <AnimatedSection animation="fadeInUp" delay={0.2}>
-              <div className="space-y-4">
-                <h2 className="text-3xl font-bold text-gray-900">{t("results")}</h2>
-                <ul className="space-y-3">
-                  {results.map((result, index) => (
-                    <motion.li
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex gap-3 text-gray-600"
-                    >
-                      <span className="text-armath-blue font-bold mt-1 flex-shrink-0">✓</span>
-                      <span className="text-lg leading-relaxed">{result}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-            </AnimatedSection>
+            {results && results.length > 0 && (
+              <AnimatedSection animation="fadeInUp" delay={0.2}>
+                <div className="space-y-4">
+                  <h2 className="text-3xl font-bold text-gray-900">{t("results")}</h2>
+                  <ul className="space-y-3">
+                    {results.map((result: string, index: number) => (
+                      <motion.li
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex gap-3 text-gray-600"
+                      >
+                        <span className="text-armath-blue font-bold mt-1 flex-shrink-0">✓</span>
+                        <span className="text-lg leading-relaxed">{result}</span>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </div>
+              </AnimatedSection>
+            )}
 
             {/* Technologies */}
-            <AnimatedSection animation="fadeInUp" delay={0.3}>
-              <div className="space-y-6">
-                <h2 className="text-3xl font-bold text-gray-900">{t("technologies")}</h2>
-                <div className="grid md:grid-cols-2 gap-6">
-                  {project.technologies.map((tech, index) => (
-                    <Card key={index} className="hover:shadow-lg transition-shadow">
-                      <CardHeader>
-                        <CardTitle className="text-lg">{tech.name}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <CardDescription className="text-base text-gray-600">
-                          {language === "hy" ? tech.descriptionHy : tech.description}
-                        </CardDescription>
-                      </CardContent>
-                    </Card>
-                  ))}
+            {technologies.length > 0 && (
+              <AnimatedSection animation="fadeInUp" delay={0.3}>
+                <div className="space-y-6">
+                  <h2 className="text-3xl font-bold text-gray-900">{t("technologies")}</h2>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {technologies.map((tech: any, index: number) => (
+                      <Card key={index} className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                          <CardTitle className="text-lg">{tech.name}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <CardDescription className="text-base text-gray-600">
+                            {language === "hy" && tech.descriptionHy ? tech.descriptionHy : tech.description}
+                          </CardDescription>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </AnimatedSection>
+              </AnimatedSection>
+            )}
 
             {/* Impact */}
-            <AnimatedSection animation="fadeInUp" delay={0.4}>
-              <div className="bg-gradient-to-br from-armath-blue/10 to-transparent p-8 rounded-xl border border-armath-blue/20">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("keyHighlights")}</h2>
-                <p className="text-lg text-gray-700 leading-relaxed">{impact}</p>
-              </div>
-            </AnimatedSection>
+            {impact && (
+              <AnimatedSection animation="fadeInUp" delay={0.4}>
+                <div className="bg-gradient-to-br from-armath-blue/10 to-transparent p-8 rounded-xl border border-armath-blue/20">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("keyHighlights")}</h2>
+                  <p className="text-lg text-gray-700 leading-relaxed">{impact}</p>
+                </div>
+              </AnimatedSection>
+            )}
 
             {/* Student Creator Info */}
             <AnimatedSection animation="fadeInUp" delay={0.5}>
@@ -164,7 +201,9 @@ export default function ProjectDetailPage({ params }: Props) {
                   <CardTitle>{t("studentCreator")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <p className="text-lg font-semibold text-gray-900">{project.studentName}</p>
+                  {project.studentName && (
+                    <p className="text-lg font-semibold text-gray-900">{project.studentName}</p>
+                  )}
                   {project.presentedAt && (
                     <p className="text-gray-600">
                       <span className="font-medium">{t("presentedAt")}:</span> {project.presentedAt}

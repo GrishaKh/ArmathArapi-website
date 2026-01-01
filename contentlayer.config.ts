@@ -41,7 +41,47 @@ export const Event = defineDocumentType(() => ({
     },
 }))
 
+export const Project = defineDocumentType(() => ({
+    name: 'Project',
+    filePathPattern: `projects/**/*.mdx`,
+    contentType: 'mdx',
+    fields: {
+        id: { type: 'string', required: true },
+        title: { type: 'string', required: true },
+        description: { type: 'string', required: false },
+        shortDescription: { type: 'string', required: false },
+        image: { type: 'string', required: true },
+        category: { type: 'string', required: true },
+        categoryHy: { type: 'string', required: false },
+        year: { type: 'number', required: true },
+        featured: { type: 'boolean', required: false },
+        tools: { type: 'list', of: { type: 'string' }, required: false },
+        toolsHy: { type: 'list', of: { type: 'string' }, required: false },
+        challenge: { type: 'string', required: false },
+        challengeHy: { type: 'string', required: false },
+        solution: { type: 'string', required: false },
+        solutionHy: { type: 'string', required: false },
+        results: { type: 'list', of: { type: 'string' }, required: false },
+        resultsHy: { type: 'list', of: { type: 'string' }, required: false },
+        impact: { type: 'string', required: false },
+        impactHy: { type: 'string', required: false },
+        studentName: { type: 'string', required: false },
+        presentedAt: { type: 'string', required: false },
+        technologies: { type: 'json', required: false }, // Complex object for technologies array
+    },
+    computedFields: {
+        slug: {
+            type: 'string',
+            resolve: (doc) => doc._raw.flattenedPath.split('/')[1],
+        },
+        language: {
+            type: 'string',
+            resolve: (doc) => doc._raw.sourceFileName.replace(/\.mdx$/, '') as 'en' | 'hy',
+        }
+    },
+}))
+
 export default makeSource({
     contentDirPath: 'content',
-    documentTypes: [Event],
+    documentTypes: [Event, Project],
 })

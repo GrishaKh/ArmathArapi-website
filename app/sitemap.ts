@@ -1,6 +1,5 @@
 import { MetadataRoute } from 'next'
-import { allEvents } from 'contentlayer/generated'
-import { projects } from '@/lib/projects'
+import { allEvents, allProjects } from 'contentlayer/generated'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://armatharapi.vercel.app'
@@ -14,7 +13,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }))
 
-  const projectUrls = projects.map((project) => ({
+  // Use only English projects for sitemap to avoid duplicates
+  const englishProjects = allProjects.filter(p => p.language === 'en')
+  const projectUrls = englishProjects.map((project) => ({
     url: `${baseUrl}/projects/${project.slug}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,

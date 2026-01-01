@@ -11,23 +11,21 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { getProjectsSortedByYear } from "@/lib/projects"
 
-const projects = getProjectsSortedByYear().filter(project => project.image)
-
 export function ProjectsSection() {
   const { t, language } = useLanguage()
+  const projects = getProjectsSortedByYear(language).slice(0, 3) // Show only first 3 for preview
 
   // Get localized project content
-  const getProjectTitle = (project: typeof projects[0]) =>
-    language === "hy" ? project.titleHy : project.title
+  const getProjectTitle = (project: typeof projects[0]) => project.title
 
   const getProjectDescription = (project: typeof projects[0]) =>
-    language === "hy" ? project.shortDescriptionHy : project.shortDescription
+    project.shortDescription || project.description || ""
 
   const getProjectCategory = (project: typeof projects[0]) =>
-    language === "hy" ? project.categoryHy : project.category
+    project.categoryHy && language === "hy" ? project.categoryHy : project.category
 
   const getProjectTools = (project: typeof projects[0]) =>
-    language === "hy" ? project.toolsHy : project.tools
+    project.toolsHy && language === "hy" ? (project.toolsHy || []) : (project.tools || [])
 
   return (
     <section id="ourProjects" className="py-20 bg-white">
