@@ -214,7 +214,11 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
   const arrowColorBottom = accentColor === "red" ? "border-b-armath-red" : "border-b-armath-blue"
 
   // Clamp arrow offset to stay within tooltip bounds (with some padding)
-  const maxArrowOffset = (280 / 2) - 20 // Half tooltip width minus padding
+  // Arrow triangle uses border-l-8/border-r-8, so the base is 16px wide.
+  // Keep the arrow tip at least 8px from the tooltip edge so the base doesn't spill outside.
+  const tooltipWidthForArrow = tooltipRef.current?.offsetWidth ?? 280
+  const arrowHalfBase = 8
+  const maxArrowOffset = (tooltipWidthForArrow / 2) - arrowHalfBase
   const clampedArrowOffset = Math.max(-maxArrowOffset, Math.min(maxArrowOffset, position.arrowOffset))
 
   return createPortal(
@@ -245,7 +249,7 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
                 className={`absolute -top-2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent ${arrowColorBottom}`}
                 style={{
                   left: '50%',
-                  transform: `translateX(calc(-50% + ${clampedArrowOffset}px))`
+                  transform: `translateX(${clampedArrowOffset}px)`
                 }}
               />
             ) : (
@@ -253,7 +257,7 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
                 className={`absolute -bottom-2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent ${arrowColor}`}
                 style={{
                   left: '50%',
-                  transform: `translateX(calc(-50% + ${clampedArrowOffset}px))`
+                  transform: `translateX(${clampedArrowOffset}px)`
                 }}
               />
             )}

@@ -157,7 +157,7 @@ This project is proprietary software for Armath Arapi Engineering Makerspace.
 **Armath Arapi Engineering Makerspace**
 
 - Website: [armath-arapi.am](https://armath-arapi.am)
-- Email: info@armath-arapi.am
+- Email: grisha.khachatrian@gmail.com
 - Location: Arapi, Armenia
 
 ---

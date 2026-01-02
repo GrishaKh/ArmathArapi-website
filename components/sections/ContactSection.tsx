@@ -96,7 +96,7 @@ export function ContactSection() {
                     {
                       icon: Mail,
                       label: t("email"),
-                      value: "info@armath-arapi.am",
+                      value: "grisha.khachatrian@gmail.com",
                     },
                   ].map((item, index) => (
                     <motion.div
