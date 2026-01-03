@@ -137,11 +137,10 @@ type FloatingTooltipProps = {
   anchorRef: React.RefObject<HTMLElement | null>
   children: React.ReactNode
   id: string
-  accentColor?: "blue" | "red"
 }
 
-const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef, children, id, accentColor = "blue" }) => {
-  const [position, setPosition] = useState({ x: 0, y: 0, flipToBottom: false, arrowOffset: 0 })
+const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef, children, id }) => {
+  const [position, setPosition] = useState({ x: 0, y: 0, flipToBottom: false })
   const [isMounted, setIsMounted] = useState(false)
   const tooltipRef = useRef<HTMLDivElement>(null)
 
@@ -156,15 +155,6 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
     const updatePosition = () => {
       if (!anchorRef.current) return
       const rect = anchorRef.current.getBoundingClientRect()
-
-      // DEBUG: Log element position to console
-      console.log('Tooltip DEBUG:', {
-        id,
-        elementRect: { left: rect.left, top: rect.top, width: rect.width, height: rect.height },
-        elementCenter: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
-        anchorElement: anchorRef.current.tagName,
-        anchorClasses: anchorRef.current.className,
-      })
 
       // Measure tooltip if possible (fallback to the known width)
       const tooltipWidth = tooltipRef.current?.offsetWidth ?? 280
@@ -184,9 +174,6 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
       const maxX = viewportWidth - tooltipWidth / 2 - margin
       const clampedX = Math.max(minX, Math.min(maxX, elementCenterX))
 
-      // Calculate arrow offset (how much the tooltip was shifted from element center)
-      const arrowOffset = elementCenterX - clampedX
-
       // Determine if we need to flip (prefer top, but pick the side that fits best)
       const spaceAbove = rect.top
       const spaceBelow = viewportHeight - rect.bottom
@@ -204,7 +191,6 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
         x: clampedX,
         y: flipToBottom ? rect.bottom + gap : rect.top - gap,
         flipToBottom,
-        arrowOffset,
       })
     }
 
@@ -221,15 +207,6 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
 
   // Don't render on server or before mount
   if (!isMounted || typeof document === 'undefined') return null
-
-  const arrowColor = accentColor === "red" ? "border-t-armath-red" : "border-t-armath-blue"
-  const arrowColorBottom = accentColor === "red" ? "border-b-armath-red" : "border-b-armath-blue"
-
-  // Clamp arrow offset to stay within tooltip bounds (with some padding)
-  const tooltipWidthForArrow = tooltipRef.current?.offsetWidth ?? 280
-  const arrowHalfBase = 8
-  const maxArrowOffset = (tooltipWidthForArrow / 2) - arrowHalfBase
-  const clampedArrowOffset = Math.max(-maxArrowOffset, Math.min(maxArrowOffset, position.arrowOffset))
 
   return createPortal(
     <AnimatePresence>
@@ -253,27 +230,7 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
               : "translate(-50%, -100%)",
           }}
         >
-          <div className="relative">
-            {/* Arrow pointing to element - offset to follow the actual element position */}
-            {position.flipToBottom ? (
-              <div
-                className={`absolute -top-2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent ${arrowColorBottom}`}
-                style={{
-                  left: '50%',
-                  transform: `translateX(calc(-50% + ${clampedArrowOffset}px))`
-                }}
-              />
-            ) : (
-              <div
-                className={`absolute -bottom-2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent ${arrowColor}`}
-                style={{
-                  left: '50%',
-                  transform: `translateX(calc(-50% + ${clampedArrowOffset}px))`
-                }}
-              />
-            )}
-            {children}
-          </div>
+          {children}
         </motion.div>
       )}
     </AnimatePresence>,
@@ -363,32 +320,7 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
         </div>
       </motion.button>
 
-      {/* DEBUG: Visual indicator showing where getBoundingClientRect thinks the element is */}
-      {isActive && typeof window !== 'undefined' && wrapperRef.current && (() => {
-        const rect = wrapperRef.current.getBoundingClientRect()
-        const centerX = rect.left + rect.width / 2
-        const centerY = rect.top + rect.height / 2
-        return createPortal(
-          <div
-            style={{
-              position: 'fixed',
-              left: centerX,
-              top: centerY,
-              width: 20,
-              height: 20,
-              backgroundColor: 'red',
-              borderRadius: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 99999,
-              pointerEvents: 'none',
-              border: '2px solid white',
-            }}
-          />,
-          document.body
-        )
-      })()}
-      
-      <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId} accentColor="blue">
+      <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId}>
         <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
           {/* Gradient header */}
           <div className="h-2 bg-gradient-to-r from-armath-blue to-armath-blue/70" />
@@ -581,7 +513,7 @@ const Electron: React.FC<ElectronProps> = ({
           </motion.div>
         </motion.button>
 
-        <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId} accentColor="red">
+        <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId}>
           <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
             {/* Gradient header */}
             <div className="h-2 bg-gradient-to-r from-armath-red to-armath-red/70" />
