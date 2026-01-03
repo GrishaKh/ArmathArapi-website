@@ -363,6 +363,31 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
         </div>
       </motion.button>
 
+      {/* DEBUG: Visual indicator showing where getBoundingClientRect thinks the element is */}
+      {isActive && typeof window !== 'undefined' && wrapperRef.current && (() => {
+        const rect = wrapperRef.current.getBoundingClientRect()
+        const centerX = rect.left + rect.width / 2
+        const centerY = rect.top + rect.height / 2
+        return createPortal(
+          <div
+            style={{
+              position: 'fixed',
+              left: centerX,
+              top: centerY,
+              width: 20,
+              height: 20,
+              backgroundColor: 'red',
+              borderRadius: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 99999,
+              pointerEvents: 'none',
+              border: '2px solid white',
+            }}
+          />,
+          document.body
+        )
+      })()}
+      
       <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId} accentColor="blue">
         <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
           {/* Gradient header */}
