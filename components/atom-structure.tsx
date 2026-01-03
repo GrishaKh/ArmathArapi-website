@@ -2,17 +2,13 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import type React from "react"
-import { useLayoutEffect, useEffect, useMemo, useRef, useState, createContext, useContext, useCallback } from "react"
+import { useLayoutEffect, useEffect, useMemo, useRef, useState, useCallback } from "react"
 import { createPortal } from "react-dom"
 import { Card, CardContent } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
 import Image from "next/image"
 
 import { type TranslationKey } from "@/lib/translations"
-
-// --- Tooltip Portal Context ---
-// This allows tooltips to render outside the stacking context
-const TooltipContainerContext = createContext<HTMLElement | null>(null)
 
 // --- Types ---
 interface TeamMember {
@@ -135,7 +131,7 @@ function useIsTouchDevice() {
 }
 
 // --- Floating Tooltip Component ---
-// Renders in a portal to escape stacking context issues
+// Renders in a portal to document.body with fixed positioning
 type FloatingTooltipProps = {
   isVisible: boolean
   anchorRef: React.RefObject<HTMLElement | null>
@@ -145,9 +141,14 @@ type FloatingTooltipProps = {
 }
 
 const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef, children, id, accentColor = "blue" }) => {
-  const container = useContext(TooltipContainerContext)
   const [position, setPosition] = useState({ x: 0, y: 0, flipToBottom: false, arrowOffset: 0 })
+  const [isMounted, setIsMounted] = useState(false)
   const tooltipRef = useRef<HTMLDivElement>(null)
+
+  // Only render portal on client
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     if (!isVisible || !anchorRef.current) return
@@ -162,13 +163,12 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
       const gap = 12
       const margin = 8
 
-      // Use viewport dimensions directly (the portal is fixed inset-0)
+      // Use viewport dimensions directly
       const viewportWidth = window.innerWidth
       const viewportHeight = window.innerHeight
 
       // Calculate the element's true center position in viewport coordinates
       const elementCenterX = rect.left + rect.width / 2
-      const elementCenterY = rect.top + rect.height / 2
 
       // Clamp tooltip position to prevent horizontal overflow
       const minX = tooltipWidth / 2 + margin
@@ -210,14 +210,13 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
     return () => window.cancelAnimationFrame(rafId)
   }, [isVisible, anchorRef])
 
-  if (!container) return null
+  // Don't render on server or before mount
+  if (!isMounted || typeof document === 'undefined') return null
 
   const arrowColor = accentColor === "red" ? "border-t-armath-red" : "border-t-armath-blue"
   const arrowColorBottom = accentColor === "red" ? "border-b-armath-red" : "border-b-armath-blue"
 
   // Clamp arrow offset to stay within tooltip bounds (with some padding)
-  // Arrow triangle uses border-l-8/border-r-8, so the base is 16px wide.
-  // Keep the arrow tip at least 8px from the tooltip edge so the base doesn't spill outside.
   const tooltipWidthForArrow = tooltipRef.current?.offsetWidth ?? 280
   const arrowHalfBase = 8
   const maxArrowOffset = (tooltipWidthForArrow / 2) - arrowHalfBase
@@ -235,8 +234,9 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: position.flipToBottom ? -10 : 10, scale: 0.95 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
-          className="pointer-events-none absolute z-[9999]"
+          className="pointer-events-none z-[9999]"
           style={{
+            position: 'fixed',
             left: position.x,
             top: position.y,
             transform: position.flipToBottom
@@ -268,7 +268,7 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
         </motion.div>
       )}
     </AnimatePresence>,
-    container
+    document.body
   )
 }
 
@@ -598,24 +598,9 @@ export function AtomStructure() {
   const [pinnedMemberId, setPinnedMemberId] = useState<string | null>(null)
   const activeMemberId = pinnedMemberId ?? hoveredMemberId
 
-  const [tooltipContainer, setTooltipContainer] = useState<HTMLElement | null>(null)
-
   const togglePin = useCallback((id: string) => {
     setPinnedMemberId((prev) => (prev === id ? null : id))
     setHoveredMemberId(null)
-  }, [])
-
-  // Create a fixed full-viewport tooltip layer so coordinates are always viewport-correct.
-  useEffect(() => {
-    const layer = document.createElement("div")
-    layer.setAttribute("data-atom-tooltip-layer", "true")
-    layer.className = "pointer-events-none fixed inset-0 z-[9999]"
-    document.body.appendChild(layer)
-    setTooltipContainer(layer)
-
-    return () => {
-      document.body.removeChild(layer)
-    }
   }, [])
 
   // Close pinned tooltip on outside click/tap.
@@ -670,52 +655,50 @@ export function AtomStructure() {
   const supporters = teamMembers.filter((m) => !m.isCore)
 
   return (
-    <TooltipContainerContext.Provider value={tooltipContainer}>
-      <div className="w-full">
-        {/* Scene container - removed overflow-hidden to prevent tooltip clipping */}
-        <div
-          ref={ref}
-          className="relative mx-auto flex h-[clamp(20rem,65vw,28rem)] max-w-full items-center justify-center touch-pan-y"
-        >
-          {/* Nucleus */}
-          <Nucleus
-            diameter={nucleusDiameter}
-            coreMembers={coreMembers}
-            activeId={activeMemberId}
-            setActiveId={setHoveredMemberId}
-            togglePin={togglePin}
-          />
+    <div className="w-full">
+      {/* Scene container - removed overflow-hidden to prevent tooltip clipping */}
+      <div
+        ref={ref}
+        className="relative mx-auto flex h-[clamp(20rem,65vw,28rem)] max-w-full items-center justify-center touch-pan-y"
+      >
+        {/* Nucleus */}
+        <Nucleus
+          diameter={nucleusDiameter}
+          coreMembers={coreMembers}
+          activeId={activeMemberId}
+          setActiveId={setHoveredMemberId}
+          togglePin={togglePin}
+        />
 
-          {/* Orbits */}
-          {orbits.map((o, i) => (
-            <Orbit key={i} radius={o.radius} delay={0.8 + i * 0.2} dashed={i === orbits.length - 1} />
-          ))}
+        {/* Orbits */}
+        {orbits.map((o, i) => (
+          <Orbit key={i} radius={o.radius} delay={0.8 + i * 0.2} dashed={i === orbits.length - 1} />
+        ))}
 
-          {/* Electrons */}
-          {supporters.length > 0 &&
-            supporters.map((supporter, index) => {
-              const { radius, duration } = orbits[index % orbits.length]
-              const startingAngle = index * GOLDEN_ANGLE
-              const electronSize = Math.round(Math.max(24, Math.min(44, shortest * (isTiny ? 0.1 : isSmall ? 0.11 : 0.12))))
-              return (
-                <Electron
-                  key={supporter.id}
-                  supporter={supporter}
-                  orbitRadius={radius}
-                  duration={duration}
-                  startingAngle={startingAngle}
-                  activeId={activeMemberId}
-                  setActiveId={setHoveredMemberId}
-                  togglePin={togglePin}
-                  size={electronSize}
-                />
-              )
-            })}
-        </div>
-
-        {/* Legend (moved outside absolute scene for consistent placement) */}
-        <Legend />
+        {/* Electrons */}
+        {supporters.length > 0 &&
+          supporters.map((supporter, index) => {
+            const { radius, duration } = orbits[index % orbits.length]
+            const startingAngle = index * GOLDEN_ANGLE
+            const electronSize = Math.round(Math.max(24, Math.min(44, shortest * (isTiny ? 0.1 : isSmall ? 0.11 : 0.12))))
+            return (
+              <Electron
+                key={supporter.id}
+                supporter={supporter}
+                orbitRadius={radius}
+                duration={duration}
+                startingAngle={startingAngle}
+                activeId={activeMemberId}
+                setActiveId={setHoveredMemberId}
+                togglePin={togglePin}
+                size={electronSize}
+              />
+            )
+          })}
       </div>
-    </TooltipContainerContext.Provider>
+
+      {/* Legend (moved outside absolute scene for consistent placement) */}
+      <Legend />
+    </div>
   )
 }
