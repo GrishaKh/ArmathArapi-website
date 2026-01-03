@@ -157,6 +157,15 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
       if (!anchorRef.current) return
       const rect = anchorRef.current.getBoundingClientRect()
 
+      // DEBUG: Log element position to console
+      console.log('Tooltip DEBUG:', {
+        id,
+        elementRect: { left: rect.left, top: rect.top, width: rect.width, height: rect.height },
+        elementCenter: { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
+        anchorElement: anchorRef.current.tagName,
+        anchorClasses: anchorRef.current.className,
+      })
+
       // Measure tooltip if possible (fallback to the known width)
       const tooltipWidth = tooltipRef.current?.offsetWidth ?? 280
       const tooltipHeight = tooltipRef.current?.offsetHeight ?? 0
@@ -305,7 +314,7 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
   index,
 }) => {
   const reduceMotion = useReducedMotion()
-  const buttonRef = useRef<HTMLButtonElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const tipId = `tip-${member.id}`
   const isActive = activeId === member.id
   const isTouch = useIsTouchDevice()
@@ -321,9 +330,12 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
         zIndex: isActive ? 50 : 1,
       }}
     >
-      <div className="absolute" style={{ left: `${orbitRadius}px`, transform: "translate(-50%, -50%)" }}>
+      <div 
+        ref={wrapperRef}
+        className="absolute" 
+        style={{ left: `${orbitRadius}px`, transform: "translate(-50%, -50%)" }}
+      >
         <motion.button
-          ref={buttonRef}
           type="button"
           data-atom-member-button="true"
           data-member-id={member.id}
@@ -350,7 +362,7 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
           </div>
         </motion.button>
 
-        <FloatingTooltip isVisible={isActive} anchorRef={buttonRef} id={tipId} accentColor="blue">
+        <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId} accentColor="blue">
           <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
             {/* Gradient header */}
             <div className="h-2 bg-gradient-to-r from-armath-blue to-armath-blue/70" />
@@ -481,7 +493,7 @@ const Electron: React.FC<ElectronProps> = ({
   size,
 }) => {
   const reduceMotion = useReducedMotion()
-  const buttonRef = useRef<HTMLButtonElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const isActive = activeId === supporter.id
   const tipId = `tip-${supporter.id}`
   const isTouch = useIsTouchDevice()
@@ -510,9 +522,12 @@ const Electron: React.FC<ElectronProps> = ({
       animate={{ rotate: startingAngle + 360 }}
       transition={transition}
     >
-      <div className="absolute" style={{ left: `${orbitRadius}px`, transform: "translate(-50%, -50%)" }}>
+      <div 
+        ref={wrapperRef}
+        className="absolute" 
+        style={{ left: `${orbitRadius}px`, transform: "translate(-50%, -50%)" }}
+      >
         <motion.button
-          ref={buttonRef}
           type="button"
           data-atom-member-button="true"
           data-member-id={supporter.id}
@@ -541,7 +556,7 @@ const Electron: React.FC<ElectronProps> = ({
           </motion.div>
         </motion.button>
 
-        <FloatingTooltip isVisible={isActive} anchorRef={buttonRef} id={tipId} accentColor="red">
+        <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId} accentColor="red">
           <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
             {/* Gradient header */}
             <div className="h-2 bg-gradient-to-r from-armath-red to-armath-red/70" />
