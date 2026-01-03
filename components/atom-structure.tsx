@@ -153,9 +153,8 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
     if (!isVisible || !anchorRef.current) return
 
     const updatePosition = () => {
-      if (!anchorRef.current || !container) return
+      if (!anchorRef.current) return
       const rect = anchorRef.current.getBoundingClientRect()
-      const containerRect = container.getBoundingClientRect()
 
       // Measure tooltip if possible (fallback to the known width)
       const tooltipWidth = tooltipRef.current?.offsetWidth ?? 280
@@ -163,20 +162,25 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
       const gap = 12
       const margin = 8
 
-      // Calculate the element's true center position (relative to portal container)
-      const elementCenterX = rect.left + rect.width / 2 - containerRect.left
+      // Use viewport dimensions directly (the portal is fixed inset-0)
+      const viewportWidth = window.innerWidth
+      const viewportHeight = window.innerHeight
+
+      // Calculate the element's true center position in viewport coordinates
+      const elementCenterX = rect.left + rect.width / 2
+      const elementCenterY = rect.top + rect.height / 2
 
       // Clamp tooltip position to prevent horizontal overflow
       const minX = tooltipWidth / 2 + margin
-      const maxX = containerRect.width - tooltipWidth / 2 - margin
+      const maxX = viewportWidth - tooltipWidth / 2 - margin
       const clampedX = Math.max(minX, Math.min(maxX, elementCenterX))
 
       // Calculate arrow offset (how much the tooltip was shifted from element center)
       const arrowOffset = elementCenterX - clampedX
 
       // Determine if we need to flip (prefer top, but pick the side that fits best)
-      const spaceAbove = rect.top - containerRect.top
-      const spaceBelow = containerRect.height - (rect.bottom - containerRect.top)
+      const spaceAbove = rect.top
+      const spaceBelow = viewportHeight - rect.bottom
       const needed = tooltipHeight > 0 ? tooltipHeight + gap : 200
       const canFitAbove = spaceAbove >= needed
       const canFitBelow = spaceBelow >= needed
@@ -189,9 +193,7 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
 
       setPosition({
         x: clampedX,
-        y: flipToBottom
-          ? rect.bottom - containerRect.top + gap
-          : rect.top - containerRect.top - gap,
+        y: flipToBottom ? rect.bottom + gap : rect.top - gap,
         flipToBottom,
         arrowOffset,
       })
@@ -206,7 +208,7 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
     }
     rafId = window.requestAnimationFrame(loop)
     return () => window.cancelAnimationFrame(rafId)
-  }, [isVisible, anchorRef, container])
+  }, [isVisible, anchorRef])
 
   if (!container) return null
 
@@ -249,7 +251,7 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
                 className={`absolute -top-2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent ${arrowColorBottom}`}
                 style={{
                   left: '50%',
-                  transform: `translateX(${clampedArrowOffset}px)`
+                  transform: `translateX(calc(-50% + ${clampedArrowOffset}px))`
                 }}
               />
             ) : (
@@ -257,7 +259,7 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
                 className={`absolute -bottom-2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent ${arrowColor}`}
                 style={{
                   left: '50%',
-                  transform: `translateX(${clampedArrowOffset}px)`
+                  transform: `translateX(calc(-50% + ${clampedArrowOffset}px))`
                 }}
               />
             )}
