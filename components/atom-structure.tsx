@@ -322,80 +322,80 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
   // Click-to-pin works on all devices (needed for orbiting electrons and accessibility)
   const handleClick = () => togglePin(member.id)
 
+  // Calculate actual x,y position from angle and radius
+  const angleRad = (angleDeg * Math.PI) / 180
+  const offsetX = Math.cos(angleRad) * orbitRadius
+  const offsetY = Math.sin(angleRad) * orbitRadius
+
   return (
     <div
-      className="absolute left-1/2 top-1/2"
+      ref={wrapperRef}
+      className="absolute"
       style={{
-        transform: `translate(-50%, -50%) rotate(${angleDeg}deg)`,
+        left: '50%',
+        top: '50%',
+        transform: `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px))`,
         zIndex: isActive ? 50 : 1,
       }}
     >
-      <div 
-        ref={wrapperRef}
-        className="absolute" 
-        style={{ left: `${orbitRadius}px`, transform: "translate(-50%, -50%)" }}
+      <motion.button
+        type="button"
+        data-atom-member-button="true"
+        data-member-id={member.id}
+        aria-describedby={isActive ? tipId : undefined}
+        aria-label={`${member.name}, ${member.role}`}
+        className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-armath-blue"
+        initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
+        animate={reduceMotion ? {} : { scale: 1, opacity: 1 }}
+        transition={{ delay: 0.4 + index * 0.2, type: "spring", stiffness: 300 }}
+        onClick={handleClick}
+        onMouseEnter={() => !isTouch && setActiveId(member.id)}
+        onMouseLeave={() => !isTouch && setActiveId(null)}
+        onFocus={() => setActiveId(member.id)}
+        onBlur={() => !isTouch && setActiveId(null)}
+        whileHover={reduceMotion ? undefined : { scale: 1.2 }}
       >
-        <motion.button
-          type="button"
-          data-atom-member-button="true"
-          data-member-id={member.id}
-          aria-describedby={isActive ? tipId : undefined}
-          aria-label={`${member.name}, ${member.role}`}
-          className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-armath-blue"
-          initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
-          animate={reduceMotion ? {} : { scale: 1, opacity: 1 }}
-          transition={{ delay: 0.4 + index * 0.2, type: "spring", stiffness: 300 }}
-          onClick={handleClick}
-          onMouseEnter={() => !isTouch && setActiveId(member.id)}
-          onMouseLeave={() => !isTouch && setActiveId(null)}
-          onFocus={() => setActiveId(member.id)}
-          onBlur={() => !isTouch && setActiveId(null)}
-          whileHover={reduceMotion ? undefined : { scale: 1.2 }}
+        <div
+          className="flex flex-col items-center justify-center rounded-full border-2 border-armath-blue/20 bg-white text-xs font-bold text-armath-blue shadow-md cursor-pointer hover:bg-armath-blue/5 transition-colors"
+          style={{ width: dotSize, height: dotSize }}
         >
-          <div style={{ transform: `rotate(${-angleDeg}deg)` }}>
-            <div
-              className="flex flex-col items-center justify-center rounded-full border-2 border-armath-blue/20 bg-white text-xs font-bold text-armath-blue shadow-md cursor-pointer hover:bg-armath-blue/5 transition-colors"
-              style={{ width: dotSize, height: dotSize }}
-            >
-              <span>{getInitials(member.name)}</span>
-            </div>
-          </div>
-        </motion.button>
+          <span>{getInitials(member.name)}</span>
+        </div>
+      </motion.button>
 
-        <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId} accentColor="blue">
-          <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
-            {/* Gradient header */}
-            <div className="h-2 bg-gradient-to-r from-armath-blue to-armath-blue/70" />
-            <CardContent className="p-5">
-              <div className="flex flex-col items-center text-center">
-                {/* Profile image */}
-                <div className="relative mb-3">
-                  <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-blue/20 ring-offset-2 shadow-lg">
-                    {member.image ? (
-                      <Image
-                        src={member.image}
-                        alt={member.name}
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-armath-blue to-armath-blue/70 flex items-center justify-center text-white text-lg font-bold">
-                        {getInitials(member.name)}
-                      </div>
-                    )}
-                  </div>
+      <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId} accentColor="blue">
+        <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
+          {/* Gradient header */}
+          <div className="h-2 bg-gradient-to-r from-armath-blue to-armath-blue/70" />
+          <CardContent className="p-5">
+            <div className="flex flex-col items-center text-center">
+              {/* Profile image */}
+              <div className="relative mb-3">
+                <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-blue/20 ring-offset-2 shadow-lg">
+                  {member.image ? (
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      width={64}
+                      height={64}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-armath-blue to-armath-blue/70 flex items-center justify-center text-white text-lg font-bold">
+                      {getInitials(member.name)}
+                    </div>
+                  )}
                 </div>
-                {/* Name and role */}
-                <h3 className="text-base font-bold text-gray-900 mb-1">{member.name}</h3>
-                <p className="text-sm font-semibold text-armath-blue mb-3">{member.role}</p>
-                {/* Details */}
-                <p className="text-sm leading-relaxed text-gray-600">{member.details ?? "—"}</p>
               </div>
-            </CardContent>
-          </Card>
-        </FloatingTooltip>
-      </div>
+              {/* Name and role */}
+              <h3 className="text-base font-bold text-gray-900 mb-1">{member.name}</h3>
+              <p className="text-sm font-semibold text-armath-blue mb-3">{member.role}</p>
+              {/* Details */}
+              <p className="text-sm leading-relaxed text-gray-600">{member.details ?? "—"}</p>
+            </div>
+          </CardContent>
+        </Card>
+      </FloatingTooltip>
     </div>
   )
 }
