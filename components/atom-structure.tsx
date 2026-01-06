@@ -627,8 +627,8 @@ export function AtomStructure() {
   const supporters = teamMembers.filter((m) => !m.isCore)
 
   return (
-    <div className="w-full">
-      {/* Scene container - removed overflow-hidden to prevent tooltip clipping */}
+    <div className="w-full overflow-hidden">
+      {/* Scene container - overflow-hidden on parent to prevent layout shift; tooltips use portals so they still work */}
       <div
         ref={ref}
         className="relative mx-auto flex h-[clamp(20rem,65vw,28rem)] max-w-full items-center justify-center touch-pan-y"
