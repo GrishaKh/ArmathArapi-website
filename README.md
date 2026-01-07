@@ -60,23 +60,23 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 ### Installation
 
 1. **Clone the repository**
-   \`\`\`bash
+   ```bash
    git clone https://github.com/GrishaKh/ArmathArapi-website.git
    cd ArmathArapi-website
-   \`\`\`
+   ```
 
 2. **Install dependencies**
-   \`\`\`bash
+   ```bash
    pnpm install
-   \`\`\`
+   ```
 
 3. **Set up environment variables**
-   \`\`\`bash
+   ```bash
    cp .env.example .env.local
-   \`\`\`
+   ```
    
    Fill in the required values:
-   \`\`\`env
+   ```env
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
    SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
@@ -84,12 +84,12 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
    ADMIN_EMAIL=admin@example.com
    ADMIN_PASSWORD=your_secure_admin_password
    ADMIN_SESSION_SECRET=complex_random_string_for_session_encryption
-   \`\`\`
+   ```
 
 4. **Run the development server**
-   \`\`\`bash
+   ```bash
    pnpm dev
-   \`\`\`
+   ```
 
 5. **Open [http://localhost:3000](http://localhost:3000)**
 
@@ -97,7 +97,7 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 
 ## Project Structure
 
-\`\`\`
+```
 ├── app/
 │   ├── api/              # API routes (submissions, admin)
 │   ├── admin/            # Admin dashboard
@@ -123,7 +123,7 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 ├── public/               # Static assets
 ├── types/                # TypeScript type definitions
 └── contentlayer.config.ts # Contentlayer configuration
-\`\`\`
+```
 
 ---
 
