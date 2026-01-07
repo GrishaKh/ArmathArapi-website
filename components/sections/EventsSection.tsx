@@ -37,11 +37,11 @@ export function EventsSection() {
           <p className="text-gray-600 max-w-2xl mx-auto text-lg">{t("eventsDescription")}</p>
         </AnimatedSection>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 w-full">
           {events.slice(0, 3).map((event, index) => (
-            <AnimatedSection key={event.id} animation="fadeInUp" delay={index * 0.15}>
-              <Link href={`/events/${event.slug.split('/').pop()}`} className="block h-full">
-                <Card className="hover:shadow-xl transition-all duration-500 hover:scale-[1.02] group h-full overflow-hidden cursor-pointer border-transparent hover:border-armath-blue/20">
+            <AnimatedSection key={event.id} animation="fadeInUp" delay={index * 0.15} className="w-full min-w-0">
+              <Link href={`/events/${event.slug.split('/').pop()}`} className="block h-full w-full">
+                <Card className="hover:shadow-xl transition-all duration-500 hover:scale-[1.02] group h-full overflow-hidden cursor-pointer border-transparent hover:border-armath-blue/20 w-full">
                   <div className="relative overflow-hidden">
                     <Image
                       src={event.image || "/placeholder.svg"}

@@ -18,7 +18,7 @@ export default function HomePage() {
   const { language } = useLanguage()
 
   return (
-    <div className={cn("relative min-h-screen bg-background", language === "hy" && "font-armenian")}>
+    <div className={cn("relative min-h-screen bg-background overflow-x-hidden", language === "hy" && "font-armenian")}>
       <Header />
       {/* Hero Section */}
       <HeroSection />

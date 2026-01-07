@@ -35,11 +35,11 @@ export function ProjectsSection() {
           <p className="text-gray-600 max-w-2xl mx-auto text-lg">{t("projectsDescription")}</p>
         </AnimatedSection>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
           {projects.map((project, index) => (
-            <AnimatedSection key={project.id} animation="fadeInUp" delay={index * 0.15}>
-              <Link href={`/projects/${project.slug}`} className="block h-full">
-                <Card className="hover:shadow-xl transition-all duration-500 hover:scale-[1.02] group h-full overflow-hidden cursor-pointer border-transparent hover:border-armath-blue/20">
+            <AnimatedSection key={project.id} animation="fadeInUp" delay={index * 0.15} className="w-full min-w-0">
+              <Link href={`/projects/${project.slug}`} className="block h-full w-full">
+                <Card className="hover:shadow-xl transition-all duration-500 hover:scale-[1.02] group h-full overflow-hidden cursor-pointer border-transparent hover:border-armath-blue/20 w-full">
                   <div className="relative overflow-hidden">
                     <Image
                       src={project.image || "/placeholder.svg"}

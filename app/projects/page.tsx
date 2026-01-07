@@ -16,7 +16,7 @@ export default function ProjectsPage() {
   const projects = getProjectsSortedByYear(language)
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       <Header subtitle={t("ourProjects")} showNav={false} />
 
       <section className="py-20 bg-gradient-to-br from-armath-blue/5 to-transparent">
@@ -30,18 +30,18 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <section className="py-20 overflow-hidden">
+        <div className="container mx-auto px-4 overflow-hidden">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
             {projects.map((project, index) => {
               const category = project.categoryHy && language === "hy" ? project.categoryHy : project.category
               const shortDescription = project.shortDescription || project.description || ""
               const tools = project.toolsHy && language === "hy" ? (project.toolsHy || []) : (project.tools || [])
 
               return (
-                <AnimatedSection key={project.id} animation="fadeInUp" delay={index * 0.1}>
-                  <Link href={`/projects/${project.slug}`}>
-                    <Card className="h-full hover:shadow-xl transition-all duration-500 hover:scale-105 group overflow-hidden cursor-pointer">
+                <AnimatedSection key={project.id} animation="fadeInUp" delay={index * 0.1} className="w-full min-w-0">
+                  <Link href={`/projects/${project.slug}`} className="block w-full">
+                    <Card className="h-full hover:shadow-xl transition-all duration-500 hover:scale-105 group overflow-hidden cursor-pointer w-full">
                       <div className="relative">
                         <Image
                           src={project.image || "/placeholder.svg"}
