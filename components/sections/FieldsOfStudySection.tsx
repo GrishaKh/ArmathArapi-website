@@ -8,6 +8,7 @@ import type { TranslationKey } from "@/lib/translations"
 import { motion } from "framer-motion"
 import { Bot, Code, Box, Boxes, Gamepad2, Scissors, Wrench, Zap } from "lucide-react"
 import { useMemo } from "react"
+import { cn } from "@/lib/utils"
 
 const getFieldsOfStudy = (t: (key: TranslationKey) => string) => [
   {
@@ -96,14 +97,19 @@ const getFieldsOfStudy = (t: (key: TranslationKey) => string) => [
 ]
 
 export function FieldsOfStudySection() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const fieldsOfStudy = useMemo(() => getFieldsOfStudy(t), [t])
 
   return (
     <section id="fieldsOfStudy" className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <AnimatedSection className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">{t("fieldsOfStudy")}</h2>
+          <h2 className={cn(
+            "font-bold text-gray-900 mb-4",
+            language === "hy" 
+              ? "text-2xl sm:text-3xl md:text-4xl" 
+              : "text-4xl"
+          )}>{t("fieldsOfStudy")}</h2>
         </AnimatedSection>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
