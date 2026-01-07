@@ -24,7 +24,7 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 
 ### Key Features
 
-- **Bilingual Support** - Full Armenian (Հայերdelays) and English language support
+- **Bilingual Support** - Full Armenian (Հայերեն) and English language support
 - **Student Projects Gallery** - Showcase of innovative projects built by our students
 - **Events & Achievements** - Documentation of competitions, workshops, and camps
 - **Online Applications** - Student enrollment and support request forms
@@ -42,6 +42,7 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 | Styling | Tailwind CSS 3 |
 | UI Components | Radix UI + shadcn/ui |
 | Animations | Framer Motion 11 |
+| Content | Contentlayer (MDX) |
 | Database | Supabase (PostgreSQL) |
 | Email | Resend |
 | Validation | Zod |
@@ -81,6 +82,8 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
    SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
    RESEND_API_KEY=your_resend_api_key
    ADMIN_EMAIL=admin@example.com
+   ADMIN_PASSWORD=your_secure_admin_password
+   ADMIN_SESSION_SECRET=complex_random_string_for_session_encryption
    \`\`\`
 
 4. **Run the development server**
@@ -106,6 +109,9 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 │   ├── sections/         # Page sections (Hero, About, etc.)
 │   ├── ui/               # Reusable UI components
 │   └── Header.tsx        # Shared header component
+├── content/              # MDX Content
+│   ├── events/           # Event posts (en/hy)
+│   └── projects/         # Project posts (en/hy)
 ├── contexts/
 │   └── language-context.tsx  # i18n context
 ├── lib/
@@ -114,7 +120,9 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 │   ├── translations.ts   # Translation strings
 │   ├── supabase.ts       # Database client
 │   └── validations.ts    # Zod schemas
-└── public/               # Static assets
+├── public/               # Static assets
+├── types/                # TypeScript type definitions
+└── contentlayer.config.ts # Contentlayer configuration
 \`\`\`
 
 ---
