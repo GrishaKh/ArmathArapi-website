@@ -12,7 +12,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-Database-3FCF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
 
-[Live Demo](https://armath-arapi.am) · [Report Bug](https://github.com/GrishaKh/ArmathArapi-website/issues) · [Request Feature](https://github.com/GrishaKh/ArmathArapi-website/issues)
+[Live Demo](https://armatharapi.vercel.app) · [Report Bug](https://github.com/GrishaKh/ArmathArapi-website/issues) · [Request Feature](https://github.com/GrishaKh/ArmathArapi-website/issues)
 
 </div>
 
@@ -139,6 +139,7 @@ Our makerspace offers hands-on learning in:
 | 3D Printing | Slic3r, Printrun |
 | Robotics | SERob Kit, Custom builds |
 | CNC & Laser | HeeksCAD, bCNC |
+| Vector Graphics | Inkscape |
 
 ---
 
@@ -164,7 +165,7 @@ This project is proprietary software for Armath Arapi Engineering Makerspace.
 
 **Armath Arapi Engineering Makerspace**
 
-- Website: [armath-arapi.am](https://armath-arapi.am)
+- Website: [armatharapi.vercel.app](https://armatharapi.vercel.app)
 - Email: grisha.khachatrian@gmail.com
 - Location: Arapi, Armenia
 
