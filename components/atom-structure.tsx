@@ -473,7 +473,7 @@ const Electron: React.FC<ElectronProps> = ({
       className="absolute left-1/2 top-1/2"
       style={{
         transform: "translate(-50%, -50%)",
-        zIndex: isActive ? 40 : 15, // Lift active electron above orbits and other electrons
+        zIndex: isActive ? 50 : 30, // Lift electrons above next section (z-10) and orbits
       }}
       initial={{ rotate: startingAngle }}
       animate={{ rotate: startingAngle + 360 }}
@@ -627,11 +627,12 @@ export function AtomStructure() {
   const supporters = teamMembers.filter((m) => !m.isCore)
 
   return (
-    <div className="w-full overflow-hidden">
-      {/* Scene container - overflow-hidden on parent to prevent layout shift; tooltips use portals so they still work */}
+    <div className="w-full" style={{ paddingBottom: '4rem', overflow: 'visible' }}>
+      {/* Scene container - overflow-visible to allow electrons to extend; extra padding for orbiting electrons; tooltips use portals so they still work */}
       <div
         ref={ref}
         className="relative mx-auto flex h-[clamp(20rem,65vw,28rem)] max-w-full items-center justify-center touch-pan-y"
+        style={{ overflow: 'visible' }}
       >
         {/* Nucleus */}
         <Nucleus
