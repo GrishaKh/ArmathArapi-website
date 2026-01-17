@@ -56,12 +56,12 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
     image: "/team/edgar_harutyunyan.jpg",
   },
   {
-    id: "narek-har",
-    name: "Narek Harutyunyan",
+    id: "hayk_sar",
+    name: "Hayk Sarafyan",
     role: t("roleSupporter"),
     isCore: false,
     contribution: t("contributionWeb"),
-    image: "/team/narek_harutyunyan.jpg",
+    image: "/team/hayk_sarafyan.jpg",
   },
 ]
 
