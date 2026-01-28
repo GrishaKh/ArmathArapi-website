@@ -23,7 +23,7 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-inter)", ...defaultTheme.fontFamily.sans],
+        sans: ["var(--font-google-sans)", ...defaultTheme.fontFamily.sans],
         armenian: ["var(--font-google-sans)", ...defaultTheme.fontFamily.sans],
       },
       colors: {
