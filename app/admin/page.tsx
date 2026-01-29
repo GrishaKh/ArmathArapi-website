@@ -1,5 +1,7 @@
 "use client"
 
+import React from "react"
+
 import { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
@@ -428,7 +430,7 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-700">
-                <AnimatePresence>
+                <AnimatePresence mode="popLayout">
                   {submissions.length === 0 ? (
                     <tr>
                       <td colSpan={7} className="px-6 py-12 text-center text-slate-400">
@@ -541,9 +543,9 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Detail Panel */}
-        <AnimatePresence>
-          {selectedItem && (
+{/* Detail Panel */}
+<AnimatePresence mode="wait">
+{selectedItem && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

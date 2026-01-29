@@ -209,7 +209,7 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
   if (!isMounted || typeof document === 'undefined') return null
 
   return createPortal(
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {isVisible && (
         <motion.div
           ref={tooltipRef}
@@ -331,7 +331,7 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
                 <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-blue/20 ring-offset-2 shadow-lg">
                   {member.image ? (
                     <Image
-                      src={member.image}
+                      src={member.image || "/placeholder.svg"}
                       alt={member.name}
                       width={64}
                       height={64}
@@ -524,7 +524,7 @@ const Electron: React.FC<ElectronProps> = ({
                   <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-red/20 ring-offset-2 shadow-lg">
                     {supporter.image ? (
                       <Image
-                        src={supporter.image}
+                        src={supporter.image || "/placeholder.svg"}
                         alt={supporter.name}
                         width={64}
                         height={64}
