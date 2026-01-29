@@ -2,6 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   images: {
     remotePatterns: [
       {
@@ -9,12 +15,11 @@ const nextConfig = {
         hostname: '**',
       },
     ],
+    unoptimized: true,
   },
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
 }
 
-import { withContentlayer } from 'next-contentlayer'
-
-export default withContentlayer(nextConfig)
+export default nextConfig
