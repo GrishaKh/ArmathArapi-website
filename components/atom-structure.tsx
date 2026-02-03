@@ -612,9 +612,25 @@ export function AtomStructure() {
     shortest * (isTiny ? 0.42 : isSmall ? 0.38 : 0.28)
   )
 
+  const electronSize = Math.round(
+    Math.max(24, Math.min(44, shortest * (isTiny ? 0.1 : isSmall ? 0.11 : 0.12)))
+  )
+
   // Adjust orbit radii to accommodate larger nucleus on mobile
-  const innerOrbit = Math.max(nucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER, baseRadius * (isTiny ? 0.58 : isSmall ? 0.52 : 0.45))
-  const outerOrbit = Math.max(nucleusDiameter * 1.25, baseRadius * (isTiny ? 0.82 : isSmall ? 0.76 : 0.62))
+  const rawInnerOrbit = Math.max(
+    nucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER,
+    baseRadius * (isTiny ? 0.58 : isSmall ? 0.52 : 0.45)
+  )
+  const rawOuterOrbit = Math.max(
+    nucleusDiameter * 1.25,
+    baseRadius * (isTiny ? 0.82 : isSmall ? 0.76 : 0.62)
+  )
+
+  // Clamp orbits so electrons don't clip outside the scene container on small screens
+  const orbitSafetyMargin = 6
+  const maxOrbitRadius = Math.max(0, baseRadius - electronSize / 2 - orbitSafetyMargin)
+  const innerOrbit = Math.min(rawInnerOrbit, maxOrbitRadius)
+  const outerOrbit = Math.max(innerOrbit, Math.min(rawOuterOrbit, maxOrbitRadius))
 
   const orbits = [
     { radius: innerOrbit, duration: 20 },
@@ -653,7 +669,6 @@ export function AtomStructure() {
           supporters.map((supporter, index) => {
             const { radius, duration } = orbits[index % orbits.length]
             const startingAngle = index * GOLDEN_ANGLE
-            const electronSize = Math.round(Math.max(24, Math.min(44, shortest * (isTiny ? 0.1 : isSmall ? 0.11 : 0.12))))
             return (
               <Electron
                 key={supporter.id}
