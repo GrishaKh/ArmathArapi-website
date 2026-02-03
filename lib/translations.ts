@@ -9,6 +9,7 @@ export const translations = {
     joinAsStudent: "Join as a Student",
     supportArmath: "Support Armath",
     contact: "Contact",
+    more: "More",
 
     // Team
     roleLeadCoach: "Lead Coach",
@@ -201,6 +202,7 @@ export const translations = {
     joinAsStudent: "Միացեք որպես ուսանող",
     supportArmath: "Աջակցեք Արմաթին",
     contact: "Կապ",
+    more: "Ավելին",
 
     // Team
     roleLeadCoach: "Գլխավոր խմբավար",

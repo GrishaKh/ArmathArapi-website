@@ -3,25 +3,28 @@
 import { Button } from "@/components/ui/button"
 import { LanguageToggle } from "@/components/language-toggle"
 import { useLanguage } from "@/contexts/language-context"
-import { motion } from "framer-motion"
-import { useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
+import { useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 import type { TranslationKey } from "@/lib/translations"
 import Image from "next/image"
 import Link from "next/link"
-import { Menu, X } from "lucide-react"
+import { ChevronDown, Menu, X } from "lucide-react"
 
 interface HeaderProps {
   subtitle?: string
   showNav?: boolean
 }
 
-const navItems: TranslationKey[] = [
+const primaryNavItems: TranslationKey[] = [
   "aboutUs",
   "structure",
   "fieldsOfStudy",
   "events",
   "ourProjects",
+]
+
+const secondaryNavItems: TranslationKey[] = [
   "joinAsStudent",
   "supportArmath",
   "contact",
@@ -30,6 +33,31 @@ const navItems: TranslationKey[] = [
 export function Header({ subtitle, showNav = true }: HeaderProps) {
   const { t, language } = useLanguage()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
+  const moreRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!moreOpen) return
+
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as Node | null
+      if (!target || !moreRef.current) return
+      if (!moreRef.current.contains(target)) {
+        setMoreOpen(false)
+      }
+    }
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMoreOpen(false)
+    }
+
+    window.addEventListener("pointerdown", onPointerDown)
+    window.addEventListener("keydown", onKeyDown)
+    return () => {
+      window.removeEventListener("pointerdown", onPointerDown)
+      window.removeEventListener("keydown", onKeyDown)
+    }
+  }, [moreOpen])
 
   return (
     <motion.header
@@ -65,12 +93,12 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
         {showNav ? (
           <>
             <nav className="hidden lg:flex items-center space-x-4">
-              {navItems.map((item, index) => (
+              {primaryNavItems.map((item, index) => (
                 <motion.a
                   key={item}
                   href={`/#${item}`}
                   className={cn(
-                    "text-gray-600 hover:text-gray-900 transition-colors relative",
+                    "text-gray-600 hover:text-gray-900 transition-colors relative whitespace-nowrap",
                     language === "hy" ? "text-xs tracking-tight" : "text-sm"
                   )}
                   initial={{ opacity: 0, y: -20 }}
@@ -86,6 +114,54 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
                   />
                 </motion.a>
               ))}
+              <div className="relative" ref={moreRef}>
+                <motion.button
+                  type="button"
+                  aria-haspopup="menu"
+                  aria-expanded={moreOpen}
+                  className={cn(
+                    "flex items-center gap-1 rounded-full px-3 py-1 text-gray-700 hover:text-gray-900 transition-colors",
+                    language === "hy" ? "text-xs tracking-tight" : "text-sm"
+                  )}
+                  onClick={() => setMoreOpen((open) => !open)}
+                  whileHover={{ y: -2 }}
+                >
+                  {t("more")}
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 transition-transform duration-200",
+                      moreOpen && "rotate-180"
+                    )}
+                  />
+                </motion.button>
+                <AnimatePresence>
+                  {moreOpen && (
+                    <motion.div
+                      role="menu"
+                      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="absolute right-0 mt-2 w-56 rounded-2xl border border-white/40 bg-white/80 backdrop-blur-xl shadow-xl p-2 z-50"
+                    >
+                      {secondaryNavItems.map((item) => (
+                        <a
+                          key={item}
+                          role="menuitem"
+                          href={`/#${item}`}
+                          className={cn(
+                            "block rounded-xl px-3 py-2 text-gray-700 hover:bg-white/70 hover:text-gray-900 transition-colors",
+                            language === "hy" ? "text-sm tracking-tight" : "text-sm"
+                          )}
+                          onClick={() => setMoreOpen(false)}
+                        >
+                          {t(item)}
+                        </a>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
               <LanguageToggle />
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8 }}>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -126,7 +202,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
         >
           <div className="rounded-2xl border border-white/30 bg-white/30 backdrop-blur-xl shadow-lg p-4">
             <div className="grid gap-2">
-              {navItems.map((item) => (
+              {[...primaryNavItems, ...secondaryNavItems].map((item) => (
                 <a
                   key={item}
                   href={`/#${item}`}
