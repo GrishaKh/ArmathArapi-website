@@ -1,16 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin, isSupabaseConfigured } from '@/lib/supabase'
-import { cookies } from 'next/headers'
-
-// Simple auth check using a session cookie
-async function isAuthenticated(): Promise<boolean> {
-  const cookieStore = await cookies()
-  const session = cookieStore.get('admin_session')
-  return session?.value === process.env.ADMIN_SESSION_SECRET
-}
+import { getClientIp, isAdminAuthenticated, isAdminAuthConfigured } from '@/lib/admin-auth'
+import { adminApiRateLimiter } from '@/lib/admin-rate-limit'
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  if (!(await isAuthenticated())) {
+  if (!isAdminAuthConfigured()) {
+    return NextResponse.json({ error: 'Admin authentication is not configured' }, { status: 503 })
+  }
+
+  const rateCheck = adminApiRateLimiter.check(`submissions:get:${getClientIp(request)}`)
+  if (!rateCheck.allowed) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(rateCheck.retryAfterSeconds) } }
+    )
+  }
+
+  if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -70,7 +76,19 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 }
 
 export async function PATCH(request: NextRequest): Promise<NextResponse> {
-  if (!(await isAuthenticated())) {
+  if (!isAdminAuthConfigured()) {
+    return NextResponse.json({ error: 'Admin authentication is not configured' }, { status: 503 })
+  }
+
+  const rateCheck = adminApiRateLimiter.check(`submissions:patch:${getClientIp(request)}`)
+  if (!rateCheck.allowed) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(rateCheck.retryAfterSeconds) } }
+    )
+  }
+
+  if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -117,7 +135,19 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
 }
 
 export async function DELETE(request: NextRequest): Promise<NextResponse> {
-  if (!(await isAuthenticated())) {
+  if (!isAdminAuthConfigured()) {
+    return NextResponse.json({ error: 'Admin authentication is not configured' }, { status: 503 })
+  }
+
+  const rateCheck = adminApiRateLimiter.check(`submissions:delete:${getClientIp(request)}`)
+  if (!rateCheck.allowed) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(rateCheck.retryAfterSeconds) } }
+    )
+  }
+
+  if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

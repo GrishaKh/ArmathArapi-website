@@ -1,11 +1,27 @@
 import { MetadataRoute } from 'next'
-import { allEvents, allProjects } from 'contentlayer/generated'
+import * as contentlayerGenerated from 'contentlayer/generated'
+
+interface SitemapEvent {
+  slug: string
+  language: string
+}
+
+interface SitemapProject {
+  slug: string
+  language?: string
+}
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://armatharapi.vercel.app'
+  const generated = contentlayerGenerated as unknown as {
+    allEvents?: SitemapEvent[]
+    allProjects?: SitemapProject[]
+  }
+  const allEvents = generated.allEvents ?? []
+  const allProjects = generated.allProjects ?? []
 
   // Use only English events for sitemap to avoid duplicates
-  const englishEvents = allEvents.filter(e => e.language === 'en')
+  const englishEvents = allEvents.filter((event) => event.language === 'en')
   const eventUrls = englishEvents.map((event) => ({
     url: `${baseUrl}/events/${event.slug.split('/').pop()}`,
     lastModified: new Date(),
@@ -14,7 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }))
 
   // Use only English projects for sitemap to avoid duplicates
-  const englishProjects = allProjects.filter(p => p.language === 'en')
+  const englishProjects = allProjects.filter((project) => project.language === 'en')
   const projectUrls = englishProjects.map((project) => ({
     url: `${baseUrl}/projects/${project.slug}`,
     lastModified: new Date(),
