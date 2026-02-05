@@ -7,7 +7,6 @@ import { HtmlLangUpdater } from "@/components/html-lang-updater"
 import { cn } from "@/lib/utils"
 import { SnowEffect } from "@/components/snow-effect"
 import { FestiveCursor } from "@/components/festive-cursor"
-import { validateStartupEnv } from "@/lib/env"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const notoSansArmenian = Noto_Sans_Armenian({ subsets: ["armenian"], variable: "--font-noto-sans-armenian" })
@@ -31,8 +30,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  validateStartupEnv()
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn("relative font-sans antialiased", inter.variable, notoSansArmenian.variable, googleSans.variable)}>
