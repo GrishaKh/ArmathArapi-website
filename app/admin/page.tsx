@@ -120,12 +120,15 @@ export default function AdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
       })
-      
+
+      const payload = await res.json().catch(() => null)
+
       if (res.ok) {
         setIsAuthenticated(true)
         setPassword("")
       } else {
-        setAuthError("Invalid password")
+        const apiError = typeof payload?.error === 'string' ? payload.error : null
+        setAuthError(apiError || "Authentication failed")
       }
     } catch {
       setAuthError("Authentication failed")
