@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import * as contentlayerGenerated from 'contentlayer/generated'
+import { getSiteUrl } from '@/lib/site'
 
 interface SitemapEvent {
   slug: string
@@ -12,7 +13,7 @@ interface SitemapProject {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://armatharapi.vercel.app'
+  const baseUrl = getSiteUrl()
   const generated = contentlayerGenerated as unknown as {
     allEvents?: SitemapEvent[]
     allProjects?: SitemapProject[]

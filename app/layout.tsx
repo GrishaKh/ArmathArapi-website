@@ -7,6 +7,7 @@ import { HtmlLangUpdater } from "@/components/html-lang-updater"
 import { cn } from "@/lib/utils"
 import { SnowEffect } from "@/components/snow-effect"
 import { FestiveCursor } from "@/components/festive-cursor"
+import { getSiteUrlAsURL } from "@/lib/site"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const notoSansArmenian = Noto_Sans_Armenian({ subsets: ["armenian"], variable: "--font-noto-sans-armenian" })
@@ -16,11 +17,15 @@ export const metadata: Metadata = {
   title: "Armath Engineering Makerspace - Arapi",
   description:
     "A state-of-the-art makerspace in Arapi where engineers, makers, and innovators come together to create, learn, and transform ideas into reality.",
-  metadataBase: new URL("https://armath-arapi.am"),
+  metadataBase: getSiteUrlAsURL(),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Armath Engineering Makerspace - Arapi",
     description: "A state-of-the-art makerspace where engineers, makers, and innovators create and learn.",
     type: "website",
+    url: "/",
   },
   generator: 'v0.app',
 }

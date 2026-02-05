@@ -1,12 +1,13 @@
 import { Resend } from 'resend'
+import { getSiteUrl } from '@/lib/site'
 
 // Admin email - must match your Resend account email for free tier
 // Or set ADMIN_EMAIL env variable to override
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'grisha1999.15@gmail.com'
 
 // Using Resend's default domain (works immediately, no verification needed)
-// TODO: will change this to armath-arapi.am later
 const FROM_EMAIL = 'Armath Arapi <onboarding@resend.dev>'
+const ADMIN_DASHBOARD_URL = `${getSiteUrl()}/admin`
 
 // Lazy initialization to avoid errors during build
 let resend: Resend | null = null
@@ -81,7 +82,7 @@ export function studentApplicationEmail(data: {
         </div>
         
         <p style="color: #666; font-size: 14px;">
-          View all applications in the <a href="https://armath-arapi.am/admin" style="color: #3EC1CF;">Admin Dashboard</a>
+          View all applications in the <a href="${ADMIN_DASHBOARD_URL}" style="color: #3EC1CF;">Admin Dashboard</a>
         </p>
       </div>
     `,
@@ -124,7 +125,7 @@ export function supportRequestEmail(data: {
         </div>
         
         <p style="color: #666; font-size: 14px; margin-top: 20px;">
-          Reply directly to this email or view in <a href="https://armath-arapi.am/admin" style="color: #3EC1CF;">Admin Dashboard</a>
+          Reply directly to this email or view in <a href="${ADMIN_DASHBOARD_URL}" style="color: #3EC1CF;">Admin Dashboard</a>
         </p>
       </div>
     `,
