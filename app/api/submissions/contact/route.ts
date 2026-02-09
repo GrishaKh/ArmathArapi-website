@@ -4,39 +4,63 @@ import { contactMessageSchema } from '@/lib/validations'
 import { sendAdminNotification, contactMessageEmail } from '@/lib/email'
 import { ApiResponse } from '@/types/submissions'
 import { rateLimiter } from '@/lib/rate-limit'
+import { createRequestLogMeta, logRequestEvent } from '@/lib/server-logger'
+import { evaluateSubmissionGate } from '@/lib/api/submission-core'
 
 export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse>> {
-  try {
-    const ip = request.headers.get('x-forwarded-for') || 'unknown'
-    if (!rateLimiter.check(ip)) {
-      return NextResponse.json(
-        { success: false, message: 'Too many requests. Please try again later.' },
-        { status: 429 }
-      )
-    }
+  const logMeta = createRequestLogMeta(request, '/api/submissions/contact')
 
+  try {
     const body = await request.json()
     const validationResult = contactMessageSchema.safeParse(body)
-    
+    const gate = evaluateSubmissionGate({
+      isRateAllowed: rateLimiter.check(logMeta.ip),
+      validationErrors: validationResult.success ? [] : validationResult.error.errors.map(e => e.message),
+      isDatabaseConfigured: Boolean(isSupabaseConfigured() && supabaseAdmin),
+    })
+
+    if (gate.body) {
+      if (gate.status === 429) {
+        logRequestEvent('warn', 'submission.contact.rate_limited', 'Contact submission rate limit exceeded', logMeta, {
+          status: 429,
+        })
+      } else if (gate.status === 400) {
+        const issues = validationResult.success ? 0 : validationResult.error.errors.length
+        logRequestEvent('info', 'submission.contact.validation_failed', 'Contact submission validation failed', logMeta, {
+          status: 400,
+          details: { issues },
+        })
+      } else if (gate.status === 503) {
+        logRequestEvent('error', 'submission.contact.database_unavailable', 'Contact submission database not configured', logMeta, {
+          status: 503,
+        })
+      }
+
+      return NextResponse.json(gate.body, { status: gate.status })
+    }
+
     if (!validationResult.success) {
-      const errors = validationResult.error.errors.map(e => e.message).join(', ')
-      return NextResponse.json(
-        { success: false, message: 'Validation failed', error: errors },
-        { status: 400 }
-      )
+      // Defensive guard. evaluateSubmissionGate already handles this branch.
+      logRequestEvent('info', 'submission.contact.validation_failed', 'Contact submission validation failed', logMeta, {
+        status: 400,
+        details: { issues: 1 },
+      })
+      return NextResponse.json({ success: false, message: 'Validation failed' }, { status: 400 })
     }
 
     const data = validationResult.data
-
-    // Check if database is configured
-    if (!isSupabaseConfigured() || !supabaseAdmin) {
+    const adminClient = supabaseAdmin
+    if (!adminClient) {
+      logRequestEvent('error', 'submission.contact.database_unavailable', 'Contact submission database not configured', logMeta, {
+        status: 503,
+      })
       return NextResponse.json(
         { success: false, message: 'Database not configured' },
         { status: 503 }
       )
     }
 
-    const { data: insertedData, error: dbError } = await supabaseAdmin
+    const { data: insertedData, error: dbError } = await adminClient
       .from('contact_messages')
       .insert({
         name: data.name,
@@ -49,9 +73,12 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       .single()
 
     if (dbError) {
-      console.error('Database error:', dbError)
+      logRequestEvent('error', 'submission.contact.database_error', 'Contact submission insert failed', logMeta, {
+        status: 500,
+        details: { code: dbError.code ?? 'unknown' },
+      })
       return NextResponse.json(
-        { success: false, message: 'Failed to save message', error: dbError.message },
+        { success: false, message: 'Failed to save message' },
         { status: 500 }
       )
     }
@@ -63,7 +90,17 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       language: data.language,
     })
     
-    sendAdminNotification(emailContent).catch(console.error)
+    sendAdminNotification(emailContent).catch((error: unknown) => {
+      logRequestEvent('warn', 'submission.contact.email_failed', 'Contact submission email notification failed', logMeta, {
+        details: { reason: 'send_failed' },
+        error,
+      })
+    })
+
+    logRequestEvent('info', 'submission.contact.created', 'Contact submission created', logMeta, {
+      status: 200,
+      details: { id: insertedData.id },
+    })
 
     return NextResponse.json({
       success: true,
@@ -72,7 +109,10 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
     })
 
   } catch (error) {
-    console.error('Unexpected error:', error)
+    logRequestEvent('error', 'submission.contact.unexpected_error', 'Unexpected contact submission error', logMeta, {
+      status: 500,
+      error,
+    })
     return NextResponse.json(
       { success: false, message: 'An unexpected error occurred' },
       { status: 500 }

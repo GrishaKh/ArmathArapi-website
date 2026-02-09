@@ -5,8 +5,6 @@ import "./globals.css"
 import { LanguageProvider } from "@/contexts/language-context"
 import { HtmlLangUpdater } from "@/components/html-lang-updater"
 import { cn } from "@/lib/utils"
-import { SnowEffect } from "@/components/snow-effect"
-import { FestiveCursor } from "@/components/festive-cursor"
 import { getSiteUrlAsURL } from "@/lib/site"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
@@ -40,8 +38,6 @@ export default function RootLayout({
       <body className={cn("relative font-sans antialiased", inter.variable, notoSansArmenian.variable, googleSans.variable)}>
         <LanguageProvider>
           <HtmlLangUpdater />
-          <SnowEffect />
-          <FestiveCursor />
           {children}
         </LanguageProvider>
       </body>

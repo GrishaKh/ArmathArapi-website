@@ -2,14 +2,23 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin, isSupabaseConfigured } from '@/lib/supabase'
 import { getClientIp, isAdminAuthenticated, isAdminAuthConfigured } from '@/lib/admin-auth'
 import { adminApiRateLimiter } from '@/lib/admin-rate-limit'
+import { createRequestLogMeta, logRequestEvent } from '@/lib/server-logger'
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
+  const logMeta = createRequestLogMeta(request, '/api/admin/submissions')
+
   if (!isAdminAuthConfigured()) {
+    logRequestEvent('error', 'admin.submissions.unconfigured', 'Admin submissions requested but auth is not configured', logMeta, {
+      status: 503,
+    })
     return NextResponse.json({ error: 'Admin authentication is not configured' }, { status: 503 })
   }
 
   const rateCheck = adminApiRateLimiter.check(`submissions:get:${getClientIp(request)}`)
   if (!rateCheck.allowed) {
+    logRequestEvent('warn', 'admin.submissions.rate_limited', 'Admin submissions GET rate limited', logMeta, {
+      status: 429,
+    })
     return NextResponse.json(
       { error: 'Too many requests. Please try again later.' },
       { status: 429, headers: { 'Retry-After': String(rateCheck.retryAfterSeconds) } }
@@ -17,10 +26,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   if (!(await isAdminAuthenticated())) {
+    logRequestEvent('warn', 'admin.submissions.unauthorized', 'Unauthorized admin submissions GET attempt', logMeta, {
+      status: 401,
+    })
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   if (!isSupabaseConfigured() || !supabaseAdmin) {
+    logRequestEvent('error', 'admin.submissions.database_unavailable', 'Admin submissions GET failed: database not configured', logMeta, {
+      status: 503,
+    })
     return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
   }
 
@@ -39,6 +54,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const table = tableMap[type]
   if (!table) {
+    logRequestEvent('warn', 'admin.submissions.invalid_type', 'Admin submissions GET failed: invalid type', logMeta, {
+      status: 400,
+      details: { type },
+    })
     return NextResponse.json({ error: 'Invalid type' }, { status: 400 })
   }
 
@@ -56,10 +75,17 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const { data, error, count } = await query
 
     if (error) {
-      console.error('Database error:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      logRequestEvent('error', 'admin.submissions.database_error', 'Admin submissions GET database error', logMeta, {
+        status: 500,
+        details: { code: error.code ?? 'unknown', table },
+      })
+      return NextResponse.json({ error: 'Failed to fetch submissions' }, { status: 500 })
     }
 
+    logRequestEvent('info', 'admin.submissions.fetched', 'Admin submissions fetched successfully', logMeta, {
+      status: 200,
+      details: { type, page, limit, count: count || 0 },
+    })
     return NextResponse.json({
       data,
       pagination: {
@@ -70,18 +96,29 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       },
     })
   } catch (error) {
-    console.error('Unexpected error:', error)
+    logRequestEvent('error', 'admin.submissions.unexpected_error', 'Unexpected admin submissions GET error', logMeta, {
+      status: 500,
+      error,
+    })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 export async function PATCH(request: NextRequest): Promise<NextResponse> {
+  const logMeta = createRequestLogMeta(request, '/api/admin/submissions')
+
   if (!isAdminAuthConfigured()) {
+    logRequestEvent('error', 'admin.submissions.unconfigured', 'Admin submissions PATCH attempted while auth not configured', logMeta, {
+      status: 503,
+    })
     return NextResponse.json({ error: 'Admin authentication is not configured' }, { status: 503 })
   }
 
   const rateCheck = adminApiRateLimiter.check(`submissions:patch:${getClientIp(request)}`)
   if (!rateCheck.allowed) {
+    logRequestEvent('warn', 'admin.submissions.rate_limited', 'Admin submissions PATCH rate limited', logMeta, {
+      status: 429,
+    })
     return NextResponse.json(
       { error: 'Too many requests. Please try again later.' },
       { status: 429, headers: { 'Retry-After': String(rateCheck.retryAfterSeconds) } }
@@ -89,10 +126,16 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
   }
 
   if (!(await isAdminAuthenticated())) {
+    logRequestEvent('warn', 'admin.submissions.unauthorized', 'Unauthorized admin submissions PATCH attempt', logMeta, {
+      status: 401,
+    })
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   if (!isSupabaseConfigured() || !supabaseAdmin) {
+    logRequestEvent('error', 'admin.submissions.database_unavailable', 'Admin submissions PATCH failed: database not configured', logMeta, {
+      status: 503,
+    })
     return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
   }
 
@@ -108,6 +151,9 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
 
     const table = tableMap[type]
     if (!table || !id) {
+      logRequestEvent('warn', 'admin.submissions.invalid_request', 'Admin submissions PATCH failed: invalid payload', logMeta, {
+        status: 400,
+      })
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
     }
 
@@ -123,24 +169,42 @@ export async function PATCH(request: NextRequest): Promise<NextResponse> {
       .single()
 
     if (error) {
-      console.error('Database error:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      logRequestEvent('error', 'admin.submissions.database_error', 'Admin submissions PATCH database error', logMeta, {
+        status: 500,
+        details: { code: error.code ?? 'unknown', table },
+      })
+      return NextResponse.json({ error: 'Failed to update submission' }, { status: 500 })
     }
 
+    logRequestEvent('info', 'admin.submissions.updated', 'Admin submission updated', logMeta, {
+      status: 200,
+      details: { type, id, status: updateData.status ?? null },
+    })
     return NextResponse.json({ success: true, data })
   } catch (error) {
-    console.error('Unexpected error:', error)
+    logRequestEvent('error', 'admin.submissions.unexpected_error', 'Unexpected admin submissions PATCH error', logMeta, {
+      status: 500,
+      error,
+    })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 export async function DELETE(request: NextRequest): Promise<NextResponse> {
+  const logMeta = createRequestLogMeta(request, '/api/admin/submissions')
+
   if (!isAdminAuthConfigured()) {
+    logRequestEvent('error', 'admin.submissions.unconfigured', 'Admin submissions DELETE attempted while auth not configured', logMeta, {
+      status: 503,
+    })
     return NextResponse.json({ error: 'Admin authentication is not configured' }, { status: 503 })
   }
 
   const rateCheck = adminApiRateLimiter.check(`submissions:delete:${getClientIp(request)}`)
   if (!rateCheck.allowed) {
+    logRequestEvent('warn', 'admin.submissions.rate_limited', 'Admin submissions DELETE rate limited', logMeta, {
+      status: 429,
+    })
     return NextResponse.json(
       { error: 'Too many requests. Please try again later.' },
       { status: 429, headers: { 'Retry-After': String(rateCheck.retryAfterSeconds) } }
@@ -148,10 +212,16 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
   }
 
   if (!(await isAdminAuthenticated())) {
+    logRequestEvent('warn', 'admin.submissions.unauthorized', 'Unauthorized admin submissions DELETE attempt', logMeta, {
+      status: 401,
+    })
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   if (!isSupabaseConfigured() || !supabaseAdmin) {
+    logRequestEvent('error', 'admin.submissions.database_unavailable', 'Admin submissions DELETE failed: database not configured', logMeta, {
+      status: 503,
+    })
     return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
   }
 
@@ -168,6 +238,9 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
 
     const table = type ? tableMap[type] : null
     if (!table || !id) {
+      logRequestEvent('warn', 'admin.submissions.invalid_request', 'Admin submissions DELETE failed: invalid query params', logMeta, {
+        status: 400,
+      })
       return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
     }
 
@@ -177,13 +250,23 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
       .eq('id', id)
 
     if (error) {
-      console.error('Database error:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      logRequestEvent('error', 'admin.submissions.database_error', 'Admin submissions DELETE database error', logMeta, {
+        status: 500,
+        details: { code: error.code ?? 'unknown', table },
+      })
+      return NextResponse.json({ error: 'Failed to delete submission' }, { status: 500 })
     }
 
+    logRequestEvent('info', 'admin.submissions.deleted', 'Admin submission deleted', logMeta, {
+      status: 200,
+      details: { type, id },
+    })
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Unexpected error:', error)
+    logRequestEvent('error', 'admin.submissions.unexpected_error', 'Unexpected admin submissions DELETE error', logMeta, {
+      status: 500,
+      error,
+    })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
