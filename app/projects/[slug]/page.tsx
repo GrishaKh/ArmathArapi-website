@@ -33,13 +33,13 @@ export default function ProjectDetailPage({ params }: Props) {
 
   // Custom MDX components to match current styling
   const mdxComponents = {
-    h2: (props: any) => <h2 className="text-3xl font-bold text-gray-900 mb-4 mt-8" {...props} />,
-    p: (props: any) => <p className="text-gray-600 text-lg leading-relaxed mb-4" {...props} />,
+    h2: (props: any) => <h2 className="text-3xl font-bold text-slate-900 mb-4 mt-8" {...props} />,
+    p: (props: any) => <p className="text-slate-600 text-lg leading-relaxed mb-4" {...props} />,
     ul: (props: any) => <ul className="space-y-4 mb-6" {...props} />,
     li: (props: any) => (
       <li className="flex gap-4" {...props}>
         <Zap className="w-6 h-6 text-armath-blue flex-shrink-0 mt-1" />
-        <span className="text-gray-600 text-lg">{props.children}</span>
+        <span className="text-slate-600 text-lg">{props.children}</span>
       </li>
     ),
   }
@@ -55,12 +55,12 @@ export default function ProjectDetailPage({ params }: Props) {
   const technologies = project.technologies ? (Array.isArray(project.technologies) ? project.technologies : []) : []
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="sticky top-0 z-50 border-b bg-white/30 backdrop-blur-xl supports-[backdrop-filter]:bg-white/20"
+        className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-lg"
       >
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/projects" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -69,9 +69,9 @@ export default function ProjectDetailPage({ params }: Props) {
           </Link>
           <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             <motion.div
-              className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden border border-armath-blue/20 bg-white shadow-sm"
-              whileHover={{ rotate: 5 }}
-              transition={{ duration: 0.3 }}
+              className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm"
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.2 }}
             >
               <Image src="/logo.png" alt={t("logo")} fill className="object-contain p-1.5" sizes="48px" />
             </motion.div>
@@ -81,13 +81,13 @@ export default function ProjectDetailPage({ params }: Props) {
       </motion.header>
 
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-armath-blue/5 to-transparent">
+      <section className="relative py-20">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <AnimatedSection>
-              <Badge className="mb-4 bg-armath-blue text-white">{category}</Badge>
-              <h1 className={cn("text-5xl font-bold text-gray-900 mb-4", language === "hy" && "text-4xl")}>{title}</h1>
-              <p className="text-xl text-gray-600 mb-8">{description}</p>
+              <Badge className="mb-4 bg-armath-blue/90 text-white">{category}</Badge>
+              <h1 className={cn("text-5xl font-bold text-slate-900 mb-4", language === "hy" && "text-4xl")}>{title}</h1>
+              <p className="text-xl text-slate-600 mb-8">{description}</p>
               {tools.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {tools.map((tool) => (
@@ -99,7 +99,7 @@ export default function ProjectDetailPage({ params }: Props) {
               )}
             </AnimatedSection>
             <AnimatedSection animation="fadeInUp" delay={0.2}>
-              <div className="relative aspect-video rounded-xl overflow-hidden shadow-lg">
+              <div className="relative aspect-video overflow-hidden rounded-3xl border border-slate-200/80 shadow-lg">
                 <Image src={project.image || "/placeholder.svg"} alt={title} fill className="object-cover" />
               </div>
             </AnimatedSection>
@@ -122,8 +122,8 @@ export default function ProjectDetailPage({ params }: Props) {
             {challenge && (
               <AnimatedSection>
                 <div className="space-y-4">
-                  <h2 className="text-3xl font-bold text-gray-900">{t("challenge")}</h2>
-                  <p className="text-lg text-gray-600 leading-relaxed">{challenge}</p>
+                  <h2 className="text-3xl font-bold text-slate-900">{t("challenge")}</h2>
+                  <p className="text-lg text-slate-600 leading-relaxed">{challenge}</p>
                 </div>
               </AnimatedSection>
             )}
@@ -132,8 +132,8 @@ export default function ProjectDetailPage({ params }: Props) {
             {solution && (
               <AnimatedSection animation="fadeInUp" delay={0.1}>
                 <div className="space-y-4">
-                  <h2 className="text-3xl font-bold text-gray-900">{t("solution")}</h2>
-                  <p className="text-lg text-gray-600 leading-relaxed">{solution}</p>
+                  <h2 className="text-3xl font-bold text-slate-900">{t("solution")}</h2>
+                  <p className="text-lg text-slate-600 leading-relaxed">{solution}</p>
                 </div>
               </AnimatedSection>
             )}
@@ -142,7 +142,7 @@ export default function ProjectDetailPage({ params }: Props) {
             {results && results.length > 0 && (
               <AnimatedSection animation="fadeInUp" delay={0.2}>
                 <div className="space-y-4">
-                  <h2 className="text-3xl font-bold text-gray-900">{t("results")}</h2>
+                  <h2 className="text-3xl font-bold text-slate-900">{t("results")}</h2>
                   <ul className="space-y-3">
                     {results.map((result: string, index: number) => (
                       <motion.li
@@ -150,7 +150,7 @@ export default function ProjectDetailPage({ params }: Props) {
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="flex gap-3 text-gray-600"
+                        className="flex gap-3 text-slate-600"
                       >
                         <span className="text-armath-blue font-bold mt-1 flex-shrink-0">✓</span>
                         <span className="text-lg leading-relaxed">{result}</span>
@@ -165,15 +165,15 @@ export default function ProjectDetailPage({ params }: Props) {
             {technologies.length > 0 && (
               <AnimatedSection animation="fadeInUp" delay={0.3}>
                 <div className="space-y-6">
-                  <h2 className="text-3xl font-bold text-gray-900">{t("technologies")}</h2>
+                  <h2 className="text-3xl font-bold text-slate-900">{t("technologies")}</h2>
                   <div className="grid md:grid-cols-2 gap-6">
                     {technologies.map((tech: any, index: number) => (
-                      <Card key={index} className="hover:shadow-lg transition-shadow">
+                      <Card key={index} className="border-slate-200/80 bg-white/95 shadow-sm transition-shadow hover:shadow-md">
                         <CardHeader>
                           <CardTitle className="text-lg">{tech.name}</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <CardDescription className="text-base text-gray-600">
+                          <CardDescription className="text-base text-slate-600">
                             {language === "hy" && tech.descriptionHy ? tech.descriptionHy : tech.description}
                           </CardDescription>
                         </CardContent>
@@ -187,9 +187,9 @@ export default function ProjectDetailPage({ params }: Props) {
             {/* Impact */}
             {impact && (
               <AnimatedSection animation="fadeInUp" delay={0.4}>
-                <div className="bg-gradient-to-br from-armath-blue/10 to-transparent p-8 rounded-xl border border-armath-blue/20">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("keyHighlights")}</h2>
-                  <p className="text-lg text-gray-700 leading-relaxed">{impact}</p>
+                <div className="rounded-3xl border border-armath-blue/20 bg-armath-blue/5 p-8">
+                  <h2 className="text-2xl font-bold text-slate-900 mb-4">{t("keyHighlights")}</h2>
+                  <p className="text-lg text-slate-700 leading-relaxed">{impact}</p>
                 </div>
               </AnimatedSection>
             )}
@@ -202,14 +202,14 @@ export default function ProjectDetailPage({ params }: Props) {
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {project.studentName && (
-                    <p className="text-lg font-semibold text-gray-900">{project.studentName}</p>
+                    <p className="text-lg font-semibold text-slate-900">{project.studentName}</p>
                   )}
                   {project.presentedAt && (
-                    <p className="text-gray-600">
+                    <p className="text-slate-600">
                       <span className="font-medium">{t("presentedAt")}:</span> {project.presentedAt}
                     </p>
                   )}
-                  <p className="text-gray-600">
+                  <p className="text-slate-600">
                     <span className="font-medium">{t("year")}:</span> {project.year}
                   </p>
                 </CardContent>
@@ -220,10 +220,10 @@ export default function ProjectDetailPage({ params }: Props) {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-armath-blue/5">
+      <section className="py-20 bg-transparent">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">{t("interestedInSimilar")}</h2>
-          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">{t("joinCommunityCTA")}</p>
+          <h2 className="text-3xl font-bold text-slate-900 mb-4">{t("interestedInSimilar")}</h2>
+          <p className="text-slate-600 mb-8 max-w-2xl mx-auto">{t("joinCommunityCTA")}</p>
           <Button size="lg" className="bg-armath-red hover:bg-armath-red/90">
             {t("joinAsStudent")}
           </Button>

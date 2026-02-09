@@ -8,7 +8,6 @@ import { useLanguage } from "@/contexts/language-context"
 import { Calendar, MapPin, ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { motion } from "framer-motion"
 import { getEventsSortedByYear } from "@/lib/events"
 
 
@@ -30,18 +29,18 @@ export function EventsSection() {
   }
 
   return (
-    <section id="events" className="py-20 bg-gray-50">
+    <section id="events" className="py-24 bg-transparent">
       <div className="container mx-auto px-4">
         <AnimatedSection className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">{t("eventsTitle")}</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg">{t("eventsDescription")}</p>
+          <h2 className="text-4xl font-bold text-slate-900 mb-4">{t("eventsTitle")}</h2>
+          <p className="text-slate-600 max-w-2xl mx-auto text-lg">{t("eventsDescription")}</p>
         </AnimatedSection>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12 w-full">
           {events.slice(0, 3).map((event, index) => (
             <AnimatedSection key={event.id} animation="fadeInUp" delay={index * 0.15} className="w-full min-w-0">
               <Link href={`/events/${event.slug.split('/').pop()}`} className="block h-full w-full">
-                <Card className="hover:shadow-xl transition-all duration-500 hover:scale-[1.02] group h-full overflow-hidden cursor-pointer border-transparent hover:border-armath-blue/20 w-full">
+                <Card className="group h-full w-full overflow-hidden border-slate-200/80 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                   <div className="relative overflow-hidden">
                     <Image
                       src={event.image || "/placeholder.svg"}
@@ -62,7 +61,7 @@ export function EventsSection() {
 
                     {/* Year badge */}
                     <div className="absolute top-4 left-4">
-                      <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm text-gray-700 shadow-lg">
+                      <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm text-slate-700 shadow-lg">
                         <Calendar className="w-3 h-3 mr-1" />
                         {event.year}
                       </Badge>
@@ -76,12 +75,12 @@ export function EventsSection() {
                   </CardHeader>
 
                   <CardContent className="space-y-3">
-                    <p className="text-gray-600 text-sm line-clamp-2">
+                    <p className="text-slate-600 text-sm line-clamp-2">
                       {event.description || ""}
                     </p>
 
                     {/* Location */}
-                    <div className="flex items-center text-sm text-gray-500 gap-1">
+                    <div className="flex items-center text-sm text-slate-500 gap-1">
                       <MapPin className="w-4 h-4 flex-shrink-0" />
                       <span className="truncate">
                         {event.location}
@@ -89,13 +88,10 @@ export function EventsSection() {
                     </div>
 
                     {/* Learn More link */}
-                    <motion.div
-                      className="flex items-center text-armath-blue font-semibold text-sm gap-1 pt-2"
-                      whileHover={{ x: 4 }}
-                    >
+                    <div className="flex items-center text-armath-blue font-semibold text-sm gap-1 pt-2">
                       {t("learnMore")}
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </motion.div>
+                    </div>
                   </CardContent>
                 </Card>
               </Link>

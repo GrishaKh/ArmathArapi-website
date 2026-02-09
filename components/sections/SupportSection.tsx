@@ -39,17 +39,17 @@ export function SupportSection() {
   }
 
   return (
-    <section id="supportArmath" className="py-20 bg-white">
+    <section id="supportArmath" className="py-24 bg-transparent">
       <div className="container mx-auto px-4">
         <AnimatedSection className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">{t("supportTitle")}</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg">{t("supportDescription")}</p>
+          <h2 className="text-4xl font-bold text-slate-900 mb-4">{t("supportTitle")}</h2>
+          <p className="text-slate-600 max-w-2xl mx-auto text-lg">{t("supportDescription")}</p>
         </AnimatedSection>
 
         <div className="grid md:grid-cols-2 gap-12">
           <AnimatedSection>
             <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">{t("waysToSupport")}</h3>
+              <h3 className="text-2xl font-bold text-slate-900 mb-6">{t("waysToSupport")}</h3>
               <div className="space-y-4">
                 {[
                   { icon: BookOpen, text: t("hostWorkshop") },
@@ -59,20 +59,15 @@ export function SupportSection() {
                 ].map((item, index) => (
                   <motion.div
                     key={index}
-                    className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-armath-blue/5 transition-colors group cursor-pointer"
+                    className="flex items-center space-x-4 rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm"
                     initial={{ opacity: 0, x: -30 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    whileHover={{ x: 10 }}
                   >
-                    <motion.div
-                      className="w-12 h-12 bg-armath-blue/10 rounded-lg flex items-center justify-center group-hover:bg-armath-blue/20 transition-colors"
-                      whileHover={{ rotate: 360 }}
-                      transition={{ duration: 0.5 }}
-                    >
+                    <div className="w-12 h-12 bg-armath-blue/12 rounded-xl flex items-center justify-center">
                       <item.icon className="w-6 h-6 text-armath-blue" />
-                    </motion.div>
-                    <span className="text-gray-700 group-hover:text-gray-900 transition-colors">{item.text}</span>
+                    </div>
+                    <span className="text-slate-700">{item.text}</span>
                   </motion.div>
                 ))}
               </div>
@@ -80,7 +75,7 @@ export function SupportSection() {
           </AnimatedSection>
 
           <AnimatedSection>
-            <Card className="hover:shadow-xl transition-all duration-500">
+            <Card className="border-slate-200/80 bg-white/95 shadow-lg">
               <CardHeader>
                 <CardTitle className="text-2xl text-center flex items-center justify-center space-x-2">
                   <Heart className="w-6 h-6 text-armath-red" />
@@ -105,10 +100,10 @@ export function SupportSection() {
                       >
                         <CheckCircle className="w-8 h-8 text-emerald-600" />
                       </motion.div>
-                      <h3 className="text-xl font-semibold text-gray-900">
+                      <h3 className="text-xl font-semibold text-slate-900">
                         {t("supportSubmitted")}
                       </h3>
-                      <p className="text-gray-600 text-center">
+                      <p className="text-slate-600 text-center">
                         {t("supportThankYou")}
                       </p>
                     </motion.div>
@@ -123,7 +118,7 @@ export function SupportSection() {
                       noValidate
                     >
                       <div>
-                        <label htmlFor="support-name" className="text-sm font-medium text-gray-700 block mb-1">{t("name")}</label>
+                        <label htmlFor="support-name" className="text-sm font-medium text-slate-700 block mb-1">{t("name")}</label>
                         <Input
                           id="support-name"
                           value={supportFormData.name}
@@ -137,7 +132,7 @@ export function SupportSection() {
                       </div>
 
                       <div>
-                        <label htmlFor="support-email" className="text-sm font-medium text-gray-700 block mb-1">{t("email")}</label>
+                        <label htmlFor="support-email" className="text-sm font-medium text-slate-700 block mb-1">{t("email")}</label>
                         <Input
                           id="support-email"
                           type="email"
@@ -152,7 +147,7 @@ export function SupportSection() {
                       </div>
 
                       <div>
-                        <label id="support-type-label" className="text-sm font-medium text-gray-700 block mb-1">{t("supportType")}</label>
+                        <label id="support-type-label" className="text-sm font-medium text-slate-700 block mb-1">{t("supportType")}</label>
                         <Select 
                           value={supportFormData.supportType} 
                           onValueChange={(value) => setSupportFormData({ ...supportFormData, supportType: value })}
@@ -171,7 +166,7 @@ export function SupportSection() {
                       </div>
 
                       <div>
-                        <label htmlFor="support-message" className="text-sm font-medium text-gray-700 block mb-1">{t("message")}</label>
+                        <label htmlFor="support-message" className="text-sm font-medium text-slate-700 block mb-1">{t("message")}</label>
                         <Textarea
                           id="support-message"
                           value={supportFormData.message}
@@ -205,22 +200,20 @@ export function SupportSection() {
                         </motion.div>
                       )}
 
-                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                        <Button 
-                          type="submit"
-                          className="w-full bg-armath-blue hover:bg-armath-blue/90 shadow-lg hover:shadow-xl transition-all duration-300"
-                          disabled={submitStatus === 'loading'}
-                        >
-                          {submitStatus === 'loading' ? (
-                            <span className="flex items-center space-x-2">
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                              <span>{t("sending")}</span>
-                            </span>
-                          ) : (
-                            t("send")
-                          )}
-                        </Button>
-                      </motion.div>
+                      <Button
+                        type="submit"
+                        className="w-full bg-armath-blue hover:bg-armath-blue/90 shadow-md"
+                        disabled={submitStatus === 'loading'}
+                      >
+                        {submitStatus === 'loading' ? (
+                          <span className="flex items-center space-x-2">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span>{t("sending")}</span>
+                          </span>
+                        ) : (
+                          t("send")
+                        )}
+                      </Button>
                     </motion.form>
                   )}
                 </AnimatePresence>

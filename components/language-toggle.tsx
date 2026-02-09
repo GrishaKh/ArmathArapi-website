@@ -7,13 +7,13 @@ export function LanguageToggle() {
   const { language, setLanguage } = useLanguage()
 
   return (
-    <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1">
+    <div className="flex items-center space-x-1 rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
       <Button
         variant={language === "en" ? "default" : "ghost"}
         size="sm"
         onClick={() => setLanguage("en")}
         className={`text-xs px-3 py-1 ${
-          language === "en" ? "bg-armath-blue text-white" : "text-gray-600 hover:text-gray-900"
+          language === "en" ? "bg-armath-blue text-white shadow-sm" : "text-slate-600 hover:text-slate-900"
         }`}
       >
         EN
@@ -23,7 +23,7 @@ export function LanguageToggle() {
         size="sm"
         onClick={() => setLanguage("hy")}
         className={`text-xs px-3 py-1 ${
-          language === "hy" ? "bg-armath-blue text-white" : "text-gray-600 hover:text-gray-900"
+          language === "hy" ? "bg-armath-blue text-white shadow-sm" : "text-slate-600 hover:text-slate-900"
         }`}
       >
         ՀՅ

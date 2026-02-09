@@ -51,13 +51,13 @@ export default function EventDetailPage({ params }: PageProps) {
 
   // Custom MDX components to match current styling
   const mdxComponents = {
-    h2: (props: any) => <h2 className="text-3xl font-bold text-gray-900 mb-4 mt-8" {...props} />,
-    p: (props: any) => <p className="text-gray-600 text-lg leading-relaxed mb-4" {...props} />,
+    h2: (props: any) => <h2 className="text-3xl font-bold text-slate-900 mb-4 mt-8" {...props} />,
+    p: (props: any) => <p className="text-slate-600 text-lg leading-relaxed mb-4" {...props} />,
     ul: (props: any) => <ul className="space-y-4 mb-6" {...props} />,
     li: (props: any) => (
       <li className="flex gap-4" {...props}>
         <Zap className="w-6 h-6 text-armath-blue flex-shrink-0 mt-1" />
-        <span className="text-gray-600 text-lg">{props.children}</span>
+        <span className="text-slate-600 text-lg">{props.children}</span>
       </li>
     ),
   }
@@ -68,7 +68,7 @@ export default function EventDetailPage({ params }: PageProps) {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="sticky top-0 z-50 border-b bg-white/30 backdrop-blur-xl supports-[backdrop-filter]:bg-white/20"
+        className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-lg"
       >
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/events" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
@@ -77,9 +77,9 @@ export default function EventDetailPage({ params }: PageProps) {
           </Link>
           <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             <motion.div
-              className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden border border-armath-blue/20 bg-white shadow-sm"
-              whileHover={{ rotate: 5 }}
-              transition={{ duration: 0.3 }}
+              className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm"
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.2 }}
             >
               <Image src="/logo.png" alt={t("logo")} fill className="object-contain p-1.5" sizes="48px" />
             </motion.div>
@@ -92,7 +92,7 @@ export default function EventDetailPage({ params }: PageProps) {
 
         {/* Hero Image */}
         <AnimatedSection className="mb-12">
-          <div className="relative w-full h-96 rounded-lg overflow-hidden">
+          <div className="relative w-full h-96 overflow-hidden rounded-3xl border border-slate-200/80 shadow-lg">
             <Image
               src={event.image || "/placeholder.svg?height=400&width=1200"}
               alt={event.title}
@@ -116,25 +116,25 @@ export default function EventDetailPage({ params }: PageProps) {
             {/* Metadata Bar */}
             <AnimatedSection className="mb-12">
               <div className="grid md:grid-cols-3 gap-6 mb-12">
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/95 p-4 shadow-sm">
                   <Calendar className="w-6 h-6 text-armath-blue" />
                   <div>
-                    <p className="text-sm text-gray-600">{t("eventYear")}</p>
-                    <p className="text-lg font-semibold text-gray-900">{event.year}</p>
+                    <p className="text-sm text-slate-600">{t("eventYear")}</p>
+                    <p className="text-lg font-semibold text-slate-900">{event.year}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/95 p-4 shadow-sm">
                   <MapPin className="w-6 h-6 text-armath-red" />
                   <div>
-                    <p className="text-sm text-gray-600">{t("eventLocation")}</p>
-                    <p className="text-lg font-semibold text-gray-900">{event.location}</p>
+                    <p className="text-sm text-slate-600">{t("eventLocation")}</p>
+                    <p className="text-lg font-semibold text-slate-900">{event.location}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/95 p-4 shadow-sm">
                   <Award className="w-6 h-6 text-green-600" />
                   <div>
-                    <p className="text-sm text-gray-600">{t("eventCategory")}</p>
-                    <p className="text-lg font-semibold text-gray-900">{categoryLabels[event.category] || event.category}</p>
+                    <p className="text-sm text-slate-600">{t("eventCategory")}</p>
+                    <p className="text-lg font-semibold text-slate-900">{categoryLabels[event.category] || event.category}</p>
                   </div>
                 </div>
               </div>
@@ -150,11 +150,11 @@ export default function EventDetailPage({ params }: PageProps) {
             {/* Highlights (from Frontmatter) */}
             {event.highlights && event.highlights.length > 0 && (
               <AnimatedSection className="mb-12">
-                <h2 className="text-3xl font-bold text-gray-900 mb-6">{t("eventHighlights")}</h2>
+                <h2 className="text-3xl font-bold text-slate-900 mb-6">{t("eventHighlights")}</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   {event.highlights.map((highlight, index) => (
-                    <div key={index} className="p-4 bg-gray-50 rounded-lg border-l-4 border-armath-blue">
-                      <p className="text-gray-700 font-semibold">{highlight}</p>
+                    <div key={index} className="rounded-2xl border border-slate-200/80 bg-white/95 p-4 shadow-sm">
+                      <p className="text-slate-700 font-semibold">{highlight}</p>
                     </div>
                   ))}
                 </div>
@@ -166,8 +166,8 @@ export default function EventDetailPage({ params }: PageProps) {
           <div>
             {/* Technologies */}
             {event.technologies && event.technologies.length > 0 && (
-              <AnimatedSection className="mb-12 p-6 bg-gray-50 rounded-lg sticky top-28">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{t("eventTechnologies")}</h3>
+              <AnimatedSection className="mb-12 rounded-2xl border border-slate-200/80 bg-white/95 p-6 shadow-sm sticky top-28">
+                <h3 className="text-xl font-bold text-slate-900 mb-4">{t("eventTechnologies")}</h3>
                 <div className="flex flex-wrap gap-2">
                   {event.technologies.map((tech, index) => (
                     <Badge key={index} variant="secondary" className="bg-armath-blue/20 text-armath-blue">
@@ -180,14 +180,14 @@ export default function EventDetailPage({ params }: PageProps) {
 
             {/* Participants */}
             {event.participants && Array.isArray((event.participants as any).schools) && (
-              <AnimatedSection className="mb-12 p-6 bg-gray-50 rounded-lg">
-                <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <AnimatedSection className="mb-12 rounded-2xl border border-slate-200/80 bg-white/95 p-6 shadow-sm">
+                <h3 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
                   <Users className="w-5 h-5" />
                   {t("participatingSchools")}
                 </h3>
                 <ul className="space-y-2">
                   {((event.participants as any).schools as string[]).map((school, index) => (
-                    <li key={index} className="text-gray-600 flex items-start gap-2">
+                    <li key={index} className="text-slate-600 flex items-start gap-2">
                       <span className="text-armath-blue font-bold">•</span>
                       {school}
                     </li>
@@ -201,11 +201,11 @@ export default function EventDetailPage({ params }: PageProps) {
         {/* Related Events */}
         {relatedEvents.length > 0 && (
           <AnimatedSection className="mt-20 pt-12 border-t">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">{t("relatedEvents")}</h2>
+            <h2 className="text-3xl font-bold text-slate-900 mb-8">{t("relatedEvents")}</h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {relatedEvents.map((relatedEvent) => (
                 <Link key={relatedEvent.id} href={`/events/${relatedEvent.slug.split('/').pop()}`}>
-                  <Card className="hover:shadow-xl transition-all duration-500 hover:scale-105 group overflow-hidden cursor-pointer h-full">
+                  <Card className="group h-full overflow-hidden border-slate-200/80 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                     <div className="relative overflow-hidden">
                       <Image
                         src={relatedEvent.image || "/placeholder.svg"}

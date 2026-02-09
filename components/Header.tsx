@@ -64,14 +64,14 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="sticky top-0 z-50 border-b bg-white/30 backdrop-blur-xl supports-[backdrop-filter]:bg-white/20"
+      className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-lg"
     >
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+        <Link href="/" className="flex items-center space-x-3 hover:opacity-90 transition-opacity">
           <motion.div
-            className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden border border-armath-blue/20 bg-white shadow-sm"
-            whileHover={{ rotate: 5 }}
-            transition={{ duration: 0.3 }}
+            className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm"
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.2 }}
           >
             <Image
               src="/logo.png"
@@ -86,7 +86,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
             <h1 className={cn("font-bold text-gray-900", language === "hy" ? "text-lg tracking-tight" : "text-xl")}>
               {t("armathArapi")}
             </h1>
-            <p className="text-sm text-gray-600">{subtitle || t("engineeringMakerspace")}</p>
+            <p className="text-xs sm:text-sm text-slate-500">{subtitle || t("engineeringMakerspace")}</p>
           </div>
         </Link>
 
@@ -98,13 +98,13 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
                   key={item}
                   href={`/#${item}`}
                   className={cn(
-                    "text-gray-600 hover:text-gray-900 transition-colors relative whitespace-nowrap",
+                    "text-slate-600 hover:text-slate-900 transition-colors relative whitespace-nowrap py-1",
                     language === "hy" ? "text-xs tracking-tight" : "text-sm"
                   )}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 + 0.3 }}
-                  whileHover={{ y: -2 }}
+                  whileHover={{ y: -1 }}
                 >
                   {t(item)}
                   <motion.div
@@ -120,7 +120,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
                   aria-haspopup="menu"
                   aria-expanded={moreOpen}
                   className={cn(
-                    "flex items-center gap-1 rounded-full px-3 py-1 text-gray-700 hover:text-gray-900 transition-colors",
+                    "flex items-center gap-1 rounded-full px-3 py-1 text-slate-600 hover:text-slate-900 transition-colors",
                     language === "hy" ? "text-xs tracking-tight" : "text-sm"
                   )}
                   onClick={() => setMoreOpen((open) => !open)}
@@ -142,7 +142,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 6, scale: 0.98 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="absolute right-0 mt-2 w-56 rounded-2xl border border-white/40 bg-white/80 backdrop-blur-xl shadow-xl p-2 z-50"
+                      className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 bg-white shadow-lg p-2 z-50"
                     >
                       {secondaryNavItems.map((item) => (
                         <a
@@ -150,7 +150,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
                           role="menuitem"
                           href={`/#${item}`}
                           className={cn(
-                            "block rounded-xl px-3 py-2 text-gray-700 hover:bg-white/70 hover:text-gray-900 transition-colors",
+                            "block rounded-xl px-3 py-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors",
                             language === "hy" ? "text-sm tracking-tight" : "text-sm"
                           )}
                           onClick={() => setMoreOpen(false)}
@@ -166,7 +166,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8 }}>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button
-                    className="bg-armath-red hover:bg-armath-red/90 transform hover:scale-105 transition-all duration-200"
+                    className="bg-armath-red hover:bg-armath-red/90 shadow-md hover:shadow-lg"
                     onClick={() => document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })}
                   >
                     {t("joinAsStudent")}
@@ -178,7 +178,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
               <LanguageToggle />
               <Button
                 variant="outline"
-                className="border-white/30 bg-white/30 backdrop-blur-md hover:bg-white/40"
+                className="border-slate-200 bg-white hover:bg-slate-50"
                 size="icon"
                 aria-label="Toggle menu"
                 aria-expanded={mobileOpen}
@@ -200,14 +200,14 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
           exit={{ opacity: 0, y: -10 }}
           className="lg:hidden container mx-auto px-4 pb-4"
         >
-          <div className="rounded-2xl border border-white/30 bg-white/30 backdrop-blur-xl shadow-lg p-4">
+          <div className="rounded-2xl border border-slate-200 bg-white shadow-lg p-4">
             <div className="grid gap-2">
               {[...primaryNavItems, ...secondaryNavItems].map((item) => (
                 <a
                   key={item}
                   href={`/#${item}`}
                   className={cn(
-                    "block py-2 px-3 rounded-lg text-gray-800 hover:bg-white/40 transition-colors",
+                    "block py-2 px-3 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors",
                     language === "hy" ? "text-sm tracking-tight" : "text-base"
                   )}
                   onClick={() => setMobileOpen(false)}

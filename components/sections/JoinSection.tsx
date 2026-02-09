@@ -48,35 +48,35 @@ export function JoinSection() {
   }
 
   return (
-    <section id="joinAsStudent" className="py-20 bg-gradient-to-br from-armath-blue/10 to-armath-red/10">
+    <section id="joinAsStudent" className="py-24 bg-transparent">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <AnimatedSection>
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">{t("joinTitle")}</h2>
-              <p className="text-gray-600 mb-6 text-lg leading-relaxed">{t("joinDescription")}</p>
+              <h2 className="text-4xl font-bold text-slate-900 mb-6">{t("joinTitle")}</h2>
+              <p className="text-slate-600 mb-6 text-lg leading-relaxed">{t("joinDescription")}</p>
 
               <div className="space-y-4 mb-8">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-armath-blue/20 rounded-full flex items-center justify-center">
+                <div className="flex items-center space-x-3 rounded-2xl border border-slate-200/80 bg-white/85 p-3 shadow-sm">
+                  <div className="w-8 h-8 bg-armath-blue/15 rounded-full flex items-center justify-center">
                     <Users className="w-4 h-4 text-armath-blue" />
                   </div>
-                  <span className="text-gray-700">{t("joinInfo")}</span>
+                  <span className="text-slate-700">{t("joinInfo")}</span>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-armath-red/20 rounded-full flex items-center justify-center">
+                <div className="flex items-center space-x-3 rounded-2xl border border-slate-200/80 bg-white/85 p-3 shadow-sm">
+                  <div className="w-8 h-8 bg-armath-red/15 rounded-full flex items-center justify-center">
                     <Calendar className="w-4 h-4 text-armath-red" />
                   </div>
-                  <span className="text-gray-700">{t("classFrequency")}</span>
+                  <span className="text-slate-700">{t("classFrequency")}</span>
                 </div>
               </div>
             </div>
           </AnimatedSection>
 
           <AnimatedSection>
-            <Card className="hover:shadow-xl transition-all duration-500">
+            <Card className="border-slate-200/80 bg-white/95 shadow-lg">
               <CardHeader>
-                <CardTitle className="text-2xl text-center">{t("applyNow")}</CardTitle>
+                <CardTitle className="text-2xl text-center text-slate-900">{t("applyNow")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <AnimatePresence mode="wait">
@@ -96,10 +96,10 @@ export function JoinSection() {
                       >
                         <CheckCircle className="w-8 h-8 text-emerald-600" />
                       </motion.div>
-                      <h3 className="text-xl font-semibold text-gray-900">
+                      <h3 className="text-xl font-semibold text-slate-900">
                         {t("applicationSubmitted")}
                       </h3>
-                      <p className="text-gray-600 text-center">
+                      <p className="text-slate-600 text-center">
                         {t("applicationThankYou")}
                       </p>
                     </motion.div>
@@ -114,7 +114,7 @@ export function JoinSection() {
                       noValidate
                     >
                       <div>
-                        <label htmlFor="join-student-name" className="text-sm font-medium text-gray-700 block mb-1">{t("studentName")}</label>
+                        <label htmlFor="join-student-name" className="text-sm font-medium text-slate-700 block mb-1">{t("studentName")}</label>
                         <Input
                           id="join-student-name"
                           value={joinFormData.studentName}
@@ -128,7 +128,7 @@ export function JoinSection() {
                       </div>
 
                       <div>
-                        <label id="join-age-label" className="text-sm font-medium text-gray-700 block mb-1">{t("age")}</label>
+                        <label id="join-age-label" className="text-sm font-medium text-slate-700 block mb-1">{t("age")}</label>
                         <Select 
                           value={joinFormData.age} 
                           onValueChange={(value) => setJoinFormData({ ...joinFormData, age: value })}
@@ -148,7 +148,7 @@ export function JoinSection() {
                       </div>
 
                       <div>
-                        <label htmlFor="join-parent-contact" className="text-sm font-medium text-gray-700 block mb-1">{t("parentContact")}</label>
+                        <label htmlFor="join-parent-contact" className="text-sm font-medium text-slate-700 block mb-1">{t("parentContact")}</label>
                         <Input
                           id="join-parent-contact"
                           value={joinFormData.parentContact}
@@ -162,7 +162,7 @@ export function JoinSection() {
                       </div>
 
                       <div>
-                        <label htmlFor="join-interests" className="text-sm font-medium text-gray-700 block mb-1">{t("interests")}</label>
+                        <label htmlFor="join-interests" className="text-sm font-medium text-slate-700 block mb-1">{t("interests")}</label>
                         <Textarea
                           id="join-interests"
                           value={joinFormData.interests}
@@ -195,22 +195,20 @@ export function JoinSection() {
                         </motion.div>
                       )}
 
-                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                        <Button 
-                          type="submit"
-                          className="w-full bg-armath-red hover:bg-armath-red/90 shadow-lg hover:shadow-xl transition-all duration-300"
-                          disabled={submitStatus === 'loading'}
-                        >
-                          {submitStatus === 'loading' ? (
-                            <span className="flex items-center space-x-2">
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                              <span>{t("submitting")}</span>
-                            </span>
-                          ) : (
-                            t("applyNow")
-                          )}
-                        </Button>
-                      </motion.div>
+                      <Button
+                        type="submit"
+                        className="w-full bg-armath-red hover:bg-armath-red/90 shadow-md"
+                        disabled={submitStatus === 'loading'}
+                      >
+                        {submitStatus === 'loading' ? (
+                          <span className="flex items-center space-x-2">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span>{t("submitting")}</span>
+                          </span>
+                        ) : (
+                          t("applyNow")
+                        )}
+                      </Button>
                     </motion.form>
                   )}
                 </AnimatePresence>

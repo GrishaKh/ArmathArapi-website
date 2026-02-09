@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
 import type { TranslationKey } from "@/lib/translations"
-import { motion } from "framer-motion"
 import { Bot, Code, Box, Boxes, Gamepad2, Scissors, Wrench, Zap } from "lucide-react"
 import { useMemo } from "react"
 import { cn } from "@/lib/utils"
@@ -101,11 +100,11 @@ export function FieldsOfStudySection() {
   const fieldsOfStudy = useMemo(() => getFieldsOfStudy(t), [t])
 
   return (
-    <section id="fieldsOfStudy" className="py-20 bg-white relative z-10">
+    <section id="fieldsOfStudy" className="py-24 bg-transparent relative z-10">
       <div className="container mx-auto px-4">
         <AnimatedSection className="text-center mb-16">
           <h2 className={cn(
-            "font-bold text-gray-900 mb-4",
+            "font-bold text-slate-900 mb-4",
             language === "hy" 
               ? "text-3xl sm:text-4xl" 
               : "text-4xl"
@@ -115,9 +114,9 @@ export function FieldsOfStudySection() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {fieldsOfStudy.map((field, index) => (
             <AnimatedSection key={`field-${index}`} animation="fadeInUp" delay={index * 0.1}>
-              <Card className="hover:shadow-xl transition-all duration-500 hover:scale-105 group h-full">
+              <Card className="group h-full border-slate-200/80 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <CardHeader>
-                  <CardTitle className="text-lg group-hover:text-armath-blue transition-colors">
+                  <CardTitle className="text-lg text-slate-900 group-hover:text-armath-blue transition-colors">
                     {field.title}
                   </CardTitle>
                 </CardHeader>
@@ -126,16 +125,16 @@ export function FieldsOfStudySection() {
                     <div key={itemIndex} className="space-y-2">
                       {item.subtitle && (
                         <div className="flex items-center space-x-2">
-                          <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
+                          <div className="rounded-lg bg-slate-100 p-1.5">
                             <item.icon className="w-4 h-4 text-armath-red" />
-                          </motion.div>
-                          <h4 className="font-medium text-sm">{item.subtitle}</h4>
+                          </div>
+                          <h4 className="font-medium text-sm text-slate-800">{item.subtitle}</h4>
                         </div>
                       )}
-                      <div className="text-sm text-gray-600 space-y-1">
+                      <div className="text-sm text-slate-600 space-y-1">
                         {item.beginner && (
                           <div>
-                            <Badge variant="outline" className="text-xs mr-2">
+                            <Badge variant="outline" className="mr-2 border-slate-300 bg-white text-xs text-slate-700">
                               {t("beginner")}
                             </Badge>
                             {item.beginner}
@@ -143,7 +142,7 @@ export function FieldsOfStudySection() {
                         )}
                         {item.next && (
                           <div>
-                            <Badge variant="outline" className="text-xs mr-2">
+                            <Badge variant="outline" className="mr-2 border-slate-300 bg-white text-xs text-slate-700">
                               {t("next")}
                             </Badge>
                             {item.next}
@@ -159,9 +158,9 @@ export function FieldsOfStudySection() {
         </div>
 
         <AnimatedSection className="text-center mt-12">
-          <Card className="bg-armath-blue/5 border-armath-blue/20">
+          <Card className="border-armath-blue/20 bg-armath-blue/5">
             <CardContent className="p-6">
-              <p className="text-gray-600 italic">{t("openToNew")}</p>
+              <p className="text-slate-600 italic">{t("openToNew")}</p>
             </CardContent>
           </Card>
         </AnimatedSection>

@@ -26,10 +26,10 @@ export default function EventsPage() {
     <main className="min-h-screen overflow-x-hidden">
       <Header subtitle={t("events")} showNav={false} />
 
-      <div className="container mx-auto px-4 pt-8 overflow-hidden">
+      <div className="container mx-auto px-4 pt-10 pb-16 overflow-hidden">
         <AnimatedSection className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">{t("eventsAndAchievements")}</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+          <h1 className="text-5xl font-bold text-slate-900 mb-4">{t("eventsAndAchievements")}</h1>
+          <p className="text-slate-600 max-w-2xl mx-auto text-lg">
             {t("eventsDescriptionLong")}
           </p>
         </AnimatedSection>
@@ -38,7 +38,7 @@ export default function EventsPage() {
           {events.map((event, index) => (
             <AnimatedSection key={event.id} animation="fadeInUp" delay={index * 0.1} className="w-full min-w-0">
               <Link href={`/events/${event.slug.split('/').pop()}`} className="block w-full">
-                <Card className="hover:shadow-xl transition-all duration-500 hover:scale-105 group h-full overflow-hidden cursor-pointer w-full">
+                <Card className="group h-full w-full overflow-hidden border-slate-200/80 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                   <div className="relative overflow-hidden">
                     <Image
                       src={event.image || "/placeholder.svg?height=200&width=300"}
@@ -60,10 +60,10 @@ export default function EventsPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-600 text-sm line-clamp-3">
+                    <p className="text-slate-600 text-sm line-clamp-3">
                       {event.description || ""}
                     </p>
-                    <div className="mt-4 flex items-center text-sm text-gray-500 gap-1">
+                    <div className="mt-4 flex items-center text-sm text-slate-500 gap-1">
                       <MapPin className="w-4 h-4" />
                       {event.location}
                     </div>
@@ -74,9 +74,9 @@ export default function EventsPage() {
           ))}
         </div>
 
-        <AnimatedSection className="text-center py-12 bg-gradient-to-r from-armath-blue/10 to-armath-red/10 rounded-lg">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t("moreEventsComingSoon")}</h2>
-          <p className="text-gray-600">
+        <AnimatedSection className="text-center py-12 rounded-3xl border border-slate-200/80 bg-white/90 shadow-sm">
+          <h2 className="text-2xl font-bold text-slate-900 mb-4">{t("moreEventsComingSoon")}</h2>
+          <p className="text-slate-600">
             {t("checkBackForUpdates")}
           </p>
         </AnimatedSection>

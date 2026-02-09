@@ -8,7 +8,6 @@ import { useLanguage } from "@/contexts/language-context"
 import { ArrowRight, Star } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { motion } from "framer-motion"
 import { getProjectsSortedByYear } from "@/lib/projects"
 
 export function ProjectsSection() {
@@ -28,18 +27,18 @@ export function ProjectsSection() {
     project.toolsHy && language === "hy" ? (project.toolsHy || []) : (project.tools || [])
 
   return (
-    <section id="ourProjects" className="py-20 bg-white">
+    <section id="ourProjects" className="py-24 bg-transparent">
       <div className="container mx-auto px-4">
         <AnimatedSection className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">{t("projectsTitle")}</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-lg">{t("projectsDescription")}</p>
+          <h2 className="text-4xl font-bold text-slate-900 mb-4">{t("projectsTitle")}</h2>
+          <p className="text-slate-600 max-w-2xl mx-auto text-lg">{t("projectsDescription")}</p>
         </AnimatedSection>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
           {projects.map((project, index) => (
             <AnimatedSection key={project.id} animation="fadeInUp" delay={index * 0.15} className="w-full min-w-0">
               <Link href={`/projects/${project.slug}`} className="block h-full w-full">
-                <Card className="hover:shadow-xl transition-all duration-500 hover:scale-[1.02] group h-full overflow-hidden cursor-pointer border-transparent hover:border-armath-blue/20 w-full">
+                <Card className="group h-full w-full overflow-hidden border-slate-200/80 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                   <div className="relative overflow-hidden">
                     <Image
                       src={project.image || "/placeholder.svg"}
@@ -63,7 +62,7 @@ export function ProjectsSection() {
 
                     {/* Year badge */}
                     <div className="absolute top-4 left-4">
-                      <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm text-gray-700 shadow-lg">
+                      <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm text-slate-700 shadow-lg">
                         {project.year}
                       </Badge>
                     </div>
@@ -88,7 +87,7 @@ export function ProjectsSection() {
                     <div className="space-y-4">
                       {/* Tools used */}
                       <div>
-                        <p className="text-xs font-semibold text-gray-500 mb-2">{t("toolsUsed")}:</p>
+                        <p className="text-xs font-semibold text-slate-500 mb-2">{t("toolsUsed")}:</p>
                         <div className="flex flex-wrap gap-1">
                           {getProjectTools(project).slice(0, 3).map((tool) => (
                             <Badge key={tool} variant="secondary" className="text-xs">
@@ -104,12 +103,10 @@ export function ProjectsSection() {
                       </div>
 
                       {/* View Project link */}
-                      <motion.div whileHover={{ x: 4 }}>
-                        <div className="flex items-center text-sm font-medium text-armath-blue">
-                          {t("viewProject")}
-                          <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                        </div>
-                      </motion.div>
+                      <div className="flex items-center text-sm font-medium text-armath-blue">
+                        {t("viewProject")}
+                        <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

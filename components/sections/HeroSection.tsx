@@ -2,12 +2,12 @@
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { FloatingElement } from "@/components/floating-element"
 import { useLanguage } from "@/contexts/language-context"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { useRef } from "react"
 import { cn } from "@/lib/utils"
-import { ArrowRight, Bot, Cog, Cpu } from "lucide-react"
+import { ArrowRight, ArrowUpRight, Sparkles } from "lucide-react"
+import type { TranslationKey } from "@/lib/translations"
 
 export function HeroSection() {
   const { t, language } = useLanguage()
@@ -19,84 +19,109 @@ export function HeroSection() {
 
   const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
   const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0])
+  const quickLinks: Array<{ key: TranslationKey; href: string }> = [
+    { key: "fieldsOfStudy", href: "#fieldsOfStudy" },
+    { key: "ourProjects", href: "#ourProjects" },
+    { key: "events", href: "#events" },
+    { key: "supportArmath", href: "#supportArmath" },
+  ]
 
   return (
-    <section ref={heroRef} className="py-20 bg-gradient-to-br from-blue-50 to-red-50 relative overflow-hidden">
-      <motion.div style={{ y: heroY, opacity: heroOpacity }} className="container mx-auto px-4 text-center relative z-10">
-        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, delay: 0.2 }}>
-          <Badge className="mb-4 bg-armath-blue/10 text-armath-blue hover:bg-armath-blue/10 transform hover:scale-105 transition-all duration-200">
-            {t("heroBadge")}
-          </Badge>
-        </motion.div>
+    <section ref={heroRef} className="relative overflow-hidden py-24 md:py-28">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -top-28 -left-16 h-72 w-72 rounded-full bg-armath-blue/15 blur-3xl" />
+        <div className="absolute top-16 -right-20 h-80 w-80 rounded-full bg-armath-red/10 blur-3xl" />
+      </div>
 
-        <motion.h1
-          className={cn(
-            "font-bold text-gray-900 mb-6",
-            language === "hy" ? "text-3xl md:text-5xl tracking-tight" : "text-4xl md:text-6xl"
-          )}
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          {t("armathArapi")}
-          <motion.span
-            className="text-armath-red block"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+      <motion.div
+        style={{ y: heroY, opacity: heroOpacity }}
+        className="container mx-auto px-4 relative z-10"
+      >
+        <div className="grid items-center gap-12 lg:grid-cols-12">
+          <div className="lg:col-span-7">
+            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+              <Badge className="mb-5 bg-armath-blue/10 text-armath-blue hover:bg-armath-blue/15">
+                <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+                {t("heroBadge")}
+              </Badge>
+            </motion.div>
+
+            <motion.h1
+              className={cn(
+                "font-bold text-slate-900 mb-6 leading-tight",
+                language === "hy" ? "text-3xl sm:text-5xl tracking-tight" : "text-4xl sm:text-6xl"
+              )}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.1 }}
+            >
+              {t("armathArapi")}
+              <span className="block text-armath-red">{t("engineeringMakerspace")}</span>
+            </motion.h1>
+
+            <motion.p
+              className={cn(
+                "mb-8 max-w-2xl text-slate-600",
+                language === "hy" ? "text-lg tracking-tight" : "text-xl"
+              )}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.2 }}
+            >
+              {t("heroSubtitle")}
+            </motion.p>
+
+            <motion.div
+              className="flex flex-col sm:flex-row gap-3"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.35 }}
+            >
+              <Button
+                size="lg"
+                className="bg-armath-red hover:bg-armath-red/90"
+                onClick={() => document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })}
+              >
+                {t("joinAsStudent")}
+                <ArrowRight className="ml-1 w-4 h-4" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-armath-blue/30 text-armath-blue hover:bg-armath-blue/10"
+                onClick={() => document.getElementById("ourProjects")?.scrollIntoView({ behavior: "smooth" })}
+              >
+                {t("ourProjects")}
+              </Button>
+            </motion.div>
+          </div>
+
+          <motion.div
+            className="lg:col-span-5"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.45 }}
           >
-            {t("engineeringMakerspace")}
-          </motion.span>
-        </motion.h1>
-
-        <motion.p
-          className={cn(
-            "text-gray-600 mb-8 max-w-3xl mx-auto",
-            language === "hy" ? "text-lg tracking-tight" : "text-xl"
-          )}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-        >
-          {t("heroSubtitle")}
-        </motion.p>
-
-        <motion.div className="flex flex-col sm:flex-row gap-4 justify-center" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 1 }}>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              size="lg"
-              className="bg-armath-red hover:bg-armath-red/90 shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={() => document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })}
-            >
-              {t("joinAsStudent")}
-              <motion.div animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}>
-                <ArrowRight className="ml-2 w-4 h-4" />
-              </motion.div>
-            </Button>
+            <div className="rounded-3xl border border-slate-200/90 bg-white/95 p-6 shadow-xl">
+              <p className="text-xs font-semibold tracking-wider uppercase text-slate-500 mb-4">
+                {t("engineeringMakerspace")}
+              </p>
+              <div className="space-y-3">
+                {quickLinks.map((item) => (
+                  <a
+                    key={item.key}
+                    href={item.href}
+                    className="group flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 text-slate-700 hover:border-armath-blue/40 hover:bg-slate-50 transition-all"
+                  >
+                    <span className={cn(language === "hy" && "tracking-tight")}>{t(item.key)}</span>
+                    <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-armath-blue transition-colors" />
+                  </a>
+                ))}
+              </div>
+            </div>
           </motion.div>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-armath-blue text-armath-blue hover:bg-armath-blue hover:text-white bg-transparent shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={() => document.getElementById("ourProjects")?.scrollIntoView({ behavior: "smooth" })}
-            >
-              {t("ourProjects")}
-            </Button>
-          </motion.div>
-        </motion.div>
+        </div>
       </motion.div>
-
-      {/* Floating background elements */}
-      <FloatingElement className="absolute top-20 left-10 opacity-10" duration={4}>
-        <Cog className="w-20 h-20 text-armath-blue" />
-      </FloatingElement>
-      <FloatingElement className="absolute top-40 right-20 opacity-10" duration={5} yOffset={15}>
-        <Cpu className="w-16 h-16 text-armath-red" />
-      </FloatingElement>
-      <FloatingElement className="absolute bottom-20 left-1/4 opacity-10" duration={6} yOffset={20}>
-        <Bot className="w-12 h-12 text-armath-blue" />
-      </FloatingElement>
     </section>
   )
 }
