@@ -69,7 +69,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center space-x-3 hover:opacity-90 transition-opacity">
           <motion.div
-            className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm"
+            className="relative h-10 w-10 rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm lg:hidden"
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.2 }}
           >
@@ -82,11 +82,25 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
               priority
             />
           </motion.div>
-          <div>
-            <h1 className={cn("font-bold text-gray-900", language === "hy" ? "text-lg tracking-tight" : "text-xl")}>
+          <motion.div
+            className="relative hidden h-12 w-[186px] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm lg:block"
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Image
+              src="/ArmathArapi_logo.png"
+              alt={t("armathArapi") + " " + t("logo")}
+              fill
+              className="object-contain"
+              sizes="186px"
+              priority
+            />
+          </motion.div>
+          <div className="lg:hidden">
+            <h1 className={cn("font-bold text-gray-900", language === "hy" ? "text-base tracking-tight" : "text-lg")}>
               {t("armathArapi")}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500">{subtitle || t("engineeringMakerspace")}</p>
+            <p className="text-[11px] text-slate-500">{subtitle || t("engineeringMakerspace")}</p>
           </div>
         </Link>
 

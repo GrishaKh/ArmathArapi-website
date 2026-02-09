@@ -1,9 +1,9 @@
 import { AnimatedSection } from "@/components/animated-section"
 import { Separator } from "@/components/ui/separator"
 import { useLanguage } from "@/contexts/language-context"
-import { Cog } from "lucide-react"
 import { motion } from "framer-motion"
 import type { TranslationKey } from "@/lib/translations"
+import Image from "next/image"
 
 export function FooterSection() {
   const { t } = useLanguage()
@@ -18,12 +18,20 @@ export function FooterSection() {
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           <AnimatedSection animation="fadeInUp">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-9 h-9 rounded-xl bg-armath-blue/90 flex items-center justify-center shadow-md">
-                <Cog className="w-5 h-5 text-white" />
+            <div className="mb-4">
+              <div className="relative h-14 w-full max-w-[260px] overflow-hidden rounded-xl border border-white/15 bg-white/5 p-1">
+                <Image
+                  src="/ArmathArapi_logo.png"
+                  alt={t("armathArapi") + " " + t("logo")}
+                  fill
+                  className="object-contain"
+                  sizes="260px"
+                />
               </div>
-              <div>
-                <h3 className="font-bold">{t("armathArapi")}</h3>
+              <div className="mt-3 flex items-center gap-2">
+                <div className="relative h-8 w-8 overflow-hidden rounded-lg border border-white/20 bg-white/10 p-1">
+                  <Image src="/logo.png" alt={t("logo")} fill className="object-contain" sizes="32px" />
+                </div>
                 <p className="text-sm text-slate-400">{t("engineeringLab")}</p>
               </div>
             </div>

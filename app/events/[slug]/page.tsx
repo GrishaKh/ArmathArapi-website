@@ -77,11 +77,24 @@ export default function EventDetailPage({ params }: PageProps) {
           </Link>
           <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             <motion.div
-              className="relative h-10 w-10 sm:h-12 sm:w-12 rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm"
+              className="relative h-10 w-10 rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm sm:hidden"
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.2 }}
             >
               <Image src="/logo.png" alt={t("logo")} fill className="object-contain p-1.5" sizes="48px" />
+            </motion.div>
+            <motion.div
+              className="relative hidden h-11 w-[176px] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm sm:block"
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Image
+                src="/ArmathArapi_logo.png"
+                alt={t("armathArapi") + " " + t("logo")}
+                fill
+                className="object-contain"
+                sizes="176px"
+              />
             </motion.div>
           </Link>
           <LanguageToggle />
