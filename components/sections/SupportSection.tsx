@@ -10,8 +10,7 @@ import { useLanguage } from "@/contexts/language-context"
 import { BookOpen, DollarSign, Heart, UserCheck, Wrench, Loader2, CheckCircle, XCircle } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
-
-type SubmitStatus = 'idle' | 'loading' | 'success' | 'error'
+import { useFormSubmission } from "@/hooks/use-form-submission"
 
 export function SupportSection() {
   const { t, language } = useLanguage()
@@ -21,53 +20,22 @@ export function SupportSection() {
     supportType: "",
     message: "",
   })
-  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle')
-  const [errorMessage, setErrorMessage] = useState("")
+  const { submitStatus, errorMessage, submitForm, resetSubmissionState, setFormError } = useFormSubmission()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!supportFormData.name.trim() || !supportFormData.email.trim() || !supportFormData.supportType || !supportFormData.message.trim()) {
-      setErrorMessage(t("errorRequired"))
-      setSubmitStatus('error')
+      setFormError(t("errorRequired"))
       return
     }
 
-    setSubmitStatus('loading')
-    setErrorMessage("")
-
-    try {
-      const response = await fetch('/api/submissions/support', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...supportFormData,
-          language,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok && data.success) {
-        setSubmitStatus('success')
-        setTimeout(() => {
-          setSupportFormData({ name: "", email: "", supportType: "", message: "" })
-          setSubmitStatus('idle')
-        }, 3000)
-      } else {
-        setErrorMessage(data.error || data.message || t("errorConnection"))
-        setSubmitStatus('error')
-      }
-    } catch (error) {
-      console.error('Submission error:', error)
-      setErrorMessage(t("errorConnection"))
-      setSubmitStatus('error')
-    }
-  }
-
-  const resetForm = () => {
-    setSubmitStatus('idle')
-    setErrorMessage("")
+    await submitForm({
+      endpoint: '/api/submissions/support',
+      payload: { ...supportFormData, language },
+      connectionErrorMessage: t("errorConnection"),
+      onSuccess: () => setSupportFormData({ name: "", email: "", supportType: "", message: "" }),
+    })
   }
 
   return (
@@ -152,38 +120,45 @@ export function SupportSection() {
                       exit={{ opacity: 0 }}
                       onSubmit={handleSubmit}
                       className="space-y-4"
+                      noValidate
                     >
                       <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("name")}</label>
+                        <label htmlFor="support-name" className="text-sm font-medium text-gray-700 block mb-1">{t("name")}</label>
                         <Input
+                          id="support-name"
                           value={supportFormData.name}
                           onChange={(e) => setSupportFormData({ ...supportFormData, name: e.target.value })}
                           placeholder={t("yourName")}
                           className="focus:ring-armath-blue"
                           disabled={submitStatus === 'loading'}
+                          required
+                          autoComplete="name"
                         />
                       </div>
 
                       <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("email")}</label>
+                        <label htmlFor="support-email" className="text-sm font-medium text-gray-700 block mb-1">{t("email")}</label>
                         <Input
+                          id="support-email"
                           type="email"
                           value={supportFormData.email}
                           onChange={(e) => setSupportFormData({ ...supportFormData, email: e.target.value })}
                           placeholder={t("yourEmail")}
                           className="focus:ring-armath-blue"
                           disabled={submitStatus === 'loading'}
+                          required
+                          autoComplete="email"
                         />
                       </div>
 
                       <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("supportType")}</label>
+                        <label id="support-type-label" className="text-sm font-medium text-gray-700 block mb-1">{t("supportType")}</label>
                         <Select 
                           value={supportFormData.supportType} 
                           onValueChange={(value) => setSupportFormData({ ...supportFormData, supportType: value })}
                           disabled={submitStatus === 'loading'}
                         >
-                          <SelectTrigger className="focus:ring-armath-blue">
+                          <SelectTrigger className="focus:ring-armath-blue" aria-labelledby="support-type-label">
                           <SelectValue placeholder={t("selectSupportType")} />
                           </SelectTrigger>
                           <SelectContent>
@@ -196,14 +171,16 @@ export function SupportSection() {
                       </div>
 
                       <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("message")}</label>
+                        <label htmlFor="support-message" className="text-sm font-medium text-gray-700 block mb-1">{t("message")}</label>
                         <Textarea
+                          id="support-message"
                           value={supportFormData.message}
                           onChange={(e) => setSupportFormData({ ...supportFormData, message: e.target.value })}
                           placeholder={t("yourMessage")}
                           className="focus:ring-armath-blue resize-none"
                           rows={4}
                           disabled={submitStatus === 'loading'}
+                          required
                         />
                       </div>
 
@@ -212,13 +189,16 @@ export function SupportSection() {
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg"
+                          role="alert"
+                          aria-live="assertive"
                         >
                           <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
                           <p className="text-sm text-red-600">{errorMessage}</p>
                           <button 
                             type="button" 
-                            onClick={resetForm}
+                            onClick={resetSubmissionState}
                             className="ml-auto text-red-500 hover:text-red-700"
+                            aria-label={t("close")}
                           >
                             ✕
                           </button>

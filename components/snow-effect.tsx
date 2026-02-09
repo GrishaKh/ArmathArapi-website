@@ -6,6 +6,15 @@ export function SnowEffect() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
+    const isAdminRoute = window.location.pathname.startsWith('/admin')
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const lowPowerDevice = (navigator.hardwareConcurrency || 4) <= 2
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches
+
+    if (isAdminRoute || reduceMotion || lowPowerDevice || coarsePointer) {
+      return
+    }
+
     const canvas = canvasRef.current
     if (!canvas) return
 

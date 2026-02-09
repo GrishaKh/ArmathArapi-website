@@ -6,11 +6,11 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useLanguage } from "@/contexts/language-context"
 import { MultimeterWire } from "@/components/multimeter-wire"
+import { Button } from "@/components/ui/button"
 import { Mail, MapPin, Phone, Loader2, CheckCircle, XCircle } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
-
-type SubmitStatus = 'idle' | 'loading' | 'success' | 'error'
+import { useFormSubmission } from "@/hooks/use-form-submission"
 
 export function ContactSection() {
   const { t, language } = useLanguage()
@@ -19,53 +19,22 @@ export function ContactSection() {
     email: "",
     message: "",
   })
-  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle')
-  const [errorMessage, setErrorMessage] = useState("")
+  const { submitStatus, errorMessage, submitForm, resetSubmissionState, setFormError } = useFormSubmission()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!contactFormData.name.trim() || !contactFormData.email.trim() || !contactFormData.message.trim()) {
-      setErrorMessage(t("errorRequired"))
-      setSubmitStatus('error')
+      setFormError(t("errorRequired"))
       return
     }
 
-    setSubmitStatus('loading')
-    setErrorMessage("")
-
-    try {
-      const response = await fetch('/api/submissions/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...contactFormData,
-          language,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok && data.success) {
-        setSubmitStatus('success')
-        setTimeout(() => {
-          setContactFormData({ name: "", email: "", message: "" })
-          setSubmitStatus('idle')
-        }, 3000)
-      } else {
-        setErrorMessage(data.error || data.message || t("errorConnection"))
-        setSubmitStatus('error')
-      }
-    } catch (error) {
-      console.error('Submission error:', error)
-      setErrorMessage(t("errorConnection"))
-      setSubmitStatus('error')
-    }
-  }
-
-  const resetForm = () => {
-    setSubmitStatus('idle')
-    setErrorMessage("")
+    await submitForm({
+      endpoint: '/api/submissions/contact',
+      payload: { ...contactFormData, language },
+      connectionErrorMessage: t("errorConnection"),
+      onSuccess: () => setContactFormData({ name: "", email: "", message: "" }),
+    })
   }
 
   return (
@@ -172,39 +141,48 @@ export function ContactSection() {
                       exit={{ opacity: 0 }}
                       onSubmit={handleSubmit}
                       className="space-y-4"
+                      noValidate
                     >
                       <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("name")}</label>
+                        <label htmlFor="contact-name" className="text-sm font-medium text-gray-700 block mb-1">{t("name")}</label>
                         <Input 
+                          id="contact-name"
                           value={contactFormData.name}
                           onChange={(e) => setContactFormData({ ...contactFormData, name: e.target.value })}
                           placeholder={t("yourName")} 
                           className="focus:ring-armath-blue transition-all duration-300 hover:border-armath-blue/50" 
                           disabled={submitStatus === 'loading'}
+                          required
+                          autoComplete="name"
                         />
                       </div>
 
                       <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("email")}</label>
+                        <label htmlFor="contact-email" className="text-sm font-medium text-gray-700 block mb-1">{t("email")}</label>
                         <Input 
+                          id="contact-email"
                           type="email" 
                           value={contactFormData.email}
                           onChange={(e) => setContactFormData({ ...contactFormData, email: e.target.value })}
                           placeholder={t("yourEmail")} 
                           className="focus:ring-armath-blue transition-all duration-300 hover:border-armath-blue/50" 
                           disabled={submitStatus === 'loading'}
+                          required
+                          autoComplete="email"
                         />
                       </div>
 
                       <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("message")}</label>
+                        <label htmlFor="contact-message" className="text-sm font-medium text-gray-700 block mb-1">{t("message")}</label>
                         <Textarea 
+                          id="contact-message"
                           value={contactFormData.message}
                           onChange={(e) => setContactFormData({ ...contactFormData, message: e.target.value })}
                           placeholder={t("yourMessage")} 
                           className="focus:ring-armath-blue transition-all duration-300 hover:border-armath-blue/50 resize-none" 
                           rows={5} 
                           disabled={submitStatus === 'loading'}
+                          required
                         />
                       </div>
 
@@ -213,13 +191,16 @@ export function ContactSection() {
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg"
+                          role="alert"
+                          aria-live="assertive"
                         >
                           <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
                           <p className="text-sm text-red-600">{errorMessage}</p>
                           <button 
                             type="button" 
-                            onClick={resetForm}
+                            onClick={resetSubmissionState}
                             className="ml-auto text-red-500 hover:text-red-700"
+                            aria-label={t("close")}
                           >
                             ✕
                           </button>
@@ -227,9 +208,9 @@ export function ContactSection() {
                       )}
 
                       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                        <button 
+                        <Button 
                           type="submit"
-                          className="w-full bg-armath-red hover:bg-armath-red/90 shadow-lg hover:shadow-xl transition-all duration-300 rounded-md text-white py-2 text-sm font-medium disabled:opacity-50"
+                          className="w-full bg-armath-red hover:bg-armath-red/90 shadow-lg hover:shadow-xl transition-all duration-300"
                           disabled={submitStatus === 'loading'}
                         >
                           {submitStatus === 'loading' ? (
@@ -240,7 +221,7 @@ export function ContactSection() {
                           ) : (
                             t("send")
                           )}
-                        </button>
+                        </Button>
                       </motion.div>
                     </motion.form>
                   )}

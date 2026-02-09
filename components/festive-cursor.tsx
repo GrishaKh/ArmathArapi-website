@@ -13,6 +13,14 @@ export function FestiveCursor() {
     const cursorYSpring = useSpring(cursorY, springConfig)
 
     useEffect(() => {
+        if (window.location.pathname.startsWith('/admin')) {
+            return
+        }
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            return
+        }
+
         // Don't enable on touch devices or devices without hover capability
         if (window.matchMedia("(pointer: coarse)").matches || window.matchMedia("(hover: none)").matches) {
             return

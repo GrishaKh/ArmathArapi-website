@@ -10,8 +10,7 @@ import { useLanguage } from "@/contexts/language-context"
 import { Users, Calendar, Loader2, CheckCircle, XCircle } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useState } from "react"
-
-type SubmitStatus = 'idle' | 'loading' | 'success' | 'error'
+import { useFormSubmission } from "@/hooks/use-form-submission"
 
 export function JoinSection() {
   const { t, language } = useLanguage()
@@ -21,65 +20,31 @@ export function JoinSection() {
     parentContact: "",
     interests: "",
   })
-  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle')
-  const [errorMessage, setErrorMessage] = useState("")
+  const { submitStatus, errorMessage, submitForm, resetSubmissionState, setFormError } = useFormSubmission()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     // Basic validation
     if (!joinFormData.studentName.trim()) {
-      setErrorMessage(t("errorRequired"))
-      setSubmitStatus('error')
+      setFormError(t("errorRequired"))
       return
     }
     if (!joinFormData.age) {
-      setErrorMessage(t("errorSelectAge"))
-      setSubmitStatus('error')
+      setFormError(t("errorSelectAge"))
       return
     }
     if (!joinFormData.parentContact.trim()) {
-      setErrorMessage(t("errorRequired"))
-      setSubmitStatus('error')
+      setFormError(t("errorRequired"))
       return
     }
 
-    setSubmitStatus('loading')
-    setErrorMessage("")
-
-    try {
-      const response = await fetch('/api/submissions/student', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...joinFormData,
-          language,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok && data.success) {
-        setSubmitStatus('success')
-        // Reset form after 3 seconds
-        setTimeout(() => {
-          setJoinFormData({ studentName: "", age: "", parentContact: "", interests: "" })
-          setSubmitStatus('idle')
-        }, 3000)
-      } else {
-        setErrorMessage(data.error || data.message || t("errorConnection"))
-        setSubmitStatus('error')
-      }
-    } catch (error) {
-      console.error('Submission error:', error)
-      setErrorMessage(t("errorConnection"))
-      setSubmitStatus('error')
-    }
-  }
-
-  const resetForm = () => {
-    setSubmitStatus('idle')
-    setErrorMessage("")
+    await submitForm({
+      endpoint: '/api/submissions/student',
+      payload: { ...joinFormData, language },
+      connectionErrorMessage: t("errorConnection"),
+      onSuccess: () => setJoinFormData({ studentName: "", age: "", parentContact: "", interests: "" }),
+    })
   }
 
   return (
@@ -146,26 +111,30 @@ export function JoinSection() {
                       exit={{ opacity: 0 }}
                       onSubmit={handleSubmit}
                       className="space-y-4"
+                      noValidate
                     >
                       <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("studentName")}</label>
+                        <label htmlFor="join-student-name" className="text-sm font-medium text-gray-700 block mb-1">{t("studentName")}</label>
                         <Input
+                          id="join-student-name"
                           value={joinFormData.studentName}
                           onChange={(e) => setJoinFormData({ ...joinFormData, studentName: e.target.value })}
                           placeholder={t("studentNamePlaceholder")}
                           className="focus:ring-armath-blue"
                           disabled={submitStatus === 'loading'}
+                          required
+                          autoComplete="name"
                         />
                       </div>
 
                       <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("age")}</label>
+                        <label id="join-age-label" className="text-sm font-medium text-gray-700 block mb-1">{t("age")}</label>
                         <Select 
                           value={joinFormData.age} 
                           onValueChange={(value) => setJoinFormData({ ...joinFormData, age: value })}
                           disabled={submitStatus === 'loading'}
                         >
-                          <SelectTrigger className="focus:ring-armath-blue">
+                          <SelectTrigger className="focus:ring-armath-blue" aria-labelledby="join-age-label">
                             <SelectValue placeholder={t("selectAgePlaceholder")} />
                           </SelectTrigger>
                           <SelectContent>
@@ -179,19 +148,23 @@ export function JoinSection() {
                       </div>
 
                       <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("parentContact")}</label>
+                        <label htmlFor="join-parent-contact" className="text-sm font-medium text-gray-700 block mb-1">{t("parentContact")}</label>
                         <Input
+                          id="join-parent-contact"
                           value={joinFormData.parentContact}
                           onChange={(e) => setJoinFormData({ ...joinFormData, parentContact: e.target.value })}
                           placeholder={t("parentContactPlaceholder")}
                           className="focus:ring-armath-blue"
                           disabled={submitStatus === 'loading'}
+                          required
+                          autoComplete="tel"
                         />
                       </div>
 
                       <div>
-                        <label className="text-sm font-medium text-gray-700 block mb-1">{t("interests")}</label>
+                        <label htmlFor="join-interests" className="text-sm font-medium text-gray-700 block mb-1">{t("interests")}</label>
                         <Textarea
+                          id="join-interests"
                           value={joinFormData.interests}
                           onChange={(e) => setJoinFormData({ ...joinFormData, interests: e.target.value })}
                           placeholder={t("interestsPlaceholder")}
@@ -206,13 +179,16 @@ export function JoinSection() {
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg"
+                          role="alert"
+                          aria-live="assertive"
                         >
                           <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
                           <p className="text-sm text-red-600">{errorMessage}</p>
                           <button 
                             type="button" 
-                            onClick={resetForm}
+                            onClick={resetSubmissionState}
                             className="ml-auto text-red-500 hover:text-red-700"
+                            aria-label={t("close")}
                           >
                             ✕
                           </button>
