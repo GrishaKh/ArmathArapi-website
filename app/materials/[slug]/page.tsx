@@ -5,11 +5,14 @@ import { use } from "react"
 import { useMDXComponent } from "next-contentlayer/hooks"
 import { AnimatedSection } from "@/components/animated-section"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { LanguageToggle } from "@/components/language-toggle"
 import { useLanguage } from "@/contexts/language-context"
 import {
+  getMaterialPathHref,
   getMaterialBySlug,
+  getMaterialsByTopic,
   getMaterialsSortedByYear,
   MATERIAL_DIFFICULTY_LABELS,
   MATERIAL_DIFFICULTY_ORDER,
@@ -22,7 +25,7 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowLeft, ArrowRight, Clock3, Download, GraduationCap, Zap } from "lucide-react"
+import { ArrowLeft, ArrowRight, CheckCircle2, CircleDot, Clock3, Download, GraduationCap, Zap } from "lucide-react"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -38,6 +41,10 @@ export default function MaterialDetailPage({ params }: Props) {
   }
 
   const MDXContent = useMDXComponent(material.body.code)
+  const topicPathMaterials = getMaterialsByTopic(language, material.topic)
+  const currentPathIndex = topicPathMaterials.findIndex((item) => item.id === material.id)
+  const nextInPath = currentPathIndex >= 0 ? topicPathMaterials[currentPathIndex + 1] : undefined
+  const pathHref = getMaterialPathHref(material.topic)
   const relatedMaterials = getMaterialsSortedByYear(language)
     .filter((item) => item.id !== material.id)
     .sort((a, b) => {
@@ -163,6 +170,90 @@ export default function MaterialDetailPage({ params }: Props) {
             </div>
 
             <div className="space-y-6">
+              {topicPathMaterials.length > 0 && (
+                <AnimatedSection>
+                  <Card className="border-slate-200/80 bg-white/95 shadow-sm">
+                    <CardHeader>
+                      <CardTitle>{t("pathProgress")}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <p className="text-sm text-slate-600">
+                        {Math.max(currentPathIndex + 1, 1)} / {topicPathMaterials.length} {t("materialsInPath")}
+                      </p>
+                      {topicPathMaterials.map((pathMaterial, index) => {
+                        const status = index < currentPathIndex ? "completed" : index === currentPathIndex ? "current" : "upcoming"
+                        const statusLabel = status === "completed" ? t("completed") : status === "current" ? t("current") : t("upcoming")
+
+                        return (
+                          <Link
+                            key={pathMaterial.id}
+                            href={`/materials/${pathMaterial.slug}`}
+                            className="flex items-center justify-between gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm hover:bg-slate-50 transition-colors"
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              {status === "completed" ? (
+                                <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-emerald-600" />
+                              ) : status === "current" ? (
+                                <CircleDot className="h-4 w-4 flex-shrink-0 text-armath-blue" />
+                              ) : (
+                                <CircleDot className="h-4 w-4 flex-shrink-0 text-slate-300" />
+                              )}
+                              <span className="line-clamp-1 text-slate-700">{pathMaterial.title}</span>
+                            </div>
+                            <Badge
+                              variant="outline"
+                              className={
+                                status === "completed"
+                                  ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                                  : status === "current"
+                                    ? "border-armath-blue/20 bg-armath-blue/10 text-armath-blue"
+                                    : "border-slate-200 bg-slate-50 text-slate-500"
+                              }
+                            >
+                              {statusLabel}
+                            </Badge>
+                          </Link>
+                        )
+                      })}
+                      <Link href={pathHref} className="inline-flex items-center text-sm font-medium text-armath-blue">
+                        {t("viewFullPath")}
+                        <ArrowRight className="ml-1 h-4 w-4" />
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </AnimatedSection>
+              )}
+
+              <AnimatedSection>
+                <Card className="border-slate-200/80 bg-white/95 shadow-sm">
+                  <CardHeader>
+                    <CardTitle>{nextInPath ? t("nextInPath") : t("pathCompleted")}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {nextInPath ? (
+                      <>
+                        <p className="text-sm text-slate-600">{nextInPath.title}</p>
+                        <Link href={`/materials/${nextInPath.slug}`}>
+                          <Button className="w-full bg-armath-blue hover:bg-armath-blue/90">
+                            {t("continuePath")}
+                            <ArrowRight className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-sm text-slate-600">{t("pathCompleteMessage")}</p>
+                        <Link href={pathHref}>
+                          <Button variant="outline" className="w-full">
+                            {t("viewFullPath")}
+                          </Button>
+                        </Link>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+              </AnimatedSection>
+
               {material.prerequisites && material.prerequisites.length > 0 && (
                 <AnimatedSection>
                   <Card className="border-slate-200/80 bg-white/95 shadow-sm">

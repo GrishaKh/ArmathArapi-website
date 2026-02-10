@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import * as contentlayerGenerated from 'contentlayer/generated'
 import { getSiteUrl } from '@/lib/site'
+import { MATERIAL_TOPICS, MATERIAL_TOPIC_ROUTE_SEGMENTS } from '@/lib/materials'
 
 interface SitemapEvent {
   slug: string
@@ -55,6 +56,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }))
 
+  const materialPathUrls = MATERIAL_TOPICS.map((topic) => ({
+    url: `${baseUrl}/materials/path/${MATERIAL_TOPIC_ROUTE_SEGMENTS[topic]}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.6,
+  }))
+
   return [
     {
       url: baseUrl,
@@ -83,5 +91,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...eventUrls,
     ...projectUrls,
     ...materialUrls,
+    ...materialPathUrls,
   ]
 }

@@ -11,9 +11,10 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useLanguage } from "@/contexts/language-context"
 import {
+  buildMaterialPaths,
+  getMaterialPathHref,
   getMaterialsSortedByYear,
   MATERIAL_DIFFICULTY_LABELS,
-  MATERIAL_DIFFICULTY_ORDER,
   MATERIAL_DIFFICULTY_STYLES,
   MATERIAL_FORMAT_LABELS,
   MATERIAL_TOPIC_LABELS,
@@ -21,6 +22,7 @@ import {
   type Material,
   type MaterialDifficulty,
   type MaterialFormat,
+  type MaterialPath,
   type MaterialTopic,
 } from "@/lib/materials"
 import { cn } from "@/lib/utils"
@@ -32,13 +34,6 @@ type TopicFilter = MaterialTopic | "all"
 type DifficultyFilter = MaterialDifficulty | "all"
 type FormatFilter = MaterialFormat | "all"
 
-interface LearningPath {
-  topic: MaterialTopic
-  materials: Material[]
-  totalDurationMinutes: number
-  levels: MaterialDifficulty[]
-}
-
 const MAX_PATH_ITEMS = 3
 
 function matchesSearch(material: Material, query: string): boolean {
@@ -46,43 +41,6 @@ function matchesSearch(material: Material, query: string): boolean {
   const normalized = query.toLowerCase()
   const haystacks = [material.title, material.summary, ...(material.tools ?? [])]
   return haystacks.some((value) => value.toLowerCase().includes(normalized))
-}
-
-function sortByPathOrder(a: Material, b: Material): number {
-  const difficultyOrder = MATERIAL_DIFFICULTY_ORDER[a.difficulty] - MATERIAL_DIFFICULTY_ORDER[b.difficulty]
-  if (difficultyOrder !== 0) return difficultyOrder
-  return a.year - b.year
-}
-
-function buildLearningPaths(materials: Material[]): LearningPath[] {
-  const grouped = new Map<MaterialTopic, Material[]>()
-
-  for (const material of materials) {
-    const list = grouped.get(material.topic) ?? []
-    list.push(material)
-    grouped.set(material.topic, list)
-  }
-
-  return Array.from(grouped.entries())
-    .map(([topic, items]) => {
-      const sortedItems = [...items].sort(sortByPathOrder)
-      const levels = Array.from(new Set(sortedItems.map((item) => item.difficulty))).sort(
-        (left, right) => MATERIAL_DIFFICULTY_ORDER[left] - MATERIAL_DIFFICULTY_ORDER[right]
-      )
-
-      return {
-        topic,
-        materials: sortedItems,
-        totalDurationMinutes: sortedItems.reduce((sum, item) => sum + item.durationMinutes, 0),
-        levels,
-      }
-    })
-    .sort((left, right) => {
-      if (right.materials.length !== left.materials.length) {
-        return right.materials.length - left.materials.length
-      }
-      return left.totalDurationMinutes - right.totalDurationMinutes
-    })
 }
 
 export default function MaterialsPage() {
@@ -119,7 +77,7 @@ export default function MaterialsPage() {
     })
   }, [materials, topic, difficulty, format, searchQuery])
 
-  const learningPaths = useMemo(() => buildLearningPaths(filteredMaterials), [filteredMaterials])
+  const learningPaths = useMemo<MaterialPath[]>(() => buildMaterialPaths(filteredMaterials), [filteredMaterials])
 
   const activeFilterCount = Number(topic !== "all") + Number(difficulty !== "all") + Number(format !== "all")
   const hasQuery = searchQuery.trim().length > 0
@@ -345,7 +303,7 @@ export default function MaterialsPage() {
                         </Link>
                       ))}
                       {path.materials.length > 0 && (
-                        <Link href={`/materials/${path.materials[0].slug}`} className="inline-flex items-center text-sm font-medium text-armath-blue">
+                        <Link href={getMaterialPathHref(path.topic)} className="inline-flex items-center text-sm font-medium text-armath-blue">
                           {t("startPath")}
                           <ArrowRight className="w-4 h-4 ml-1" />
                         </Link>
