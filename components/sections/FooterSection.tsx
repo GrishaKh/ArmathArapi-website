@@ -19,7 +19,7 @@ export function FooterSection() {
         <div className="grid md:grid-cols-4 gap-8">
           <AnimatedSection animation="fadeInUp">
             <div className="mb-4">
-              <div className="relative h-14 w-full max-w-[260px] overflow-hidden rounded-xl border border-white/15 bg-white/5 p-1">
+              <div className="relative h-14 w-full max-w-[260px]">
                 <Image
                   src="/ArmathArapi_logo.png"
                   alt={t("armathArapi") + " " + t("logo")}

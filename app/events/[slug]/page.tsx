@@ -84,7 +84,7 @@ export default function EventDetailPage({ params }: PageProps) {
               <Image src="/logo.png" alt={t("logo")} fill className="object-contain p-1.5" sizes="48px" />
             </motion.div>
             <motion.div
-              className="relative hidden h-11 w-[176px] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm sm:block"
+              className="relative hidden h-11 w-[176px] sm:block"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.2 }}
             >

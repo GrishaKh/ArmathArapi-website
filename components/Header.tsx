@@ -34,6 +34,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
   const { t, language } = useLanguage()
   const [mobileOpen, setMobileOpen] = useState(false)
   const [moreOpen, setMoreOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const moreRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -59,14 +60,29 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
     }
   }, [moreOpen])
 
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
   return (
     <motion.header
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur-lg"
+      className={cn(
+        "sticky top-0 z-50 border-b border-slate-200/80 backdrop-blur-lg transition-all duration-200",
+        isScrolled ? "bg-white/95 shadow-md" : "bg-white/85 shadow-sm"
+      )}
     >
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <div
+        className={cn(
+          "container mx-auto px-4 flex items-center justify-between transition-all duration-200",
+          isScrolled ? "py-3" : "py-4"
+        )}
+      >
         <Link href="/" className="flex items-center space-x-3 hover:opacity-90 transition-opacity">
           <motion.div
             className="relative h-10 w-10 rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm lg:hidden"
@@ -83,7 +99,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
             />
           </motion.div>
           <motion.div
-            className="relative hidden h-12 w-[186px] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm lg:block"
+            className="relative hidden h-12 w-[186px] lg:block"
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.2 }}
           >
