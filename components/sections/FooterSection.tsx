@@ -43,7 +43,7 @@ export function FooterSection() {
           {[
             {
               title: t("quickLinks"),
-              links: ["aboutUs", "structure", "fieldsOfStudy", "events"] as TranslationKey[],
+              links: ["aboutUs", "structure", "fieldsOfStudy", "learningMaterials", "events"] as TranslationKey[],
             },
             {
               title: t("programs"),

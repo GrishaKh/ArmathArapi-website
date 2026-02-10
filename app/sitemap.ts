@@ -12,14 +12,21 @@ interface SitemapProject {
   language?: string
 }
 
+interface SitemapMaterial {
+  slug: string
+  language?: string
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = getSiteUrl()
   const generated = contentlayerGenerated as unknown as {
     allEvents?: SitemapEvent[]
     allProjects?: SitemapProject[]
+    allMaterials?: SitemapMaterial[]
   }
   const allEvents = generated.allEvents ?? []
   const allProjects = generated.allProjects ?? []
+  const allMaterials = generated.allMaterials ?? []
 
   // Use only English events for sitemap to avoid duplicates
   const englishEvents = allEvents.filter((event) => event.language === 'en')
@@ -34,6 +41,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const englishProjects = allProjects.filter((project) => project.language === 'en')
   const projectUrls = englishProjects.map((project) => ({
     url: `${baseUrl}/projects/${project.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }))
+
+  // Use only English materials for sitemap to avoid duplicates
+  const englishMaterials = allMaterials.filter((material) => material.language === 'en')
+  const materialUrls = englishMaterials.map((material) => ({
+    url: `${baseUrl}/materials/${material.slug}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
@@ -58,7 +74,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
+    {
+      url: `${baseUrl}/materials`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
     ...eventUrls,
     ...projectUrls,
+    ...materialUrls,
   ]
 }

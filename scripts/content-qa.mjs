@@ -17,6 +17,9 @@ const docTypeConfig = {
   projects: {
     requiredKeys: ["id", "title", "year", "category", "image"],
   },
+  materials: {
+    requiredKeys: ["id", "title", "summary", "topic", "difficulty", "format", "ageGroup", "durationMinutes", "year", "image"],
+  },
 }
 
 function readFile(filePath) {

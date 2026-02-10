@@ -81,7 +81,52 @@ export const Project = defineDocumentType(() => ({
     },
 }))
 
+export const Material = defineDocumentType(() => ({
+    name: 'Material',
+    filePathPattern: `materials/**/*.mdx`,
+    contentType: 'mdx',
+    fields: {
+        id: { type: 'string', required: true },
+        title: { type: 'string', required: true },
+        summary: { type: 'string', required: true },
+        topic: {
+            type: 'enum',
+            options: ['programming', 'electronics', 'robotics', 'modeling3d', 'cncLaser'],
+            required: true
+        },
+        difficulty: {
+            type: 'enum',
+            options: ['beginner', 'next', 'advanced'],
+            required: true
+        },
+        format: {
+            type: 'enum',
+            options: ['lesson', 'project-guide', 'worksheet', 'video'],
+            required: true
+        },
+        ageGroup: { type: 'string', required: true },
+        durationMinutes: { type: 'number', required: true },
+        tools: { type: 'list', of: { type: 'string' }, required: false },
+        prerequisites: { type: 'list', of: { type: 'string' }, required: false },
+        learningObjectives: { type: 'list', of: { type: 'string' }, required: false },
+        downloads: { type: 'json', required: false },
+        featured: { type: 'boolean', required: false },
+        year: { type: 'number', required: true },
+        image: { type: 'string', required: true },
+    },
+    computedFields: {
+        slug: {
+            type: 'string',
+            resolve: (doc) => doc._raw.flattenedPath.split('/')[1],
+        },
+        language: {
+            type: 'string',
+            resolve: (doc) => doc._raw.sourceFileName.replace(/\.mdx$/, '') as 'en' | 'hy',
+        }
+    },
+}))
+
 export default makeSource({
     contentDirPath: 'content',
-    documentTypes: [Event, Project],
+    documentTypes: [Event, Project, Material],
 })

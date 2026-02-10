@@ -20,6 +20,7 @@ const primaryNavItems: TranslationKey[] = [
   "aboutUs",
   "structure",
   "fieldsOfStudy",
+  "learningMaterials",
   "events",
   "ourProjects",
 ]
