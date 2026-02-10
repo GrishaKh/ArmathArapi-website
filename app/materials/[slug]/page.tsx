@@ -8,8 +8,16 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { LanguageToggle } from "@/components/language-toggle"
 import { useLanguage } from "@/contexts/language-context"
-import { getMaterialBySlug, getMaterialsSortedByYear, type MaterialDifficulty, type MaterialFormat, type MaterialTopic } from "@/lib/materials"
-import type { TranslationKey } from "@/lib/translations"
+import {
+  getMaterialBySlug,
+  getMaterialsSortedByYear,
+  MATERIAL_DIFFICULTY_LABELS,
+  MATERIAL_DIFFICULTY_ORDER,
+  MATERIAL_DIFFICULTY_STYLES,
+  MATERIAL_FORMAT_LABELS,
+  MATERIAL_TOPIC_LABELS,
+  MATERIAL_TOPIC_STYLES,
+} from "@/lib/materials"
 import { motion } from "framer-motion"
 import Image from "next/image"
 import Link from "next/link"
@@ -18,27 +26,6 @@ import { ArrowLeft, ArrowRight, Clock3, Download, GraduationCap, Zap } from "luc
 
 interface Props {
   params: Promise<{ slug: string }>
-}
-
-const topicLabelKey: Record<MaterialTopic, TranslationKey> = {
-  programming: "topicProgramming",
-  electronics: "topicElectronics",
-  robotics: "topicRobotics",
-  modeling3d: "topicModeling3d",
-  cncLaser: "topicCncLaser",
-}
-
-const difficultyLabelKey: Record<MaterialDifficulty, TranslationKey> = {
-  beginner: "beginner",
-  next: "next",
-  advanced: "advanced",
-}
-
-const formatLabelKey: Record<MaterialFormat, TranslationKey> = {
-  lesson: "formatLesson",
-  "project-guide": "formatProjectGuide",
-  worksheet: "formatWorksheet",
-  video: "formatVideo",
 }
 
 export default function MaterialDetailPage({ params }: Props) {
@@ -53,7 +40,11 @@ export default function MaterialDetailPage({ params }: Props) {
   const MDXContent = useMDXComponent(material.body.code)
   const relatedMaterials = getMaterialsSortedByYear(language)
     .filter((item) => item.id !== material.id)
-    .sort((a, b) => Number(b.topic === material.topic) - Number(a.topic === material.topic))
+    .sort((a, b) => {
+      const sameTopicWeight = Number(b.topic === material.topic) - Number(a.topic === material.topic)
+      if (sameTopicWeight !== 0) return sameTopicWeight
+      return MATERIAL_DIFFICULTY_ORDER[a.difficulty] - MATERIAL_DIFFICULTY_ORDER[b.difficulty]
+    })
     .slice(0, 3)
 
   const mdxComponents = {
@@ -116,9 +107,13 @@ export default function MaterialDetailPage({ params }: Props) {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <AnimatedSection>
               <div className="flex flex-wrap gap-2 mb-4">
-                <Badge className="bg-armath-blue/90 text-white">{t(topicLabelKey[material.topic])}</Badge>
-                <Badge variant="secondary">{t(formatLabelKey[material.format])}</Badge>
-                <Badge variant="outline">{t(difficultyLabelKey[material.difficulty])}</Badge>
+                <Badge variant="outline" className={MATERIAL_TOPIC_STYLES[material.topic]}>
+                  {t(MATERIAL_TOPIC_LABELS[material.topic])}
+                </Badge>
+                <Badge variant="secondary">{t(MATERIAL_FORMAT_LABELS[material.format])}</Badge>
+                <Badge variant="outline" className={MATERIAL_DIFFICULTY_STYLES[material.difficulty]}>
+                  {t(MATERIAL_DIFFICULTY_LABELS[material.difficulty])}
+                </Badge>
               </div>
               <h1 className="text-5xl font-bold text-slate-900 mb-4">{material.title}</h1>
               <p className="text-xl text-slate-600 mb-8">{material.summary}</p>

@@ -5,38 +5,19 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
-import { getFeaturedMaterials, getMaterialsSortedByYear, type Material, type MaterialDifficulty, type MaterialFormat, type MaterialTopic } from "@/lib/materials"
-import type { TranslationKey } from "@/lib/translations"
+import {
+  getFeaturedMaterials,
+  getMaterialsSortedByYear,
+  MATERIAL_DIFFICULTY_LABELS,
+  MATERIAL_DIFFICULTY_STYLES,
+  MATERIAL_FORMAT_LABELS,
+  MATERIAL_TOPIC_LABELS,
+  MATERIAL_TOPIC_STYLES,
+  type Material,
+} from "@/lib/materials"
 import { ArrowRight, Clock3, GraduationCap } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-
-const topicLabelKey: Record<MaterialTopic, TranslationKey> = {
-  programming: "topicProgramming",
-  electronics: "topicElectronics",
-  robotics: "topicRobotics",
-  modeling3d: "topicModeling3d",
-  cncLaser: "topicCncLaser",
-}
-
-const formatLabelKey: Record<MaterialFormat, TranslationKey> = {
-  lesson: "formatLesson",
-  "project-guide": "formatProjectGuide",
-  worksheet: "formatWorksheet",
-  video: "formatVideo",
-}
-
-const difficultyLabelKey: Record<MaterialDifficulty, TranslationKey> = {
-  beginner: "beginner",
-  next: "next",
-  advanced: "advanced",
-}
-
-const difficultyColor: Record<MaterialDifficulty, string> = {
-  beginner: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  next: "bg-blue-100 text-blue-700 border-blue-200",
-  advanced: "bg-rose-100 text-rose-700 border-rose-200",
-}
 
 function getPreviewMaterials(language: "en" | "hy"): Material[] {
   const featured = getFeaturedMaterials(language, 3)
@@ -76,11 +57,11 @@ export function MaterialsSection() {
                     </div>
                     <CardHeader className="pb-2">
                       <div className="mb-3 flex flex-wrap gap-2">
-                        <Badge variant="outline" className="border-armath-blue/30 text-armath-blue">
-                          {t(topicLabelKey[material.topic])}
+                        <Badge variant="outline" className={MATERIAL_TOPIC_STYLES[material.topic]}>
+                          {t(MATERIAL_TOPIC_LABELS[material.topic])}
                         </Badge>
-                        <Badge variant="outline" className={difficultyColor[material.difficulty]}>
-                          {t(difficultyLabelKey[material.difficulty])}
+                        <Badge variant="outline" className={MATERIAL_DIFFICULTY_STYLES[material.difficulty]}>
+                          {t(MATERIAL_DIFFICULTY_LABELS[material.difficulty])}
                         </Badge>
                       </div>
                       <CardTitle className="line-clamp-2 text-lg transition-colors group-hover:text-armath-blue">
@@ -90,7 +71,7 @@ export function MaterialsSection() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-3">
-                        <p className="text-sm text-slate-500">{t(formatLabelKey[material.format])}</p>
+                        <p className="text-sm text-slate-500">{t(MATERIAL_FORMAT_LABELS[material.format])}</p>
                         <div className="flex items-center gap-4 text-sm text-slate-500">
                           <span className="inline-flex items-center gap-1">
                             <Clock3 className="h-4 w-4" />

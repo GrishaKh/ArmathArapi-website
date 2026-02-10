@@ -1,49 +1,45 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
 import { Header } from "@/components/Header"
 import { AnimatedSection } from "@/components/animated-section"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useLanguage } from "@/contexts/language-context"
-import { getMaterialsSortedByYear, type Material, type MaterialDifficulty, type MaterialFormat, type MaterialTopic } from "@/lib/materials"
-import type { TranslationKey } from "@/lib/translations"
+import {
+  getMaterialsSortedByYear,
+  MATERIAL_DIFFICULTY_LABELS,
+  MATERIAL_DIFFICULTY_ORDER,
+  MATERIAL_DIFFICULTY_STYLES,
+  MATERIAL_FORMAT_LABELS,
+  MATERIAL_TOPIC_LABELS,
+  MATERIAL_TOPIC_STYLES,
+  type Material,
+  type MaterialDifficulty,
+  type MaterialFormat,
+  type MaterialTopic,
+} from "@/lib/materials"
+import { cn } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Clock3, GraduationCap, Search } from "lucide-react"
+import { ArrowRight, Clock3, Filter, GraduationCap, Search, X } from "lucide-react"
 
 type TopicFilter = MaterialTopic | "all"
 type DifficultyFilter = MaterialDifficulty | "all"
 type FormatFilter = MaterialFormat | "all"
 
-const topicLabelKey: Record<MaterialTopic, TranslationKey> = {
-  programming: "topicProgramming",
-  electronics: "topicElectronics",
-  robotics: "topicRobotics",
-  modeling3d: "topicModeling3d",
-  cncLaser: "topicCncLaser",
+interface LearningPath {
+  topic: MaterialTopic
+  materials: Material[]
+  totalDurationMinutes: number
+  levels: MaterialDifficulty[]
 }
 
-const formatLabelKey: Record<MaterialFormat, TranslationKey> = {
-  lesson: "formatLesson",
-  "project-guide": "formatProjectGuide",
-  worksheet: "formatWorksheet",
-  video: "formatVideo",
-}
-
-const difficultyLabelKey: Record<MaterialDifficulty, TranslationKey> = {
-  beginner: "beginner",
-  next: "next",
-  advanced: "advanced",
-}
-
-const difficultyColor: Record<MaterialDifficulty, string> = {
-  beginner: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  next: "bg-blue-100 text-blue-700 border-blue-200",
-  advanced: "bg-rose-100 text-rose-700 border-rose-200",
-}
+const MAX_PATH_ITEMS = 3
 
 function matchesSearch(material: Material, query: string): boolean {
   if (!query) return true
@@ -52,12 +48,50 @@ function matchesSearch(material: Material, query: string): boolean {
   return haystacks.some((value) => value.toLowerCase().includes(normalized))
 }
 
+function sortByPathOrder(a: Material, b: Material): number {
+  const difficultyOrder = MATERIAL_DIFFICULTY_ORDER[a.difficulty] - MATERIAL_DIFFICULTY_ORDER[b.difficulty]
+  if (difficultyOrder !== 0) return difficultyOrder
+  return a.year - b.year
+}
+
+function buildLearningPaths(materials: Material[]): LearningPath[] {
+  const grouped = new Map<MaterialTopic, Material[]>()
+
+  for (const material of materials) {
+    const list = grouped.get(material.topic) ?? []
+    list.push(material)
+    grouped.set(material.topic, list)
+  }
+
+  return Array.from(grouped.entries())
+    .map(([topic, items]) => {
+      const sortedItems = [...items].sort(sortByPathOrder)
+      const levels = Array.from(new Set(sortedItems.map((item) => item.difficulty))).sort(
+        (left, right) => MATERIAL_DIFFICULTY_ORDER[left] - MATERIAL_DIFFICULTY_ORDER[right]
+      )
+
+      return {
+        topic,
+        materials: sortedItems,
+        totalDurationMinutes: sortedItems.reduce((sum, item) => sum + item.durationMinutes, 0),
+        levels,
+      }
+    })
+    .sort((left, right) => {
+      if (right.materials.length !== left.materials.length) {
+        return right.materials.length - left.materials.length
+      }
+      return left.totalDurationMinutes - right.totalDurationMinutes
+    })
+}
+
 export default function MaterialsPage() {
   const { t, language } = useLanguage()
   const [searchQuery, setSearchQuery] = useState("")
   const [topic, setTopic] = useState<TopicFilter>("all")
   const [difficulty, setDifficulty] = useState<DifficultyFilter>("all")
   const [format, setFormat] = useState<FormatFilter>("all")
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
   const materials = getMaterialsSortedByYear(language)
 
@@ -85,29 +119,145 @@ export default function MaterialsPage() {
     })
   }, [materials, topic, difficulty, format, searchQuery])
 
+  const learningPaths = useMemo(() => buildLearningPaths(filteredMaterials), [filteredMaterials])
+
+  const activeFilterCount = Number(topic !== "all") + Number(difficulty !== "all") + Number(format !== "all")
+  const hasQuery = searchQuery.trim().length > 0
+  const hasFilters = hasQuery || activeFilterCount > 0
+
+  const clearFilters = () => {
+    setSearchQuery("")
+    setTopic("all")
+    setDifficulty("all")
+    setFormat("all")
+  }
+
   return (
     <main className="min-h-screen overflow-x-hidden">
       <Header subtitle={t("learningMaterials")} showNav={false} />
 
       <div className="container mx-auto px-4 pt-10 pb-16">
         <AnimatedSection className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-slate-900 mb-4">{t("materialsAndLessons")}</h1>
+          <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">{t("materialsAndLessons")}</h1>
           <p className="text-slate-600 max-w-2xl mx-auto text-lg">{t("materialsDescriptionLong")}</p>
         </AnimatedSection>
 
         <AnimatedSection className="mb-10">
           <Card className="border-slate-200/80 bg-white/95 shadow-sm">
-            <CardContent className="pt-6">
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <div className="relative md:col-span-2 lg:col-span-1">
-                  <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                  <Input
-                    value={searchQuery}
-                    onChange={(event) => setSearchQuery(event.target.value)}
-                    placeholder={t("searchMaterialsPlaceholder")}
-                    className="pl-9"
-                  />
+            <CardContent className="pt-6 space-y-4">
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                <Input
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder={t("searchMaterialsPlaceholder")}
+                  className="pl-9"
+                />
+              </div>
+
+              <div className="md:hidden">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    className="flex-1 justify-between"
+                    onClick={() => setMobileFiltersOpen((open) => !open)}
+                    aria-expanded={mobileFiltersOpen}
+                    aria-controls="mobile-material-filters"
+                  >
+                    <span>{mobileFiltersOpen ? t("hideFilters") : t("showFilters")}</span>
+                    <span className="inline-flex items-center gap-2">
+                      {activeFilterCount > 0 && (
+                        <Badge variant="secondary" className="rounded-full px-2 text-xs">
+                          {activeFilterCount}
+                        </Badge>
+                      )}
+                      <Filter className="h-4 w-4" />
+                    </span>
+                  </Button>
+                  {hasFilters && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-slate-600"
+                      onClick={clearFilters}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
+
+                <div className="mt-3 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+                  <Button
+                    variant={topic === "all" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setTopic("all")}
+                    className={cn("shrink-0", topic === "all" ? "bg-armath-blue hover:bg-armath-blue/90" : "text-slate-600")}
+                  >
+                    {t("allTopics")}
+                  </Button>
+                  {topicOptions.map((option) => (
+                    <Button
+                      key={option}
+                      variant={topic === option ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setTopic(option)}
+                      className={cn(
+                        "shrink-0",
+                        topic === option ? "bg-armath-blue hover:bg-armath-blue/90" : MATERIAL_TOPIC_STYLES[option]
+                      )}
+                    >
+                      {t(MATERIAL_TOPIC_LABELS[option])}
+                    </Button>
+                  ))}
+                </div>
+
+                <AnimatePresence initial={false}>
+                  {mobileFiltersOpen && (
+                    <motion.div
+                      id="mobile-material-filters"
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.18 }}
+                      className="mt-3 grid gap-3"
+                    >
+                      <Select value={difficulty} onValueChange={(value) => setDifficulty(value as DifficultyFilter)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t("filterByDifficulty")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">{t("allDifficulties")}</SelectItem>
+                          {difficultyOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {t(MATERIAL_DIFFICULTY_LABELS[option])}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Select value={format} onValueChange={(value) => setFormat(value as FormatFilter)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t("filterByFormat")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">{t("allFormats")}</SelectItem>
+                          {formatOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {t(MATERIAL_FORMAT_LABELS[option])}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {hasFilters && (
+                        <Button variant="outline" onClick={clearFilters}>
+                          {t("clearFilters")}
+                        </Button>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <div className="hidden md:grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Select value={topic} onValueChange={(value) => setTopic(value as TopicFilter)}>
                   <SelectTrigger>
                     <SelectValue placeholder={t("filterByTopic")} />
@@ -116,7 +266,7 @@ export default function MaterialsPage() {
                     <SelectItem value="all">{t("allTopics")}</SelectItem>
                     {topicOptions.map((option) => (
                       <SelectItem key={option} value={option}>
-                        {t(topicLabelKey[option])}
+                        {t(MATERIAL_TOPIC_LABELS[option])}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -129,7 +279,7 @@ export default function MaterialsPage() {
                     <SelectItem value="all">{t("allDifficulties")}</SelectItem>
                     {difficultyOptions.map((option) => (
                       <SelectItem key={option} value={option}>
-                        {t(difficultyLabelKey[option])}
+                        {t(MATERIAL_DIFFICULTY_LABELS[option])}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -142,15 +292,71 @@ export default function MaterialsPage() {
                     <SelectItem value="all">{t("allFormats")}</SelectItem>
                     {formatOptions.map((option) => (
                       <SelectItem key={option} value={option}>
-                        {t(formatLabelKey[option])}
+                        {t(MATERIAL_FORMAT_LABELS[option])}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                <Button variant="outline" onClick={clearFilters} disabled={!hasFilters}>
+                  {t("clearFilters")}
+                </Button>
               </div>
             </CardContent>
           </Card>
         </AnimatedSection>
+
+        {learningPaths.length > 0 && (
+          <AnimatedSection className="mb-14">
+            <div className="mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">{t("learningPaths")}</h2>
+              <p className="text-slate-600 mt-2">{t("learningPathsDescription")}</p>
+            </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              {learningPaths.map((path, index) => (
+                <AnimatedSection key={path.topic} animation="fadeInUp" delay={index * 0.08}>
+                  <Card className="h-full border-slate-200/80 bg-white/95 shadow-sm">
+                    <CardHeader className="pb-3">
+                      <div className="flex flex-wrap items-center gap-2 mb-3">
+                        <Badge variant="outline" className={MATERIAL_TOPIC_STYLES[path.topic]}>
+                          {t(MATERIAL_TOPIC_LABELS[path.topic])}
+                        </Badge>
+                        {path.levels.map((level) => (
+                          <Badge key={`${path.topic}-${level}`} variant="outline" className={MATERIAL_DIFFICULTY_STYLES[level]}>
+                            {t(MATERIAL_DIFFICULTY_LABELS[level])}
+                          </Badge>
+                        ))}
+                      </div>
+                      <CardTitle className="text-xl">{t("learningPathLabel")}</CardTitle>
+                      <CardDescription>
+                        {path.materials.length} {t("materialsInPath")} • {path.totalDurationMinutes} {t("minutes")}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      {path.materials.slice(0, MAX_PATH_ITEMS).map((material) => (
+                        <Link
+                          key={material.id}
+                          href={`/materials/${material.slug}`}
+                          className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2 text-sm hover:bg-slate-50 transition-colors"
+                        >
+                          <span className="line-clamp-1 text-slate-700">{material.title}</span>
+                          <Badge variant="outline" className={MATERIAL_DIFFICULTY_STYLES[material.difficulty]}>
+                            {t(MATERIAL_DIFFICULTY_LABELS[material.difficulty])}
+                          </Badge>
+                        </Link>
+                      ))}
+                      {path.materials.length > 0 && (
+                        <Link href={`/materials/${path.materials[0].slug}`} className="inline-flex items-center text-sm font-medium text-armath-blue">
+                          {t("startPath")}
+                          <ArrowRight className="w-4 h-4 ml-1" />
+                        </Link>
+                      )}
+                    </CardContent>
+                  </Card>
+                </AnimatedSection>
+              ))}
+            </div>
+          </AnimatedSection>
+        )}
 
         {filteredMaterials.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -169,11 +375,11 @@ export default function MaterialsPage() {
                     </div>
                     <CardHeader className="pb-2">
                       <div className="flex flex-wrap gap-2 mb-3">
-                        <Badge variant="outline" className="border-armath-blue/30 text-armath-blue">
-                          {t(topicLabelKey[material.topic])}
+                        <Badge variant="outline" className={MATERIAL_TOPIC_STYLES[material.topic]}>
+                          {t(MATERIAL_TOPIC_LABELS[material.topic])}
                         </Badge>
-                        <Badge variant="outline" className={difficultyColor[material.difficulty]}>
-                          {t(difficultyLabelKey[material.difficulty])}
+                        <Badge variant="outline" className={MATERIAL_DIFFICULTY_STYLES[material.difficulty]}>
+                          {t(MATERIAL_DIFFICULTY_LABELS[material.difficulty])}
                         </Badge>
                       </div>
                       <CardTitle className="text-lg line-clamp-2 transition-colors group-hover:text-armath-blue">
@@ -183,7 +389,7 @@ export default function MaterialsPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <p className="text-sm text-slate-500">{t(formatLabelKey[material.format])}</p>
+                        <p className="text-sm text-slate-500">{t(MATERIAL_FORMAT_LABELS[material.format])}</p>
                         <div className="flex items-center gap-4 text-sm text-slate-500">
                           <span className="inline-flex items-center gap-1">
                             <Clock3 className="h-4 w-4" />
