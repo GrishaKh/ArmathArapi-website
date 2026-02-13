@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Python Developer Plan</title>
+  <desc id="desc">Illustration of Python learning path with API, automation, and project delivery milestones.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#ecfeff" />
+    </linearGradient>
+    <linearGradient id="python" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0f766e" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg)" />
+  <rect x="70" y="70" width="1060" height="535" rx="28" fill="#ffffff" stroke="#bae6fd" stroke-width="3" />
+
+  <rect x="120" y="120" width="430" height="435" rx="20" fill="#f8fafc" stroke="#cbd5e1" />
+  <text x="145" y="165" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial" font-size="30" fill="#0f172a" font-weight="700">
+    Python Track
+  </text>
+
+  <circle cx="178" cy="225" r="11" fill="#0ea5e9" />
+  <text x="205" y="233" font-family="ui-sans-serif, system-ui" font-size="24" fill="#0f172a">Fundamentals</text>
+
+  <circle cx="178" cy="285" r="11" fill="#14b8a6" />
+  <text x="205" y="293" font-family="ui-sans-serif, system-ui" font-size="24" fill="#0f172a">Data + Files</text>
+
+  <circle cx="178" cy="345" r="11" fill="#22c55e" />
+  <text x="205" y="353" font-family="ui-sans-serif, system-ui" font-size="24" fill="#0f172a">APIs + Automation</text>
+
+  <circle cx="178" cy="405" r="11" fill="#f59e0b" />
+  <text x="205" y="413" font-family="ui-sans-serif, system-ui" font-size="24" fill="#0f172a">Final Product</text>
+
+  <path d="M178 236 V274" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" />
+  <path d="M178 296 V334" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" />
+  <path d="M178 356 V394" stroke="#94a3b8" stroke-width="4" stroke-linecap="round" />
+
+  <rect x="620" y="120" width="460" height="270" rx="20" fill="url(#python)" />
+  <text x="650" y="170" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" fill="#cffafe">
+    import requests
+  </text>
+  <text x="650" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" fill="#ffffff">
+    response = requests.get(api_url)
+  </text>
+  <text x="650" y="250" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" fill="#e0f2fe">
+    data = response.json()
+  </text>
+  <text x="650" y="290" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" fill="#bbf7d0">
+    save_report(data)
+  </text>
+  <text x="650" y="330" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="24" fill="#fde68a">
+    print("Project shipped")
+  </text>
+
+  <rect x="620" y="425" width="460" height="130" rx="18" fill="#f8fafc" stroke="#cbd5e1" />
+  <text x="650" y="472" font-family="ui-sans-serif, system-ui" font-size="29" fill="#0f172a" font-weight="700">
+    Practical Outcome
+  </text>
+  <text x="650" y="512" font-family="ui-sans-serif, system-ui" font-size="23" fill="#334155">
+    Build CLI tools, API utilities, and deployable projects.
+  </text>
+</svg>
