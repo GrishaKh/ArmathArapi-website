@@ -32,7 +32,7 @@ export function AdminLoginView({
       >
         <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-2xl p-8 shadow-2xl">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-armath-blue to-armath-red rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Lock className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
@@ -49,7 +49,7 @@ export function AdminLoginView({
                 type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-armath-blue focus:border-transparent transition-all"
                 placeholder="Enter admin password"
                 autoFocus
                 disabled={isAuthenticating}
@@ -70,7 +70,7 @@ export function AdminLoginView({
             <button
               type="submit"
               disabled={isAuthenticating}
-              className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-700 transition-all shadow-lg shadow-cyan-500/25 disabled:opacity-60"
+              className="w-full py-3 bg-armath-red text-white font-semibold rounded-xl hover:bg-armath-red/90 transition-all shadow-lg shadow-armath-red/25 disabled:opacity-60"
             >
               {isAuthenticating ? "Signing In..." : "Sign In"}
             </button>

@@ -10,9 +10,8 @@ export function AdminLoadingView() {
         animate={{ rotate: 360 }}
         transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
       >
-        <RefreshCw className="w-8 h-8 text-cyan-400" />
+        <RefreshCw className="w-8 h-8 text-armath-blue" />
       </motion.div>
     </div>
   )
 }
-

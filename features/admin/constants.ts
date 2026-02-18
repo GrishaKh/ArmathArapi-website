@@ -7,12 +7,12 @@ import {
 import type { AdminStatus, AdminSubmissionType } from "@/features/admin/types"
 
 export const STATUS_COLORS: Record<AdminStatus, string> = {
-  pending: "bg-amber-100 text-amber-800 border-amber-200",
-  contacted: "bg-blue-100 text-blue-800 border-blue-200",
-  interviewed: "bg-purple-100 text-purple-800 border-purple-200",
-  accepted: "bg-emerald-100 text-emerald-800 border-emerald-200",
-  rejected: "bg-red-100 text-red-800 border-red-200",
-  completed: "bg-gray-100 text-gray-800 border-gray-200",
+  pending: "bg-amber-500/20 text-amber-400 border-amber-500/30",
+  contacted: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+  interviewed: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+  accepted: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+  rejected: "bg-red-500/20 text-red-400 border-red-500/30",
+  completed: "bg-slate-500/20 text-slate-400 border-slate-500/30",
 }
 
 export const STATUS_OPTIONS: Record<AdminSubmissionType, AdminStatus[]> = {
@@ -39,15 +39,14 @@ export const TAB_META: {
     type: "support",
     icon: Heart,
     label: "Support Requests",
-    color: "from-rose-500 to-pink-600",
-    shadowColor: "shadow-rose-500/25",
+    color: "from-armath-red to-pink-700",
+    shadowColor: "shadow-armath-red/25",
   },
   {
     type: "contact",
     icon: MessageSquare,
     label: "Contact Messages",
-    color: "from-blue-500 to-indigo-600",
-    shadowColor: "shadow-blue-500/25",
+    color: "from-armath-blue to-teal-600",
+    shadowColor: "shadow-armath-blue/25",
   },
 ]
-

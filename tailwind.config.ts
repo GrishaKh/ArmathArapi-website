@@ -11,6 +11,7 @@ const config: Config = {
     "./contexts/**/*.{ts,tsx}",
     "./hooks/**/*.{ts,tsx}",
     "./lib/**/*.{ts,tsx}",
+    "./features/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {
