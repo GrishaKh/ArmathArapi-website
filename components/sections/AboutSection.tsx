@@ -6,7 +6,7 @@ import { Eye, Lightbulb, Target } from "lucide-react"
 export function AboutSection() {
   const { t } = useLanguage()
   return (
-    <section id="aboutUs" className="py-24 bg-transparent">
+    <section id="aboutUs" className="py-24 bg-slate-50/60">
       <div className="container mx-auto px-4">
         <AnimatedSection className="text-center mb-14">
           <h2 className="text-3xl md:text-5xl font-bold text-slate-900 mb-4">{t("aboutUs")}</h2>

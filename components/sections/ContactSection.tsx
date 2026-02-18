@@ -37,7 +37,7 @@ export function ContactSection() {
   }
 
   return (
-    <section id="contact" className="py-24 bg-transparent">
+    <section id="contact" className="py-24 bg-slate-50/60">
       <div className="container mx-auto px-4">
         <AnimatedSection className="text-center mb-16">
           <h2 className="text-4xl font-bold text-slate-900 mb-4">{t("contactTitle")}</h2>

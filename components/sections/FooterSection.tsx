@@ -9,12 +9,13 @@ export function FooterSection() {
   const { t } = useLanguage()
   return (
     <motion.footer
-      className="border-t border-slate-200/70 bg-[#0f1624] text-white py-14"
+      className="bg-armath-black text-white pt-16 pb-14 relative"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
     >
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-armath-blue/30 to-transparent" />
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
           <AnimatedSection animation="fadeInUp">

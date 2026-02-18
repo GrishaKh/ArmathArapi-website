@@ -100,7 +100,7 @@ export function FieldsOfStudySection() {
   const fieldsOfStudy = useMemo(() => getFieldsOfStudy(t), [t])
 
   return (
-    <section id="fieldsOfStudy" className="py-24 bg-transparent relative z-10">
+    <section id="fieldsOfStudy" className="py-24 bg-slate-50/60 relative z-10">
       <div className="container mx-auto px-4">
         <AnimatedSection className="text-center mb-16">
           <h2 className={cn(

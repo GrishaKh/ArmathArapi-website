@@ -48,7 +48,8 @@ export function JoinSection() {
   }
 
   return (
-    <section id="joinAsStudent" className="py-24 bg-transparent">
+    <section id="joinAsStudent" className="py-24 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-armath-blue/5 via-slate-50/80 to-armath-red/5 -z-10" />
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <AnimatedSection>
