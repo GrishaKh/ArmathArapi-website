@@ -10,6 +10,7 @@ import type { TranslationKey } from "@/lib/translations"
 import Image from "next/image"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"
+import { MagneticWrapper } from "@/components/magnetic-wrapper"
 
 interface HeaderProps {
   subtitle?: string
@@ -93,7 +94,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
                   href={`/#${item}`}
                   className={cn(
                     "text-slate-600 hover:text-slate-900 transition-colors whitespace-nowrap rounded-lg px-2.5 py-1.5 hover:bg-slate-100",
-                    language === "hy" ? "text-xs tracking-tight" : "text-sm"
+                    language === "hy" ? "text-sm tracking-tight" : "text-base font-medium"
                   )}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -104,12 +105,14 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
               ))}
               <LanguageToggle />
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8 }}>
-                <Button
-                  className="bg-armath-red hover:bg-armath-red/90"
-                  onClick={() => document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })}
-                >
-                  {t("joinAsStudent")}
-                </Button>
+                <MagneticWrapper>
+                  <Button
+                    className="bg-armath-red hover:bg-armath-red/90 transition-transform"
+                    onClick={() => document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })}
+                  >
+                    {t("joinAsStudent")}
+                  </Button>
+                </MagneticWrapper>
               </motion.div>
             </nav>
             <div className="lg:hidden flex items-center gap-2">

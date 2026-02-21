@@ -9,6 +9,7 @@ import { ArrowRight, Star } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { getProjectsSortedByYear } from "@/lib/projects"
+import { cn } from "@/lib/utils"
 
 export function ProjectsSection() {
   const { t, language } = useLanguage()
@@ -34,18 +35,32 @@ export function ProjectsSection() {
           <p className="text-slate-600 max-w-2xl mx-auto text-lg">{t("projectsDescription")}</p>
         </AnimatedSection>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full auto-rows-[1fr]">
           {projects.map((project, index) => (
-            <AnimatedSection key={project.id} animation="fadeInUp" delay={index * 0.15} className="w-full min-w-0">
+            <AnimatedSection
+              key={project.id}
+              animation="fadeInUp"
+              delay={index * 0.15}
+              className={cn(
+                "w-full min-w-0 h-full",
+                index === 0 ? "md:col-span-2 lg:col-span-2 lg:row-span-2" : "col-span-1"
+              )}
+            >
               <Link href={`/projects/${project.slug}`} className="block h-full w-full">
-                <Card className="group h-full w-full overflow-hidden border-slate-200/80 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                  <div className="relative overflow-hidden">
+                <Card className={cn(
+                  "group h-full w-full overflow-hidden border-slate-200/80 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col",
+                  index === 0 ? "rounded-2xl" : "rounded-xl"
+                )}>
+                  <div className="relative overflow-hidden shrink-0">
                     <Image
                       src={project.image || "/placeholder.svg"}
                       alt={getProjectTitle(project)}
-                      width={400}
-                      height={250}
-                      className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                      width={800}
+                      height={500}
+                      className={cn(
+                        "w-full object-cover group-hover:scale-105 transition-transform duration-700",
+                        index === 0 ? "h-64 sm:h-80 lg:h-96" : "h-48"
+                      )}
                     />
                     {/* Gradient overlay on hover */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -68,22 +83,28 @@ export function ProjectsSection() {
                     </div>
                   </div>
 
-                  <CardHeader className="pb-2">
+                  <CardHeader className="pb-2 grow">
                     <div className="space-y-2">
                       {/* Category badge */}
                       <Badge variant="outline" className="w-fit text-xs border-armath-blue/30 text-armath-blue">
                         {getProjectCategory(project)}
                       </Badge>
-                      <CardTitle className="text-lg group-hover:text-armath-blue transition-colors line-clamp-2">
+                      <CardTitle className={cn(
+                        "group-hover:text-armath-blue transition-colors line-clamp-2",
+                        index === 0 ? "text-xl sm:text-2xl" : "text-lg"
+                      )}>
                         {getProjectTitle(project)}
                       </CardTitle>
                     </div>
-                    <CardDescription className="line-clamp-2">
+                    <CardDescription className={cn(
+                      "leading-relaxed",
+                      index === 0 ? "line-clamp-3 text-base" : "line-clamp-2"
+                    )}>
                       {getProjectDescription(project)}
                     </CardDescription>
                   </CardHeader>
 
-                  <CardContent>
+                  <CardContent className="shrink-0">
                     <div className="space-y-4">
                       {/* Tools used */}
                       <div>

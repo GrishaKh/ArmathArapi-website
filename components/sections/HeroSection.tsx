@@ -7,6 +7,7 @@ import { motion, useScroll, useTransform } from "framer-motion"
 import { useRef } from "react"
 import { cn } from "@/lib/utils"
 import { ArrowRight, Sparkles } from "lucide-react"
+import { MagneticWrapper } from "@/components/magnetic-wrapper"
 
 export function HeroSection() {
   const { t, language } = useLanguage()
@@ -41,7 +42,9 @@ export function HeroSection() {
           <motion.h1
             className={cn(
               "font-bold text-slate-900 mb-6 leading-tight",
-              language === "hy" ? "text-4xl sm:text-5xl md:text-6xl tracking-tight" : "text-4xl sm:text-5xl md:text-7xl"
+              language === "hy"
+                ? "text-4xl sm:text-5xl md:text-6xl tracking-tight"
+                : "text-4xl sm:text-5xl md:text-7xl tracking-tighter" // Added tracking-tighter for English
             )}
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -53,7 +56,7 @@ export function HeroSection() {
 
           <motion.p
             className={cn(
-              "mb-10 max-w-2xl mx-auto text-slate-600",
+              "mb-10 max-w-2xl mx-auto text-slate-600 leading-relaxed", // Added leading-relaxed
               language === "hy" ? "text-lg tracking-tight" : "text-xl"
             )}
             initial={{ opacity: 0, y: 16 }}
@@ -69,22 +72,27 @@ export function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.35 }}
           >
-            <Button
-              size="lg"
-              className="bg-armath-red hover:bg-armath-red/90"
-              onClick={() => document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })}
-            >
-              {t("joinAsStudent")}
-              <ArrowRight className="ml-1 w-4 h-4" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-armath-blue/30 text-armath-blue hover:bg-armath-blue/10"
-              onClick={() => document.getElementById("ourProjects")?.scrollIntoView({ behavior: "smooth" })}
-            >
-              {t("ourProjects")}
-            </Button>
+            <MagneticWrapper>
+              <Button
+                size="lg"
+                className="bg-armath-red hover:bg-armath-red/90"
+                onClick={() => document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })}
+              >
+                {t("joinAsStudent")}
+                <ArrowRight className="ml-1 w-4 h-4" />
+              </Button>
+            </MagneticWrapper>
+
+            <MagneticWrapper>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-armath-blue/30 text-armath-blue hover:bg-armath-blue/10"
+                onClick={() => document.getElementById("ourProjects")?.scrollIntoView({ behavior: "smooth" })}
+              >
+                {t("ourProjects")}
+              </Button>
+            </MagneticWrapper>
           </motion.div>
         </div>
       </motion.div>
