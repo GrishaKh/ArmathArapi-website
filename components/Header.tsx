@@ -57,7 +57,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
         )}
       >
         <Link href="/" className="flex items-center space-x-3 hover:opacity-90 transition-opacity">
-          <div className="relative h-10 w-10 rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm lg:hidden">
+          <div className="relative h-10 w-10 rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm xl:hidden">
             <Image
               src="/logo.png"
               alt={t("armathArapi") + " " + t("logo")}
@@ -67,7 +67,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
               priority
             />
           </div>
-          <div className="relative hidden h-12 w-[186px] lg:block">
+          <div className="relative hidden h-12 w-[186px] xl:block">
             <Image
               src="/ArmathArapi_logo.png"
               alt={t("armathArapi") + " " + t("logo")}
@@ -77,7 +77,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
               priority
             />
           </div>
-          <div className="lg:hidden">
+          <div className="xl:hidden">
             <h1 className={cn("font-bold text-gray-900", language === "hy" ? "text-base tracking-tight" : "text-lg")}>
               {t("armathArapi")}
             </h1>
@@ -87,27 +87,28 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
 
         {showNav ? (
           <>
-            <nav className="hidden lg:flex items-center space-x-1">
+            <nav className="hidden xl:flex items-center gap-5">
               {navItems.map((item, index) => (
                 <motion.a
                   key={item}
                   href={`/#${item}`}
                   className={cn(
-                    "text-slate-600 hover:text-slate-900 transition-colors whitespace-nowrap rounded-lg px-2.5 py-1.5 hover:bg-slate-100",
-                    language === "hy" ? "text-sm tracking-tight" : "text-base font-medium"
+                    "group relative text-slate-500 hover:text-slate-900 transition-colors whitespace-nowrap pb-1",
+                    language === "hy" ? "text-sm tracking-normal" : "text-sm font-medium"
                   )}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.08 + 0.3 }}
                 >
                   {t(item)}
+                  <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-armath-blue transition-all duration-300 group-hover:w-full rounded-full" />
                 </motion.a>
               ))}
               <LanguageToggle />
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8 }}>
                 <MagneticWrapper>
                   <Button
-                    className="bg-armath-red hover:bg-armath-red/90 transition-transform"
+                    className="rounded-full bg-gradient-to-r from-armath-red to-[#C8349C] text-white shadow-md hover:shadow-[0_8px_20px_rgba(164,35,126,0.3)] hover:-translate-y-0.5 transition-all duration-300 px-7 font-medium border-0 tracking-wide"
                     onClick={() => document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })}
                   >
                     {t("joinAsStudent")}
@@ -115,7 +116,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
                 </MagneticWrapper>
               </motion.div>
             </nav>
-            <div className="lg:hidden flex items-center gap-2">
+            <div className="xl:hidden flex items-center gap-2">
               <LanguageToggle />
               <Button
                 variant="outline"
@@ -139,7 +140,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="lg:hidden container mx-auto px-4 pb-4"
+          className="xl:hidden container mx-auto px-4 pb-4"
         >
           <div className="rounded-2xl border border-slate-200 bg-white shadow-lg p-4">
             <div className="grid gap-2">

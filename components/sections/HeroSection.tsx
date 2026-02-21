@@ -75,7 +75,7 @@ export function HeroSection() {
             <MagneticWrapper>
               <Button
                 size="lg"
-                className="bg-armath-red hover:bg-armath-red/90"
+                className="rounded-full bg-gradient-to-r from-armath-red to-[#C8349C] text-white shadow-md hover:shadow-[0_8px_20px_rgba(164,35,126,0.3)] hover:-translate-y-0.5 transition-all duration-300 px-8 font-medium border-0 tracking-wide"
                 onClick={() => document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })}
               >
                 {t("joinAsStudent")}
@@ -87,7 +87,7 @@ export function HeroSection() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-armath-blue/30 text-armath-blue hover:bg-armath-blue/10"
+                className="rounded-full border-armath-blue/30 text-armath-blue hover:bg-armath-blue/10 px-8 transition-all duration-300 hover:-translate-y-0.5"
                 onClick={() => document.getElementById("ourProjects")?.scrollIntoView({ behavior: "smooth" })}
               >
                 {t("ourProjects")}
