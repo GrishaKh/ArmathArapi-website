@@ -43,23 +43,26 @@ export function ProjectsSection() {
               delay={index * 0.15}
               className={cn(
                 "w-full min-w-0 h-full",
-                index === 0 ? "md:col-span-2 lg:col-span-2 lg:row-span-2" : "col-span-1"
+                index === 0 ? "md:col-span-2 lg:col-span-2" : "col-span-1"
               )}
             >
               <Link href={`/projects/${project.slug}`} className="block h-full w-full">
                 <Card className={cn(
-                  "group h-full w-full overflow-hidden border-slate-200/80 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col",
-                  index === 0 ? "rounded-2xl" : "rounded-xl"
+                  "group h-full w-full overflow-hidden border-slate-200/80 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex",
+                  index === 0 ? "flex-col lg:flex-row rounded-2xl" : "flex-col rounded-xl"
                 )}>
-                  <div className="relative overflow-hidden shrink-0">
+                  <div className={cn(
+                    "relative overflow-hidden shrink-0",
+                    index === 0 ? "lg:w-[45%]" : "w-full"
+                  )}>
                     <Image
                       src={project.image || "/placeholder.svg"}
                       alt={getProjectTitle(project)}
                       width={800}
                       height={500}
                       className={cn(
-                        "w-full object-cover group-hover:scale-105 transition-transform duration-700",
-                        index === 0 ? "h-64 sm:h-80 lg:h-96" : "h-48"
+                        "object-cover group-hover:scale-105 transition-transform duration-700 w-full",
+                        index === 0 ? "h-64 sm:h-80 lg:h-full lg:absolute lg:inset-0" : "h-48"
                       )}
                     />
                     {/* Gradient overlay on hover */}
@@ -83,53 +86,58 @@ export function ProjectsSection() {
                     </div>
                   </div>
 
-                  <CardHeader className="pb-2 grow">
-                    <div className="space-y-2">
-                      {/* Category badge */}
-                      <Badge variant="outline" className="w-fit text-xs border-armath-blue/30 text-armath-blue">
-                        {getProjectCategory(project)}
-                      </Badge>
-                      <CardTitle className={cn(
-                        "group-hover:text-armath-blue transition-colors line-clamp-2",
-                        index === 0 ? "text-xl sm:text-2xl" : "text-lg"
+                  <div className={cn(
+                    "flex flex-col grow",
+                    index === 0 ? "lg:w-[55%] lg:justify-center p-2 lg:p-6" : ""
+                  )}>
+                    <CardHeader className="pb-4 grow">
+                      <div className="space-y-2">
+                        {/* Category badge */}
+                        <Badge variant="outline" className="w-fit text-xs border-armath-blue/30 text-armath-blue">
+                          {getProjectCategory(project)}
+                        </Badge>
+                        <CardTitle className={cn(
+                          "group-hover:text-armath-blue transition-colors line-clamp-2",
+                          index === 0 ? "text-xl sm:text-2xl lg:text-3xl" : "text-lg"
+                        )}>
+                          {getProjectTitle(project)}
+                        </CardTitle>
+                      </div>
+                      <CardDescription className={cn(
+                        "leading-relaxed",
+                        index === 0 ? "line-clamp-3 text-base" : "line-clamp-2"
                       )}>
-                        {getProjectTitle(project)}
-                      </CardTitle>
-                    </div>
-                    <CardDescription className={cn(
-                      "leading-relaxed",
-                      index === 0 ? "line-clamp-3 text-base" : "line-clamp-2"
-                    )}>
-                      {getProjectDescription(project)}
-                    </CardDescription>
-                  </CardHeader>
+                        {getProjectDescription(project)}
+                      </CardDescription>
+                    </CardHeader>
 
-                  <CardContent className="shrink-0">
-                    <div className="space-y-4">
-                      {/* Tools used */}
-                      <div>
-                        <p className="text-xs font-semibold text-slate-500 mb-2">{t("toolsUsed")}:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {getProjectTools(project).slice(0, 3).map((tool) => (
-                            <Badge key={tool} variant="secondary" className="text-xs">
-                              {tool}
-                            </Badge>
-                          ))}
-                          {getProjectTools(project).length > 3 && (
-                            <Badge variant="secondary" className="text-xs bg-armath-blue/10 text-armath-blue">
-                              +{getProjectTools(project).length - 3}
-                            </Badge>
-                          )}
+                    <CardContent className="shrink-0">
+                      <div className="space-y-4">
+                        {/* Tools used */}
+                        <div>
+                          <p className="text-xs font-semibold text-slate-500 mb-2">{t("toolsUsed")}:</p>
+                          <div className="flex flex-wrap gap-1">
+                            {getProjectTools(project).slice(0, 3).map((tool) => (
+                              <Badge key={tool} variant="secondary" className="text-xs">
+                                {tool}
+                              </Badge>
+                            ))}
+                            {getProjectTools(project).length > 3 && (
+                              <Badge variant="secondary" className="text-xs bg-armath-blue/10 text-armath-blue">
+                                +{getProjectTools(project).length - 3}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* View Project link */}
+                        <div className="flex items-center text-sm font-medium text-armath-blue pt-2">
+                          {t("viewProject")}
+                          <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                         </div>
                       </div>
-
-                      {/* View Project link */}
-                      <div className="flex items-center text-sm font-medium text-armath-blue">
-                        {t("viewProject")}
-                        <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </div>
-                  </CardContent>
+                    </CardContent>
+                  </div>
                 </Card>
               </Link>
             </AnimatedSection>
