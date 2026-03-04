@@ -1,5 +1,5 @@
-import { allEvents } from 'contentlayer2/generated'
-import type { Event } from 'contentlayer2/generated'
+import { allEvents } from 'contentlayer/generated'
+import type { Event } from 'contentlayer/generated'
 import type { Language } from './translations'
 
 export type { Event }

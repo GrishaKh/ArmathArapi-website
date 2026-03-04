@@ -1,4 +1,4 @@
-declare module 'contentlayer2/generated' {
+declare module 'contentlayer/generated' {
   export interface Event {
     id: string
     slug: string
@@ -47,29 +47,7 @@ declare module 'contentlayer2/generated' {
     body: { code: string }
   }
 
-  export interface Material {
-    id: string
-    slug: string
-    language: string
-    title: string
-    summary: string
-    topic: 'programming' | 'electronics' | 'robotics' | 'modeling3d' | 'cncLaser'
-    difficulty: 'beginner' | 'next' | 'advanced'
-    format: 'lesson' | 'project-guide' | 'worksheet' | 'video'
-    ageGroup: string
-    durationMinutes: number
-    tools?: string[]
-    prerequisites?: string[]
-    learningObjectives?: string[]
-    downloads?: Array<{ label: string; url: string }>
-    featured?: boolean
-    year: number
-    image: string
-    body: { code: string }
-  }
-
   export const allEvents: Event[]
   export const allProjects: Project[]
-  export const allMaterials: Material[]
 }
 

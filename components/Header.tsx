@@ -3,13 +3,14 @@
 import { Button } from "@/components/ui/button"
 import { LanguageToggle } from "@/components/language-toggle"
 import { useLanguage } from "@/contexts/language-context"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 import type { TranslationKey } from "@/lib/translations"
 import Image from "next/image"
 import Link from "next/link"
-import { Menu, X, ArrowRight } from "lucide-react"
+import { Menu, X } from "lucide-react"
+import { MagneticWrapper } from "@/components/magnetic-wrapper"
 
 interface HeaderProps {
   subtitle?: string
@@ -43,87 +44,84 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
     <motion.header
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
       className={cn(
-        "sticky top-0 z-50 transition-all duration-300",
-        isScrolled
-          ? "bg-surface-elevated/80 backdrop-blur-xl shadow-[0_1px_3px_0_rgb(0_0_0/0.05),0_1px_2px_-1px_rgb(0_0_0/0.05)] border-b border-border"
-          : "bg-transparent"
+        "sticky top-0 z-50 border-b border-slate-200/80 backdrop-blur-lg transition-all duration-200",
+        isScrolled ? "bg-white/95 shadow-md" : "bg-white/85 shadow-sm"
       )}
     >
       <div
         className={cn(
-          "container mx-auto px-4 flex items-center justify-between transition-all duration-300",
-          isScrolled ? "py-2.5" : "py-4"
+          "container mx-auto px-4 flex items-center justify-between transition-all duration-200",
+          isScrolled ? "py-3" : "py-4"
         )}
       >
-        <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
-          <div className="relative h-9 w-9 rounded-xl overflow-hidden bg-card shadow-sm xl:hidden">
+        <Link href="/" className="flex items-center space-x-3 hover:opacity-90 transition-opacity">
+          <div className="relative h-10 w-10 rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm xl:hidden">
             <Image
               src="/logo.png"
               alt={t("armathArapi") + " " + t("logo")}
               fill
-              className="object-contain p-1"
-              sizes="36px"
+              className="object-contain p-1.5"
+              sizes="48px"
               priority
             />
           </div>
-          <div className="relative hidden h-11 w-[170px] xl:block">
+          <div className="relative hidden h-12 w-[186px] xl:block">
             <Image
               src="/ArmathArapi_logo.png"
               alt={t("armathArapi") + " " + t("logo")}
               fill
               className="object-contain"
-              sizes="170px"
+              sizes="186px"
               priority
             />
           </div>
           <div className="xl:hidden">
-            <h1 className={cn("font-semibold text-foreground", language === "hy" ? "text-sm tracking-tight" : "text-base")}>
+            <h1 className={cn("font-bold text-gray-900", language === "hy" ? "text-base tracking-tight" : "text-lg")}>
               {t("armathArapi")}
             </h1>
-            <p className="text-[10px] text-muted-foreground">{subtitle || t("engineeringMakerspace")}</p>
+            <p className="text-[11px] text-slate-500">{subtitle || t("engineeringMakerspace")}</p>
           </div>
         </Link>
 
         {showNav ? (
           <>
-            <nav className="hidden xl:flex items-center gap-1">
+            <nav className="hidden xl:flex items-center gap-5">
               {navItems.map((item, index) => (
                 <motion.a
                   key={item}
                   href={`/#${item}`}
                   className={cn(
-                    "relative px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors whitespace-nowrap",
-                    language === "hy" ? "text-[13px] tracking-normal" : "text-[13px] font-medium"
+                    "group relative text-slate-500 hover:text-slate-900 transition-colors whitespace-nowrap pb-1",
+                    language === "hy" ? "text-sm tracking-normal" : "text-sm font-medium"
                   )}
-                  initial={{ opacity: 0, y: -10 }}
+                  initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 + 0.2 }}
+                  transition={{ delay: index * 0.08 + 0.3 }}
                 >
                   {t(item)}
+                  <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-armath-blue transition-all duration-300 group-hover:w-full rounded-full" />
                 </motion.a>
               ))}
-              <div className="ml-2">
-                <LanguageToggle />
-              </div>
-              <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }} className="ml-2">
-                <Button
-                  size="sm"
-                  className="rounded-full bg-armath-red text-white hover:bg-armath-red/90 shadow-sm px-5 font-medium"
-                  onClick={() => document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })}
-                >
-                  {t("joinAsStudent")}
-                  <ArrowRight className="ml-1 h-3.5 w-3.5" />
-                </Button>
+              <LanguageToggle />
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8 }}>
+                <MagneticWrapper>
+                  <Button
+                    className="rounded-full bg-gradient-to-r from-armath-red to-[#C8349C] text-white shadow-md hover:shadow-[0_8px_20px_rgba(164,35,126,0.3)] hover:-translate-y-0.5 transition-all duration-300 px-7 font-medium border-0 tracking-wide"
+                    onClick={() => document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })}
+                  >
+                    {t("joinAsStudent")}
+                  </Button>
+                </MagneticWrapper>
               </motion.div>
             </nav>
             <div className="xl:hidden flex items-center gap-2">
               <LanguageToggle />
               <Button
-                variant="ghost"
+                variant="outline"
+                className="border-slate-200 bg-white hover:bg-slate-50"
                 size="icon"
-                className="text-foreground"
                 aria-label="Toggle menu"
                 aria-expanded={mobileOpen}
                 onClick={() => setMobileOpen((o) => !o)}
@@ -137,47 +135,43 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
         )}
       </div>
 
-      <AnimatePresence>
-        {showNav && mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="xl:hidden overflow-hidden border-t border-border bg-surface-elevated/95 backdrop-blur-xl"
-          >
-            <div className="container mx-auto px-4 py-4">
-              <div className="flex flex-col gap-1">
-                {navItems.map((item) => (
-                  <a
-                    key={item}
-                    href={`/#${item}`}
-                    className={cn(
-                      "block py-2.5 px-4 rounded-lg text-foreground hover:bg-secondary transition-colors",
-                      language === "hy" ? "text-sm tracking-tight" : "text-sm font-medium"
-                    )}
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    {t(item)}
-                  </a>
-                ))}
-              </div>
-              <div className="mt-4 pt-4 border-t border-border">
-                <Button
-                  className="w-full bg-armath-red hover:bg-armath-red/90 text-white"
-                  onClick={() => {
-                    document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })
-                    setMobileOpen(false)
-                  }}
+      {showNav && mobileOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="xl:hidden container mx-auto px-4 pb-4"
+        >
+          <div className="rounded-2xl border border-slate-200 bg-white shadow-lg p-4">
+            <div className="grid gap-2">
+              {navItems.map((item) => (
+                <a
+                  key={item}
+                  href={`/#${item}`}
+                  className={cn(
+                    "block py-2 px-3 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors",
+                    language === "hy" ? "text-sm tracking-tight" : "text-base"
+                  )}
+                  onClick={() => setMobileOpen(false)}
                 >
-                  {t("joinAsStudent")}
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
-              </div>
+                  {t(item)}
+                </a>
+              ))}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <div className="mt-3">
+              <Button
+                className="w-full bg-armath-red hover:bg-armath-red/90"
+                onClick={() => {
+                  document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })
+                  setMobileOpen(false)
+                }}
+              >
+                {t("joinAsStudent")}
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      )}
     </motion.header>
   )
 }

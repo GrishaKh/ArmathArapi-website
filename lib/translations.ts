@@ -243,14 +243,6 @@ export const translations = {
     eventLocation: "Location",
     overview: "Overview",
 
-    // Hero Stats
-    statStudents: "50+",
-    statStudentsLabel: "Students Trained",
-    statFields: "7",
-    statFieldsLabel: "Fields of Study",
-    statProjects: "20+",
-    statProjectsLabel: "Projects Built",
-
     // Projects CTA
     interestedInSimilar: "Interested in similar projects?",
     joinCommunityCTA: "Join our community and create your own amazing project",
@@ -263,7 +255,7 @@ export const translations = {
     events: "Միջոցառումներ",
     ourProjects: "Մեր նախագծերը",
     learningMaterials: "Ուսումնական նյութեր",
-    joinAsStudent: "Մի��ցեք որպես ուսանող",
+    joinAsStudent: "Միացեք որպես ուսանող",
     supportArmath: "Աջակցեք Արմաթին",
     contact: "Կապ",
     more: "Ավելին",
@@ -498,14 +490,6 @@ export const translations = {
     eventYear: "Տարի",
     eventLocation: "Գտնվելու վայրը",
     overview: "Ամփոփում",
-
-    // Hero Stats
-    statStudents: "50+",
-    statStudentsLabel: "Ուసdelays students",
-    statFields: "7",
-    statFieldsLabel: "Fields of Study",
-    statProjects: "20+",
-    statProjectsLabel: "Projects Built",
 
     // Projects CTA
     interestedInSimilar: "Հետաքրքրվա՞ծ եք նմանատիպ նախագծերով",

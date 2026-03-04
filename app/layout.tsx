@@ -9,6 +9,7 @@ import { getSiteUrlAsURL } from "@/lib/site"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const notoSansArmenian = Noto_Sans_Armenian({ subsets: ["armenian"], variable: "--font-noto-sans-armenian" })
+const googleSans = { variable: "--font-google-sans" }
 
 export const metadata: Metadata = {
   title: "Armath Engineering Makerspace - Arapi",
@@ -27,10 +28,6 @@ export const metadata: Metadata = {
   generator: 'v0.app',
 }
 
-export const viewport = {
-  themeColor: "#1a1a2e",
-}
-
 export default function RootLayout({
   children,
 }: {
@@ -38,7 +35,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn("relative font-sans antialiased", inter.variable, notoSansArmenian.variable)}>
+      <body className={cn("relative font-sans antialiased", inter.variable, notoSansArmenian.variable, googleSans.variable)}>
         <LanguageProvider>
           <HtmlLangUpdater />
           {children}

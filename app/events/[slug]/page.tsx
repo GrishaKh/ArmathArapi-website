@@ -1,7 +1,7 @@
 "use client"
 
 import { use } from "react"
-import { useMDXComponent } from "next-contentlayer2/hooks"
+import { useMDXComponent } from "next-contentlayer/hooks"
 import { CardTitle, CardHeader, Card } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
 import { AnimatedSection } from "@/components/animated-section"

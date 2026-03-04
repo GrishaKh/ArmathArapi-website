@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { use } from "react"
-import { useMDXComponent } from "next-contentlayer2/hooks"
+import { useMDXComponent } from "next-contentlayer/hooks"
 import { AnimatedSection } from "@/components/animated-section"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"

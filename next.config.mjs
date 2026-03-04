@@ -30,6 +30,6 @@ const nextConfig = {
   },
 }
 
-import { withContentlayer } from 'next-contentlayer2'
+import { withContentlayer } from 'next-contentlayer'
 
 export default withContentlayer(nextConfig)
