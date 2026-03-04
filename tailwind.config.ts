@@ -24,14 +24,14 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-google-sans)", ...defaultTheme.fontFamily.sans],
-        armenian: ["var(--font-google-sans)", ...defaultTheme.fontFamily.sans],
+        sans: ["var(--font-inter)", "var(--font-noto-sans-armenian)", ...defaultTheme.fontFamily.sans],
+        armenian: ["var(--font-noto-sans-armenian)", "var(--font-inter)", ...defaultTheme.fontFamily.sans],
       },
       colors: {
         armath: {
           blue: "#3EC1CF",
-          red: "#A4237E",
-          black: "#231F20",
+          red: "#E8243C",
+          black: "#1a1a2e",
           gray: "#A7A9AB",
         },
         border: "hsl(var(--border))",
@@ -66,6 +66,12 @@ const config: Config = {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        surface: {
+          elevated: "hsl(var(--surface-elevated))",
+          sunken: "hsl(var(--surface-sunken))",
+          dark: "hsl(var(--surface-dark))",
+          "dark-elevated": "hsl(var(--surface-dark-elevated))",
         },
       },
       borderRadius: {
