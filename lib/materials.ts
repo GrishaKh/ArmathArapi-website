@@ -1,6 +1,6 @@
 import type { Language } from './translations'
 import type { TranslationKey } from './translations'
-import * as contentlayerGenerated from 'contentlayer/generated'
+import * as contentlayerGenerated from 'contentlayer2/generated'
 
 export type MaterialTopic = 'programming' | 'electronics' | 'robotics' | 'modeling3d' | 'cncLaser'
 export type MaterialDifficulty = 'beginner' | 'next' | 'advanced'

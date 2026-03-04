@@ -1,5 +1,5 @@
 import type { Language } from './translations'
-import * as contentlayerGenerated from 'contentlayer/generated'
+import * as contentlayerGenerated from 'contentlayer2/generated'
 
 export interface Project {
   id: string

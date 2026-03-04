@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import * as contentlayerGenerated from 'contentlayer/generated'
+import * as contentlayerGenerated from 'contentlayer2/generated'
 import { getSiteUrl } from '@/lib/site'
 import { MATERIAL_TOPICS, MATERIAL_TOPIC_ROUTE_SEGMENTS } from '@/lib/materials'
 
