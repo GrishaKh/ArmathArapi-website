@@ -83,6 +83,125 @@ export type Database = {
         Insert: Omit<Database['public']['Tables']['contact_messages']['Row'], 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Database['public']['Tables']['contact_messages']['Insert']>
       }
+      students: {
+        Row: {
+          id: string
+          username: string
+          password_hash: string
+          full_name: string
+          age: number
+          parent_contact: string | null
+          email: string | null
+          language: string
+          status: string
+          must_change_password: boolean
+          application_id: string | null
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['students']['Row'], 'id' | 'created_at' | 'updated_at' | 'must_change_password'> & { must_change_password?: boolean }
+        Update: Partial<Database['public']['Tables']['students']['Insert']>
+      }
+      student_sessions: {
+        Row: {
+          id: string
+          student_id: string
+          token_hash: string
+          expires_at: string
+          created_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['student_sessions']['Row'], 'id' | 'created_at'>
+        Update: Partial<Database['public']['Tables']['student_sessions']['Insert']>
+      }
+      student_materials: {
+        Row: {
+          id: string
+          title: string
+          description: string | null
+          content_url: string | null
+          material_slug: string | null
+          topic: string
+          difficulty: string
+          order_index: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['student_materials']['Row'], 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Database['public']['Tables']['student_materials']['Insert']>
+      }
+      student_material_assignments: {
+        Row: {
+          id: string
+          student_id: string
+          material_id: string
+          assigned_at: string
+          due_date: string | null
+        }
+        Insert: Omit<Database['public']['Tables']['student_material_assignments']['Row'], 'id' | 'assigned_at'>
+        Update: Partial<Database['public']['Tables']['student_material_assignments']['Insert']>
+      }
+      student_progress: {
+        Row: {
+          id: string
+          student_id: string
+          material_id: string
+          status: string
+          progress_percent: number
+          score: number | null
+          last_position: string | null
+          started_at: string | null
+          completed_at: string | null
+          time_spent_minutes: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['student_progress']['Row'], 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Database['public']['Tables']['student_progress']['Insert']>
+      }
+      student_works: {
+        Row: {
+          id: string
+          student_id: string
+          material_id: string | null
+          title: string
+          description: string | null
+          file_url: string
+          file_name: string
+          file_size: number
+          file_type: string
+          status: string
+          submitted_at: string
+          updated_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['student_works']['Row'], 'id' | 'submitted_at' | 'updated_at'>
+        Update: Partial<Database['public']['Tables']['student_works']['Insert']>
+      }
+      student_work_feedback: {
+        Row: {
+          id: string
+          work_id: string
+          author_role: string
+          comment: string
+          created_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['student_work_feedback']['Row'], 'id' | 'created_at'>
+        Update: Partial<Database['public']['Tables']['student_work_feedback']['Insert']>
+      }
+      student_notifications: {
+        Row: {
+          id: string
+          student_id: string
+          type: string
+          title: string
+          message: string | null
+          is_read: boolean
+          related_id: string | null
+          created_at: string
+        }
+        Insert: Omit<Database['public']['Tables']['student_notifications']['Row'], 'id' | 'created_at' | 'is_read'> & { is_read?: boolean }
+        Update: Partial<Database['public']['Tables']['student_notifications']['Insert']>
+      }
     }
   }
 }
