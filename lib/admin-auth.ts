@@ -1,7 +1,9 @@
 import { cookies } from 'next/headers'
-import { NextRequest } from 'next/server'
 import { createHmac, randomBytes, timingSafeEqual } from 'crypto'
 import { getAdminEnvOrThrow, hasAdminEnv } from '@/lib/env'
+
+// Re-export getClientIp from shared utility for backward compatibility
+export { getClientIp } from '@/lib/request-utils'
 
 const ADMIN_SESSION_COOKIE = 'admin_session'
 const SESSION_VERSION = 'v1'
@@ -26,22 +28,6 @@ function safeCompare(a: string, b: string): boolean {
   const aView = new Uint8Array(aBuf)
   const bView = new Uint8Array(bBuf)
   return timingSafeEqual(aView, bView)
-}
-
-export function getClientIp(request: NextRequest): string {
-  const forwarded = request.headers.get('x-forwarded-for')
-  if (forwarded) {
-    const firstIp = forwarded.split(',')[0]?.trim()
-    if (firstIp) return firstIp
-  }
-
-  const realIp = request.headers.get('x-real-ip')
-  if (realIp) return realIp
-
-  const cfIp = request.headers.get('cf-connecting-ip')
-  if (cfIp) return cfIp
-
-  return 'unknown'
 }
 
 export function verifyAdminPassword(inputPassword: string): boolean {
