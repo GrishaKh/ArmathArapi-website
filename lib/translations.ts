@@ -251,12 +251,12 @@ export const translations = {
     // Navigation
     aboutUs: "Մեր մասին",
     structure: "Կառուցվածք",
-    fieldsOfStudy: "Ուսումնասիրության ոլորտներ",
+    fieldsOfStudy: "Ոլորտներ",
     events: "Միջոցառումներ",
-    ourProjects: "Մեր նախագծերը",
-    learningMaterials: "Ուսումնական նյութեր",
-    joinAsStudent: "Միացեք որպես ուսանող",
-    supportArmath: "Աջակցեք Արմաթին",
+    ourProjects: "Նախագծեր",
+    learningMaterials: "Նյութեր",
+    joinAsStudent: "Միացեք",
+    supportArmath: "Աջակցություն",
     contact: "Կապ",
     more: "Ավելին",
 
