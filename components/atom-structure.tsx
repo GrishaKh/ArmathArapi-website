@@ -25,7 +25,7 @@ interface TeamMember {
 const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
   {
     id: "grisha-kh",
-    name: "Grisha Khachatryan",
+    name: t("nameGrishaKh"),
     role: t("roleLeadCoach"),
     isCore: true,
     details: t("detailsLead"),
@@ -33,7 +33,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
   },
   {
     id: "olya-kh",
-    name: "Olya Khachatryan",
+    name: t("nameOlyaKh"),
     role: t("roleCoach"),
     isCore: true,
     details: t("detailsCoach"),
@@ -41,7 +41,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
   },
   {
     id: "narek-sar",
-    name: "Narek Saroyan",
+    name: t("nameNarekSar"),
     role: t("roleCoach"),
     isCore: true,
     details: t("detailsCoach"),
@@ -49,7 +49,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
   },
   {
     id: "edgar-har",
-    name: "Edgar Harutyunyan",
+    name: t("nameEdgarHar"),
     role: t("roleSupporter"),
     isCore: false,
     contribution: t("contributionScientific"),
@@ -57,7 +57,7 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
   },
   {
     id: "hayk_sar",
-    name: "Hayk Sarafyan",
+    name: t("nameHaykSar"),
     role: t("roleSupporter"),
     isCore: false,
     contribution: t("contributionWeb"),
@@ -238,6 +238,101 @@ const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef,
   )
 }
 
+// --- Mobile Profile Bottom Sheet ---
+type MobileProfileSheetProps = {
+  member: TeamMember | null
+  onClose: () => void
+}
+
+const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({ member, onClose }) => {
+  const [isMounted, setIsMounted] = useState(false)
+  const reduceMotion = useReducedMotion()
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  // Lock body scroll while sheet is open
+  useEffect(() => {
+    if (!member) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => { document.body.style.overflow = prev }
+  }, [member])
+
+  if (!isMounted || typeof document === "undefined") return null
+
+  return createPortal(
+    <AnimatePresence>
+      {member && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            key="sheet-backdrop"
+            className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={onClose}
+          />
+          {/* Sheet */}
+          <motion.div
+            key="sheet-panel"
+            className="fixed bottom-0 left-0 right-0 z-[9999] rounded-t-3xl bg-white shadow-2xl"
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            drag="y"
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0, bottom: 0.4 }}
+            onDragEnd={(_, info) => {
+              if (info.offset.y > 80 || info.velocity.y > 400) onClose()
+            }}
+            transition={reduceMotion ? { duration: 0 } : { type: "spring", damping: 30, stiffness: 300 }}
+          >
+            {/* Drag handle */}
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="h-1.5 w-12 rounded-full bg-slate-300" />
+            </div>
+            {/* Close button */}
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 transition-colors"
+              aria-label="Close"
+            >
+              <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            {/* Content */}
+            <div className="px-6 pb-10 pt-2">
+              {/* Colour bar */}
+              <div className={`h-1.5 w-16 rounded-full mx-auto mb-5 ${member.isCore ? "bg-gradient-to-r from-armath-blue to-armath-blue/70" : "bg-gradient-to-r from-armath-red to-armath-red/70"}`} />
+              <div className="flex flex-col items-center text-center">
+                {/* Profile image */}
+                <div className={`w-24 h-24 rounded-full overflow-hidden ring-4 ring-offset-2 shadow-xl mb-4 ${member.isCore ? "ring-armath-blue/20" : "ring-armath-red/20"}`}>
+                  {member.image ? (
+                    <Image src={member.image} alt={member.name} width={96} height={96} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className={`w-full h-full flex items-center justify-center text-white text-2xl font-bold ${member.isCore ? "bg-gradient-to-br from-armath-blue to-armath-blue/70" : "bg-gradient-to-br from-armath-red to-armath-red/70"}`}>
+                      {getInitials(member.name)}
+                    </div>
+                  )}
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
+                <p className={`text-sm font-semibold mb-4 ${member.isCore ? "text-armath-blue" : "text-armath-red"}`}>{member.role}</p>
+                <p className="text-base leading-relaxed text-gray-600 max-w-sm">{member.details ?? member.contribution ?? "—"}</p>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>,
+    document.body
+  )
+}
+
 // --- Subcomponents ---
 
 type NucleusProps = {
@@ -320,39 +415,41 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
         </div>
       </motion.button>
 
-      <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId}>
-        <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
-          {/* Gradient header */}
-          <div className="h-2 bg-gradient-to-r from-armath-blue to-armath-blue/70" />
-          <CardContent className="p-5">
-            <div className="flex flex-col items-center text-center">
-              {/* Profile image */}
-              <div className="relative mb-3">
-                <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-blue/20 ring-offset-2 shadow-lg">
-                  {member.image ? (
-                    <Image
-                      src={member.image}
-                      alt={member.name}
-                      width={64}
-                      height={64}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-armath-blue to-armath-blue/70 flex items-center justify-center text-white text-lg font-bold">
-                      {getInitials(member.name)}
-                    </div>
-                  )}
+      {!isTouch && (
+        <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId}>
+          <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
+            {/* Gradient header */}
+            <div className="h-2 bg-gradient-to-r from-armath-blue to-armath-blue/70" />
+            <CardContent className="p-5">
+              <div className="flex flex-col items-center text-center">
+                {/* Profile image */}
+                <div className="relative mb-3">
+                  <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-blue/20 ring-offset-2 shadow-lg">
+                    {member.image ? (
+                      <Image
+                        src={member.image}
+                        alt={member.name}
+                        width={64}
+                        height={64}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-armath-blue to-armath-blue/70 flex items-center justify-center text-white text-lg font-bold">
+                        {getInitials(member.name)}
+                      </div>
+                    )}
+                  </div>
                 </div>
+                {/* Name and role */}
+                <h3 className="text-base font-bold text-gray-900 mb-1">{member.name}</h3>
+                <p className="text-sm font-semibold text-armath-blue mb-3">{member.role}</p>
+                {/* Details */}
+                <p className="text-sm leading-relaxed text-gray-600">{member.details ?? "—"}</p>
               </div>
-              {/* Name and role */}
-              <h3 className="text-base font-bold text-gray-900 mb-1">{member.name}</h3>
-              <p className="text-sm font-semibold text-armath-blue mb-3">{member.role}</p>
-              {/* Details */}
-              <p className="text-sm leading-relaxed text-gray-600">{member.details ?? "—"}</p>
-            </div>
-          </CardContent>
-        </Card>
-      </FloatingTooltip>
+            </CardContent>
+          </Card>
+        </FloatingTooltip>
+      )}
     </div>
   )
 }
@@ -513,39 +610,41 @@ const Electron: React.FC<ElectronProps> = ({
           </motion.div>
         </motion.button>
 
-        <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId}>
-          <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
-            {/* Gradient header */}
-            <div className="h-2 bg-gradient-to-r from-armath-red to-armath-red/70" />
-            <CardContent className="p-5">
-              <div className="flex flex-col items-center text-center">
-                {/* Profile image */}
-                <div className="relative mb-3">
-                  <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-red/20 ring-offset-2 shadow-lg">
-                    {supporter.image ? (
-                      <Image
-                        src={supporter.image}
-                        alt={supporter.name}
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-armath-red to-armath-red/70 flex items-center justify-center text-white text-lg font-bold">
-                        {initials}
-                      </div>
-                    )}
+        {!isTouch && (
+          <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId}>
+            <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
+              {/* Gradient header */}
+              <div className="h-2 bg-gradient-to-r from-armath-red to-armath-red/70" />
+              <CardContent className="p-5">
+                <div className="flex flex-col items-center text-center">
+                  {/* Profile image */}
+                  <div className="relative mb-3">
+                    <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-red/20 ring-offset-2 shadow-lg">
+                      {supporter.image ? (
+                        <Image
+                          src={supporter.image}
+                          alt={supporter.name}
+                          width={64}
+                          height={64}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-armath-red to-armath-red/70 flex items-center justify-center text-white text-lg font-bold">
+                          {initials}
+                        </div>
+                      )}
+                    </div>
                   </div>
+                  {/* Name and role */}
+                  <h3 className="text-base font-bold text-gray-900 mb-1">{supporter.name}</h3>
+                  <p className="text-sm font-semibold text-armath-red mb-3">{supporter.role}</p>
+                  {/* Contribution */}
+                  <p className="text-sm leading-relaxed text-gray-600">{supporter.contribution ?? "—"}</p>
                 </div>
-                {/* Name and role */}
-                <h3 className="text-base font-bold text-gray-900 mb-1">{supporter.name}</h3>
-                <p className="text-sm font-semibold text-armath-red mb-3">{supporter.role}</p>
-                {/* Contribution */}
-                <p className="text-sm leading-relaxed text-gray-600">{supporter.contribution ?? "—"}</p>
-              </div>
-            </CardContent>
-          </Card>
-        </FloatingTooltip>
+              </CardContent>
+            </Card>
+          </FloatingTooltip>
+        )}
       </div>
     </motion.div>
   )
@@ -568,7 +667,9 @@ const Legend: React.FC = () => {
 export function AtomStructure() {
   const [hoveredMemberId, setHoveredMemberId] = useState<string | null>(null)
   const [pinnedMemberId, setPinnedMemberId] = useState<string | null>(null)
+  const [mobileMember, setMobileMember] = useState<TeamMember | null>(null)
   const activeMemberId = pinnedMemberId ?? hoveredMemberId
+  const isTouch = useIsTouchDevice()
 
   const togglePin = useCallback((id: string) => {
     setPinnedMemberId((prev) => (prev === id ? null : id))
@@ -595,6 +696,7 @@ export function AtomStructure() {
   const closeAllTooltips = useCallback(() => {
     setHoveredMemberId(null)
     setPinnedMemberId(null)
+    setMobileMember(null)
   }, [])
   useEscapeKey(closeAllTooltips)
 
@@ -642,6 +744,16 @@ export function AtomStructure() {
   const coreMembers = teamMembers.filter((m) => m.isCore)
   const supporters = teamMembers.filter((m) => !m.isCore)
 
+  // On touch devices open a bottom sheet; on desktop pin the floating tooltip
+  const togglePinOrSheet = useCallback((id: string) => {
+    if (isTouch) {
+      const member = teamMembers.find((m) => m.id === id) ?? null
+      setMobileMember((prev) => (prev?.id === id ? null : member))
+    } else {
+      togglePin(id)
+    }
+  }, [isTouch, teamMembers, togglePin])
+
   return (
     <div className="w-full" style={{ paddingBottom: '4rem', overflow: 'visible' }}>
       {/* Scene container - overflow-visible to allow electrons to extend; extra padding for orbiting electrons; tooltips use portals so they still work */}
@@ -656,7 +768,7 @@ export function AtomStructure() {
           coreMembers={coreMembers}
           activeId={activeMemberId}
           setActiveId={setHoveredMemberId}
-          togglePin={togglePin}
+          togglePin={togglePinOrSheet}
         />
 
         {/* Orbits */}
@@ -678,7 +790,7 @@ export function AtomStructure() {
                 startingAngle={startingAngle}
                 activeId={activeMemberId}
                 setActiveId={setHoveredMemberId}
-                togglePin={togglePin}
+                togglePin={togglePinOrSheet}
                 size={electronSize}
               />
             )
@@ -687,6 +799,9 @@ export function AtomStructure() {
 
       {/* Legend (moved outside absolute scene for consistent placement) */}
       <Legend />
+
+      {/* Mobile bottom sheet — shown on touch devices instead of floating tooltips */}
+      {isTouch && <MobileProfileSheet member={mobileMember} onClose={() => setMobileMember(null)} />}
     </div>
   )
 }

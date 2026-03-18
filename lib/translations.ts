@@ -12,6 +12,13 @@ export const translations = {
     contact: "Contact",
     more: "More",
 
+    // Team member names
+    nameGrishaKh: "Grisha Khachatryan",
+    nameOlyaKh: "Olya Khachatryan",
+    nameNarekSar: "Narek Saroyan",
+    nameEdgarHar: "Edgar Harutyunyan",
+    nameHaykSar: "Hayk Sarafyan",
+
     // Team
     roleLeadCoach: "Lead Coach",
     roleCoach: "Coach",
@@ -259,6 +266,13 @@ export const translations = {
     supportArmath: "Աջակցություն",
     contact: "Կապ",
     more: "Ավելին",
+
+    // Team member names
+    nameGrishaKh: "Գրիշա Խաչատրյան",
+    nameOlyaKh: "Օլյա Խաչատրյան",
+    nameNarekSar: "Նարեկ Սարոյան",
+    nameEdgarHar: "Էդգար Հարությունյան",
+    nameHaykSar: "Հայկ Սարաֆյան",
 
     // Team
     roleLeadCoach: "Գլխավոր խմբավար",

@@ -56,7 +56,7 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
           isScrolled ? "py-3" : "py-4"
         )}
       >
-        <Link href="/" className="flex items-center space-x-3 hover:opacity-90 transition-opacity">
+        <Link href="/" className="flex items-center space-x-3 min-w-0 hover:opacity-90 transition-opacity">
           <div className="relative h-10 w-10 rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm xl:hidden">
             <Image
               src="/logo.png"
@@ -77,11 +77,11 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
               priority
             />
           </div>
-          <div className="xl:hidden">
-            <h1 className={cn("font-bold text-gray-900", language === "hy" ? "text-base tracking-tight" : "text-lg")}>
+          <div className="xl:hidden min-w-0">
+            <h1 className={cn("font-bold text-gray-900 truncate", language === "hy" ? "text-base tracking-tight" : "text-lg")}>
               {t("armathArapi")}
             </h1>
-            <p className="text-[11px] text-slate-500">{subtitle || t("engineeringMakerspace")}</p>
+            <p className="text-[11px] text-slate-500 truncate">{subtitle || t("engineeringMakerspace")}</p>
           </div>
         </Link>
 
