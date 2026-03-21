@@ -139,10 +139,10 @@ export const adminStudentApiClient = {
     }),
 
   fetchStudentProgress: (studentId: string) =>
-    requestJson<StudentProgress[]>(`/api/admin/students/${studentId}/progress`),
+    requestJson<{ data: StudentProgress[] }>(`/api/admin/students/${studentId}/progress`),
 
   fetchStudentWorks: (studentId: string) =>
-    requestJson<StudentWork[]>(`/api/admin/students/${studentId}/works`),
+    requestJson<{ data: StudentWork[] }>(`/api/admin/students/${studentId}/works`),
 
   downloadWork: (workId: string) =>
     requestJson<{ url: string }>(`/api/admin/works/${workId}/download`),

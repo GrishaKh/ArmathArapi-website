@@ -118,7 +118,7 @@ export function StudentDetailPanel({
     setIsLoadingProgress(true)
     const result = await adminStudentApiClient.fetchStudentProgress(student.id)
     if (result.ok && result.data) {
-      setProgress(result.data)
+      setProgress(result.data.data || [])
     }
     setIsLoadingProgress(false)
   }, [student.id])
@@ -127,7 +127,7 @@ export function StudentDetailPanel({
     setIsLoadingWorks(true)
     const result = await adminStudentApiClient.fetchStudentWorks(student.id)
     if (result.ok && result.data) {
-      setWorks(result.data)
+      setWorks(result.data.data || [])
     }
     setIsLoadingWorks(false)
   }, [student.id])
