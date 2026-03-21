@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { useStudentAuth } from "@/features/student/hooks/use-student-auth"
 import { StudentSidebar } from "@/features/student/components/student-sidebar"
 import { StudentTopbar } from "@/features/student/components/student-topbar"
+import { useLanguage } from "@/contexts/language-context"
 import { Loader2 } from "lucide-react"
 
 export default function StudentPortalLayout({
@@ -22,6 +23,7 @@ export default function StudentPortalLayout({
     logout,
   } = useStudentAuth()
 
+  const { t } = useLanguage()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
 
@@ -50,7 +52,7 @@ export default function StudentPortalLayout({
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
         <div className="flex flex-col items-center space-y-3">
           <Loader2 className="w-8 h-8 text-armath-blue animate-spin" />
-          <p className="text-slate-400 text-sm">Loading portal...</p>
+          <p className="text-slate-400 text-sm">{t("spLoadingPortal")}</p>
         </div>
       </div>
     )

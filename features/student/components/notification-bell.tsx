@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { Bell, Check, X } from "lucide-react"
 import { studentApiClient } from "@/features/student/lib/student-api-client"
 import type { StudentNotification } from "@/features/student/types"
+import { useLanguage } from "@/contexts/language-context"
 
 function timeAgo(dateString: string): string {
   const seconds = Math.floor((Date.now() - new Date(dateString).getTime()) / 1000)
@@ -22,6 +23,7 @@ interface NotificationBellProps {
 }
 
 export function NotificationBell({ unreadCount, onCountChange }: NotificationBellProps) {
+  const { t } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
   const [notifications, setNotifications] = useState<StudentNotification[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -84,14 +86,14 @@ export function NotificationBell({ unreadCount, onCountChange }: NotificationBel
       {isOpen && (
         <div className="absolute right-0 top-full mt-2 w-80 bg-slate-800 border border-slate-700 rounded-xl shadow-xl z-50 overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700">
-            <h3 className="text-sm font-semibold text-white">Notifications</h3>
+            <h3 className="text-sm font-semibold text-white">{t("spNotifications")}</h3>
             <div className="flex items-center space-x-2">
               {unreadCount > 0 && (
                 <button
                   onClick={() => { void handleMarkAllRead() }}
                   className="text-xs text-armath-blue hover:text-armath-blue/80 font-medium"
                 >
-                  Mark all read
+                  {t("spMarkAllRead")}
                 </button>
               )}
               <button onClick={() => setIsOpen(false)} className="p-1 text-slate-400 hover:text-white">
@@ -108,7 +110,7 @@ export function NotificationBell({ unreadCount, onCountChange }: NotificationBel
             ) : notifications.length === 0 ? (
               <div className="p-6 text-center">
                 <Bell className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-                <p className="text-slate-400 text-sm">No notifications</p>
+                <p className="text-slate-400 text-sm">{t("spNoNotifications")}</p>
               </div>
             ) : (
               notifications.slice(0, 10).map((notification) => (

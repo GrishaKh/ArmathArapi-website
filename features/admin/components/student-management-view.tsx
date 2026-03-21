@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import {
   Search,
   UserPlus,
@@ -9,10 +10,15 @@ import {
   GraduationCap,
   Loader2,
   ChevronDown,
+  BookOpen,
+  Megaphone,
+  X,
+  Send,
 } from "lucide-react"
 import { useStudentManagement } from "@/features/admin/hooks/use-student-management"
 import { RegisterStudentForm } from "@/features/admin/components/register-student-form"
 import { StudentDetailPanel } from "@/features/admin/components/student-detail-panel"
+import { BulkAssignDialog } from "@/features/admin/components/bulk-assign-dialog"
 import type { Student } from "@/features/student/types"
 
 function formatDate(dateString: string): string {
@@ -120,9 +126,37 @@ export function StudentManagementView() {
     deactivateStudent,
     resetPassword,
     assignMaterial,
+    unassignMaterial,
+    bulkAssignMaterial,
+    createAnnouncement,
     goToList,
     goToRegister,
   } = useStudentManagement()
+
+  const [showBulkAssign, setShowBulkAssign] = useState(false)
+  const [showAnnouncement, setShowAnnouncement] = useState(false)
+  const [announcementTitle, setAnnouncementTitle] = useState("")
+  const [announcementMessage, setAnnouncementMessage] = useState("")
+  const [isSendingAnnouncement, setIsSendingAnnouncement] = useState(false)
+  const [announcementResult, setAnnouncementResult] = useState<string | null>(null)
+  const [announcementError, setAnnouncementError] = useState("")
+
+  const handleSendAnnouncement = async () => {
+    if (announcementTitle.trim().length < 2) return
+    setIsSendingAnnouncement(true)
+    setAnnouncementError("")
+    setAnnouncementResult(null)
+    try {
+      const r = await createAnnouncement(announcementTitle.trim(), announcementMessage.trim() || undefined)
+      setAnnouncementResult(`Sent to ${r.sent} student${r.sent !== 1 ? "s" : ""}.`)
+      setAnnouncementTitle("")
+      setAnnouncementMessage("")
+    } catch (err) {
+      setAnnouncementError(err instanceof Error ? err.message : "Failed to send announcement")
+    } finally {
+      setIsSendingAnnouncement(false)
+    }
+  }
 
   // Stats cards data
   const statsCards = [
@@ -164,6 +198,24 @@ export function StudentManagementView() {
             </select>
             <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
           </div>
+
+          {/* Announcement button */}
+          <button
+            onClick={() => setShowAnnouncement(true)}
+            className="flex items-center justify-center space-x-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-sm font-medium transition-colors"
+          >
+            <Megaphone className="w-4 h-4" />
+            <span className="hidden sm:inline">Announce</span>
+          </button>
+
+          {/* Bulk assign button */}
+          <button
+            onClick={() => setShowBulkAssign(true)}
+            className="flex items-center justify-center space-x-2 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-sm font-medium transition-colors"
+          >
+            <BookOpen className="w-4 h-4" />
+            <span className="hidden sm:inline">Bulk Assign</span>
+          </button>
 
           {/* Register button */}
           <button
@@ -212,6 +264,7 @@ export function StudentManagementView() {
           onDeactivate={deactivateStudent}
           onResetPassword={resetPassword}
           onAssignMaterial={assignMaterial}
+          onUnassignMaterial={unassignMaterial}
           materials={materials}
         />
       )}
@@ -284,6 +337,87 @@ export function StudentManagementView() {
               </div>
             </>
           )}
+        </div>
+      )}
+      {/* Bulk Assign Dialog */}
+      {showBulkAssign && (
+        <BulkAssignDialog
+          students={students}
+          materials={materials}
+          onBulkAssign={bulkAssignMaterial}
+          onClose={() => setShowBulkAssign(false)}
+        />
+      )}
+
+      {/* Announcement Modal */}
+      {showAnnouncement && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-md">
+            <div className="flex items-center justify-between p-6 border-b border-slate-700">
+              <h3 className="text-lg font-semibold text-white">Send Announcement</h3>
+              <button
+                onClick={() => { setShowAnnouncement(false); setAnnouncementResult(null); setAnnouncementError("") }}
+                className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              {announcementResult && (
+                <p className="text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-3">
+                  {announcementResult}
+                </p>
+              )}
+              {announcementError && (
+                <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3">
+                  {announcementError}
+                </p>
+              )}
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1.5">Title</label>
+                <input
+                  type="text"
+                  value={announcementTitle}
+                  onChange={(e) => setAnnouncementTitle(e.target.value)}
+                  placeholder="Announcement title..."
+                  className="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-armath-blue"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1.5">
+                  Message <span className="text-slate-500">(optional)</span>
+                </label>
+                <textarea
+                  value={announcementMessage}
+                  onChange={(e) => setAnnouncementMessage(e.target.value)}
+                  placeholder="Additional message..."
+                  rows={3}
+                  className="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-armath-blue resize-none"
+                />
+              </div>
+              <p className="text-xs text-slate-500">This will be sent to all active students.</p>
+            </div>
+            <div className="flex items-center justify-end gap-3 p-6 border-t border-slate-700">
+              <button
+                onClick={() => { setShowAnnouncement(false); setAnnouncementResult(null); setAnnouncementError("") }}
+                className="px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-700 rounded-lg text-sm transition-colors"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => { void handleSendAnnouncement() }}
+                disabled={announcementTitle.trim().length < 2 || isSendingAnnouncement}
+                className="flex items-center space-x-2 px-5 py-2 bg-armath-blue hover:bg-armath-blue/80 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors"
+              >
+                {isSendingAnnouncement ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
+                <span>Send to All</span>
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

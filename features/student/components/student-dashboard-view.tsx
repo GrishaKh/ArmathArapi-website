@@ -12,6 +12,7 @@ import {
   Bell,
 } from "lucide-react"
 import type { AssignedMaterialWithProgress, StudentWork, StudentDashboardStats } from "@/features/student/types"
+import { useLanguage } from "@/contexts/language-context"
 
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString("en-US", {
@@ -21,10 +22,11 @@ function formatDate(dateString: string): string {
 }
 
 function ProgressStatusBadge({ status }: { status: string }) {
+  const { t } = useLanguage()
   const config: Record<string, { color: string; label: string }> = {
-    not_started: { color: "bg-slate-600/50 text-slate-400", label: "Not Started" },
-    in_progress: { color: "bg-armath-blue/20 text-armath-blue", label: "In Progress" },
-    completed: { color: "bg-emerald-500/20 text-emerald-400", label: "Completed" },
+    not_started: { color: "bg-slate-600/50 text-slate-400", label: t("spFilterNotStarted") },
+    in_progress: { color: "bg-armath-blue/20 text-armath-blue", label: t("spFilterInProgress") },
+    completed: { color: "bg-emerald-500/20 text-emerald-400", label: t("spFilterCompleted") },
   }
   const c = config[status] || config.not_started
   return (
@@ -35,11 +37,12 @@ function ProgressStatusBadge({ status }: { status: string }) {
 }
 
 function WorkStatusBadge({ status }: { status: string }) {
+  const { t } = useLanguage()
   const config: Record<string, { color: string; label: string }> = {
-    submitted: { color: "bg-armath-blue/20 text-armath-blue", label: "Submitted" },
-    reviewed: { color: "bg-purple-500/20 text-purple-400", label: "Reviewed" },
-    needs_revision: { color: "bg-amber-500/20 text-amber-400", label: "Needs Revision" },
-    approved: { color: "bg-emerald-500/20 text-emerald-400", label: "Approved" },
+    submitted: { color: "bg-armath-blue/20 text-armath-blue", label: t("spStatusSubmitted") },
+    reviewed: { color: "bg-purple-500/20 text-purple-400", label: t("spStatusReviewed") },
+    needs_revision: { color: "bg-amber-500/20 text-amber-400", label: t("spStatusNeedsRevision") },
+    approved: { color: "bg-emerald-500/20 text-emerald-400", label: t("spStatusApproved") },
   }
   const c = config[status] || { color: "bg-slate-700 text-slate-300", label: status }
   return (
@@ -64,11 +67,13 @@ export function StudentDashboardView({
   recentWorks,
   isLoading,
 }: StudentDashboardViewProps) {
+  const { t } = useLanguage()
+
   const statsCards = [
-    { label: "Total Materials", value: stats.totalMaterials, icon: BookOpen, color: "from-armath-blue to-blue-600" },
-    { label: "Completed", value: stats.completedMaterials, icon: CheckCircle2, color: "from-emerald-500 to-emerald-600" },
-    { label: "In Progress", value: stats.inProgressMaterials, icon: Clock, color: "from-amber-500 to-amber-600" },
-    { label: "Works Submitted", value: stats.totalWorks, icon: FolderUp, color: "from-purple-500 to-purple-600" },
+    { label: t("spTotalMaterials"), value: stats.totalMaterials, icon: BookOpen, color: "from-armath-blue to-blue-600" },
+    { label: t("spFilterCompleted"), value: stats.completedMaterials, icon: CheckCircle2, color: "from-emerald-500 to-emerald-600" },
+    { label: t("spFilterInProgress"), value: stats.inProgressMaterials, icon: Clock, color: "from-amber-500 to-amber-600" },
+    { label: t("spWorksSubmitted"), value: stats.totalWorks, icon: FolderUp, color: "from-purple-500 to-purple-600" },
   ]
 
   if (isLoading) {
@@ -83,8 +88,8 @@ export function StudentDashboardView({
     <div className="space-y-6">
       {/* Welcome */}
       <div className="bg-gradient-to-r from-armath-blue/10 to-armath-red/10 border border-slate-700 rounded-2xl p-6">
-        <h1 className="text-2xl font-bold text-white">Welcome back, {studentName}!</h1>
-        <p className="text-slate-400 mt-1">Here&apos;s an overview of your learning progress.</p>
+        <h1 className="text-2xl font-bold text-white">{t("spWelcomeBack")}, {studentName}!</h1>
+        <p className="text-slate-400 mt-1">{t("spProgressOverview")}</p>
       </div>
 
       {/* Stats */}
@@ -113,12 +118,12 @@ export function StudentDashboardView({
         {/* Recent Materials */}
         <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">Recent Materials</h2>
+            <h2 className="text-lg font-semibold text-white">{t("spRecentMaterials")}</h2>
             <Link
               href="/student/materials"
               className="flex items-center space-x-1 text-sm text-armath-blue hover:text-armath-blue/80 transition-colors"
             >
-              <span>View all</span>
+              <span>{t("spViewAll")}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -126,7 +131,7 @@ export function StudentDashboardView({
           {recentMaterials.length === 0 ? (
             <div className="text-center py-8">
               <BookOpen className="w-10 h-10 text-slate-600 mx-auto mb-2" />
-              <p className="text-slate-400 text-sm">No materials assigned yet</p>
+              <p className="text-slate-400 text-sm">{t("spNoMaterialsAssigned")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -159,12 +164,12 @@ export function StudentDashboardView({
         {/* Recent Works */}
         <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">Recent Works</h2>
+            <h2 className="text-lg font-semibold text-white">{t("spRecentWorks")}</h2>
             <Link
               href="/student/works"
               className="flex items-center space-x-1 text-sm text-armath-blue hover:text-armath-blue/80 transition-colors"
             >
-              <span>View all</span>
+              <span>{t("spViewAll")}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -172,7 +177,7 @@ export function StudentDashboardView({
           {recentWorks.length === 0 ? (
             <div className="text-center py-8">
               <FileText className="w-10 h-10 text-slate-600 mx-auto mb-2" />
-              <p className="text-slate-400 text-sm">No works submitted yet</p>
+              <p className="text-slate-400 text-sm">{t("spNoWorksYet")}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -205,8 +210,8 @@ export function StudentDashboardView({
             <BookOpen className="w-6 h-6 text-armath-blue" />
           </div>
           <div>
-            <p className="text-white font-medium">View Materials</p>
-            <p className="text-slate-400 text-sm">Continue your learning journey</p>
+            <p className="text-white font-medium">{t("spViewMaterials")}</p>
+            <p className="text-slate-400 text-sm">{t("spContinueLearning")}</p>
           </div>
         </Link>
 
@@ -218,8 +223,8 @@ export function StudentDashboardView({
             <FolderUp className="w-6 h-6 text-purple-400" />
           </div>
           <div>
-            <p className="text-white font-medium">Upload Work</p>
-            <p className="text-slate-400 text-sm">Submit your projects and assignments</p>
+            <p className="text-white font-medium">{t("spUploadWork")}</p>
+            <p className="text-slate-400 text-sm">{t("spSubmitProjects")}</p>
           </div>
         </Link>
       </div>

@@ -154,6 +154,21 @@ export const studentApiClient = {
   fetchWorkDetail: (id: string) =>
     requestJson<{ work: StudentWorkWithFeedback }>(`/api/student/works/${id}`),
 
+  downloadWork: (id: string) =>
+    requestJson<{ url: string }>(`/api/student/works/${id}/download`),
+
+  updateWork: (id: string, data: { title: string; description?: string }) =>
+    requestJson<{ success: boolean; work: StudentWork }>(`/api/student/works/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    }),
+
+  deleteWork: (id: string) =>
+    requestJson<{ success: boolean }>(`/api/student/works/${id}`, {
+      method: 'DELETE',
+    }),
+
   // ── Notifications ────────────────────────────────────────────────────
   fetchNotifications: (params?: { unread?: boolean }) => {
     const searchParams = new URLSearchParams()

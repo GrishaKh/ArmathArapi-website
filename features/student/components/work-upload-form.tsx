@@ -9,6 +9,7 @@ import {
   AlertCircle,
 } from "lucide-react"
 import type { AssignedMaterialWithProgress } from "@/features/student/types"
+import { useLanguage } from "@/contexts/language-context"
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 const ALLOWED_EXTENSIONS = ['.pdf', '.png', '.jpg', '.jpeg', '.gif', '.py', '.ino', '.sb3', '.stl', '.zip']
@@ -32,6 +33,7 @@ export function WorkUploadForm({
   uploadError,
   materials = [],
 }: WorkUploadFormProps) {
+  const { t } = useLanguage()
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [materialId, setMaterialId] = useState("")
@@ -42,7 +44,7 @@ export function WorkUploadForm({
 
   const validateFile = (f: File): string | null => {
     if (f.size > MAX_FILE_SIZE) {
-      return "File must be less than 10MB"
+      return t("spFileTooLarge")
     }
     const name = f.name.toLowerCase()
     const isValid = ALLOWED_EXTENSIONS.some((ext) => name.endsWith(ext))
@@ -97,7 +99,7 @@ export function WorkUploadForm({
 
   return (
     <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-2xl p-6">
-      <h2 className="text-lg font-semibold text-white mb-4">Upload New Work</h2>
+      <h2 className="text-lg font-semibold text-white mb-4">{t("spUploadNewWork")}</h2>
 
       {errorMessage && (
         <div className="mb-4 flex items-center space-x-2 bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3">
@@ -109,7 +111,7 @@ export function WorkUploadForm({
       <form onSubmit={(e) => { void handleSubmit(e) }} className="space-y-4">
         <div>
           <label htmlFor="work-title" className="block text-sm font-medium text-slate-300 mb-1.5">
-            Title <span className="text-red-400">*</span>
+            {t("spTitleLabel")} <span className="text-red-400">*</span>
           </label>
           <input
             id="work-title"
@@ -117,21 +119,21 @@ export function WorkUploadForm({
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="My project submission"
+            placeholder={t("spWorkTitlePlaceholder")}
             className="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-armath-blue focus:border-transparent"
           />
         </div>
 
         <div>
           <label htmlFor="work-description" className="block text-sm font-medium text-slate-300 mb-1.5">
-            Description <span className="text-slate-500">(optional)</span>
+            {t("spDescriptionLabel")} <span className="text-slate-500">({t("spOptional")})</span>
           </label>
           <textarea
             id="work-description"
             rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe your work..."
+            placeholder={t("spWorkDescPlaceholder")}
             className="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-armath-blue focus:border-transparent resize-none"
           />
         </div>
@@ -139,7 +141,7 @@ export function WorkUploadForm({
         {materials.length > 0 && (
           <div>
             <label htmlFor="work-material" className="block text-sm font-medium text-slate-300 mb-1.5">
-              Related Material <span className="text-slate-500">(optional)</span>
+              {t("spRelatedMaterial")} <span className="text-slate-500">({t("spOptional")})</span>
             </label>
             <select
               id="work-material"
@@ -147,7 +149,7 @@ export function WorkUploadForm({
               onChange={(e) => setMaterialId(e.target.value)}
               className="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-armath-blue focus:border-transparent cursor-pointer"
             >
-              <option value="">None</option>
+              <option value="">{t("spNone")}</option>
               {materials.map((m) => (
                 <option key={m.id} value={m.id}>{m.title}</option>
               ))}
@@ -158,7 +160,7 @@ export function WorkUploadForm({
         {/* File drop zone */}
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-1.5">
-            File <span className="text-red-400">*</span>
+            {t("spFileLabel")} <span className="text-red-400">*</span>
           </label>
 
           {file ? (
@@ -192,7 +194,7 @@ export function WorkUploadForm({
             >
               <Upload className={`w-8 h-8 mb-2 ${dragOver ? "text-armath-blue" : "text-slate-500"}`} />
               <p className="text-sm text-slate-400">
-                Drag & drop or <span className="text-armath-blue">browse</span>
+                {t("spDragAndDrop")} <span className="text-armath-blue">{t("spBrowse")}</span>
               </p>
               <p className="text-xs text-slate-500 mt-1">
                 Max 10MB &middot; {ALLOWED_EXTENSIONS.join(', ')}
@@ -219,12 +221,12 @@ export function WorkUploadForm({
           {isUploading ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Uploading...</span>
+              <span>{t("spUploading")}</span>
             </>
           ) : (
             <>
               <Upload className="w-4 h-4" />
-              <span>Upload Work</span>
+              <span>{t("spUploadWork")}</span>
             </>
           )}
         </button>

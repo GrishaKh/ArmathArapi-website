@@ -131,11 +131,38 @@ export const adminStudentApiClient = {
       body: JSON.stringify({ materialId, dueDate }),
     }),
 
+  unassignMaterial: (studentId: string, materialId: string) =>
+    requestJson<{ success: boolean }>(`/api/admin/students/${studentId}/unassign`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ materialId }),
+    }),
+
   fetchStudentProgress: (studentId: string) =>
     requestJson<StudentProgress[]>(`/api/admin/students/${studentId}/progress`),
 
   fetchStudentWorks: (studentId: string) =>
     requestJson<StudentWork[]>(`/api/admin/students/${studentId}/works`),
+
+  downloadWork: (workId: string) =>
+    requestJson<{ url: string }>(`/api/admin/works/${workId}/download`),
+
+  bulkAssignMaterial: (materialId: string, studentIds: string[], dueDate?: string) =>
+    requestJson<{ success: boolean; assigned: number; skipped: number }>(
+      `/api/admin/student-materials/${materialId}/bulk-assign`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentIds, dueDate }),
+      },
+    ),
+
+  createAnnouncement: (title: string, message?: string, studentIds?: string[]) =>
+    requestJson<{ success: boolean; sent: number }>("/api/admin/announcements", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, message, studentIds }),
+    }),
 
   // ── Materials ─────────────────────────────────────────────────────────
   fetchMaterials: (params?: { topic?: string; difficulty?: string; page?: number }) => {

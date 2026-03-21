@@ -110,6 +110,38 @@ export function useStudentManagement() {
     [],
   )
 
+  const unassignMaterial = useCallback(
+    async (studentId: string, materialId: string) => {
+      const result = await adminStudentApiClient.unassignMaterial(studentId, materialId)
+      if (!result.ok) {
+        throw new Error(result.error || "Failed to unassign material")
+      }
+    },
+    [],
+  )
+
+  const bulkAssignMaterial = useCallback(
+    async (materialId: string, studentIds: string[], dueDate?: string) => {
+      const result = await adminStudentApiClient.bulkAssignMaterial(materialId, studentIds, dueDate)
+      if (!result.ok || !result.data) {
+        throw new Error(result.error || "Failed to bulk assign material")
+      }
+      return { assigned: result.data.assigned, skipped: result.data.skipped }
+    },
+    [],
+  )
+
+  const createAnnouncement = useCallback(
+    async (title: string, message?: string, studentIds?: string[]) => {
+      const result = await adminStudentApiClient.createAnnouncement(title, message, studentIds)
+      if (!result.ok || !result.data) {
+        throw new Error(result.error || "Failed to send announcement")
+      }
+      return { sent: result.data.sent }
+    },
+    [],
+  )
+
   const goToList = useCallback(() => {
     setSelectedStudent(null)
     setCurrentView("list")
@@ -147,6 +179,9 @@ export function useStudentManagement() {
     deactivateStudent,
     resetPassword,
     assignMaterial,
+    unassignMaterial,
+    bulkAssignMaterial,
+    createAnnouncement,
     goToList,
     goToRegister,
   }

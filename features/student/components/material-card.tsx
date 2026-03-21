@@ -3,6 +3,7 @@
 import { BookOpen, Clock, Calendar, ExternalLink } from "lucide-react"
 import { ProgressBar } from "@/features/student/components/progress-bar"
 import type { AssignedMaterialWithProgress } from "@/features/student/types"
+import { useLanguage } from "@/contexts/language-context"
 
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString("en-US", {
@@ -72,6 +73,7 @@ export function MaterialCard({
   onToggle,
   onUpdateProgress,
 }: MaterialCardProps) {
+  const { t } = useLanguage()
   const progress = material.progress
   const percent = progress?.progress_percent || 0
   const status = progress?.status || "not_started"
@@ -104,7 +106,7 @@ export function MaterialCard({
                 {material.assignment.due_date && (
                   <span className="flex items-center space-x-1 text-xs text-slate-400">
                     <Calendar className="w-3 h-3" />
-                    <span>Due {formatDate(material.assignment.due_date)}</span>
+                    <span>{t("spDue")} {formatDate(material.assignment.due_date)}</span>
                   </span>
                 )}
                 {timeSpent > 0 && (
@@ -137,7 +139,7 @@ export function MaterialCard({
                 className="flex items-center space-x-2 px-4 py-2 bg-armath-blue/20 hover:bg-armath-blue/30 text-armath-blue rounded-lg text-sm font-medium transition-colors"
               >
                 <ExternalLink className="w-4 h-4" />
-                <span>Open Material</span>
+                <span>{t("spOpenMaterial")}</span>
               </a>
             )}
 
@@ -146,7 +148,7 @@ export function MaterialCard({
                 onClick={() => onUpdateProgress("in_progress")}
                 className="px-4 py-2 bg-armath-blue hover:bg-armath-blue/80 text-white rounded-lg text-sm font-medium transition-colors"
               >
-                Start Learning
+                {t("spStartLearning")}
               </button>
             )}
 
@@ -155,13 +157,13 @@ export function MaterialCard({
                 onClick={() => onUpdateProgress("completed")}
                 className="px-4 py-2 bg-emerald-500 hover:bg-emerald-500/80 text-white rounded-lg text-sm font-medium transition-colors"
               >
-                Mark as Complete
+                {t("spMarkComplete")}
               </button>
             )}
 
             {status === "completed" && (
               <span className="flex items-center space-x-2 px-4 py-2 bg-emerald-500/20 text-emerald-400 rounded-lg text-sm font-medium">
-                <span>Completed</span>
+                <span>{t("spCompletedStatus")}</span>
                 {progress?.completed_at && (
                   <span className="text-emerald-400/60">on {formatDate(progress.completed_at)}</span>
                 )}

@@ -149,6 +149,19 @@ export const createStudentMaterialSchema = z.object({
   orderIndex: z.number().int().min(0).default(0),
 })
 
+export const studentWorkUpdateSchema = z.object({
+  title: z
+    .string()
+    .min(2, 'Title must be at least 2 characters')
+    .max(255, 'Title must be less than 255 characters'),
+  description: z
+    .string()
+    .max(2000, 'Description must be less than 2000 characters')
+    .optional()
+    .default(''),
+})
+
+export type StudentWorkUpdateData = z.infer<typeof studentWorkUpdateSchema>
 export type RegisterStudentData = z.infer<typeof registerStudentSchema>
 export type StudentLoginData = z.infer<typeof studentLoginSchema>
 export type StudentWorkUploadData = z.infer<typeof studentWorkUploadSchema>

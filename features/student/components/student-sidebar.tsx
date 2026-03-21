@@ -10,6 +10,7 @@ import {
   GraduationCap,
   X,
 } from "lucide-react"
+import { useLanguage } from "@/contexts/language-context"
 
 interface StudentSidebarProps {
   isOpen: boolean
@@ -17,15 +18,16 @@ interface StudentSidebarProps {
   studentName: string
 }
 
-const navItems = [
-  { href: "/student", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/student/materials", label: "My Materials", icon: BookOpen },
-  { href: "/student/works", label: "My Works", icon: FolderUp },
-  { href: "/student/settings", label: "Settings", icon: Settings },
-]
-
 export function StudentSidebar({ isOpen, onClose, studentName }: StudentSidebarProps) {
   const pathname = usePathname()
+  const { t } = useLanguage()
+
+  const navItems = [
+    { href: "/student", label: t("spDashboard"), icon: LayoutDashboard },
+    { href: "/student/materials", label: t("spMyMaterials"), icon: BookOpen },
+    { href: "/student/works", label: t("spMyWorks"), icon: FolderUp },
+    { href: "/student/settings", label: t("spSettings"), icon: Settings },
+  ]
 
   const isActive = (href: string) => {
     if (href === "/student") return pathname === "/student"
@@ -41,7 +43,7 @@ export function StudentSidebar({ isOpen, onClose, studentName }: StudentSidebarP
             <GraduationCap className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white">Student Portal</h2>
+            <h2 className="text-lg font-bold text-white">{t("spPortalTitle")}</h2>
             <p className="text-xs text-slate-400 truncate max-w-[140px]">{studentName}</p>
           </div>
         </div>
@@ -68,7 +70,7 @@ export function StudentSidebar({ isOpen, onClose, studentName }: StudentSidebarP
 
       {/* Footer */}
       <div className="p-4 border-t border-slate-700">
-        <p className="text-xs text-slate-500 text-center">Armath Engineering Labs</p>
+        <p className="text-xs text-slate-500 text-center">{t("spEngineeringLabs")}</p>
       </div>
     </div>
   )

@@ -20,6 +20,8 @@ import {
   Clock,
   CheckCircle2,
   Send,
+  Download,
+  Unlink,
 } from "lucide-react"
 import { adminStudentApiClient } from "@/features/admin/lib/admin-student-api-client"
 import type { Student, StudentMaterial, StudentProgress, StudentWork } from "@/features/student/types"
@@ -30,6 +32,7 @@ interface StudentDetailPanelProps {
   onDeactivate: (id: string) => Promise<void>
   onResetPassword: (id: string) => Promise<{ temporaryPassword: string }>
   onAssignMaterial: (studentId: string, materialId: string, dueDate?: string) => Promise<void>
+  onUnassignMaterial: (studentId: string, materialId: string) => Promise<void>
   materials: StudentMaterial[]
 }
 
@@ -89,6 +92,7 @@ export function StudentDetailPanel({
   onDeactivate,
   onResetPassword,
   onAssignMaterial,
+  onUnassignMaterial,
   materials,
 }: StudentDetailPanelProps) {
   const [progress, setProgress] = useState<StudentProgress[]>([])
@@ -106,6 +110,9 @@ export function StudentDetailPanel({
   const [dueDate, setDueDate] = useState("")
   const [isAssigning, setIsAssigning] = useState(false)
   const [assignSuccess, setAssignSuccess] = useState(false)
+
+  const [unassigningMaterialId, setUnassigningMaterialId] = useState<string | null>(null)
+  const [downloadingWorkId, setDownloadingWorkId] = useState<string | null>(null)
 
   const fetchProgress = useCallback(async () => {
     setIsLoadingProgress(true)
@@ -161,6 +168,29 @@ export function StudentDetailPanel({
     await navigator.clipboard.writeText(tempPassword)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleUnassign = async (materialId: string) => {
+    if (!window.confirm("Unassign this material? This cannot be undone.")) return
+    setUnassigningMaterialId(materialId)
+    setActionError("")
+    try {
+      await onUnassignMaterial(student.id, materialId)
+      void fetchProgress()
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : "Failed to unassign material")
+    } finally {
+      setUnassigningMaterialId(null)
+    }
+  }
+
+  const handleDownloadWork = async (workId: string) => {
+    setDownloadingWorkId(workId)
+    const result = await adminStudentApiClient.downloadWork(workId)
+    setDownloadingWorkId(null)
+    if (result.ok && result.data?.url) {
+      window.open(result.data.url, "_blank", "noopener,noreferrer")
+    }
   }
 
   const handleAssign = async () => {
@@ -345,6 +375,20 @@ export function StudentDetailPanel({
                     </span>
                   )}
                   <ProgressStatusBadge status={p.status} />
+                  {p.status === "not_started" && (
+                    <button
+                      onClick={() => { void handleUnassign(p.material_id) }}
+                      disabled={unassigningMaterialId === p.material_id}
+                      title="Unassign material"
+                      className="p-1 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors disabled:opacity-50"
+                    >
+                      {unassigningMaterialId === p.material_id ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Unlink className="w-3.5 h-3.5" />
+                      )}
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
@@ -379,7 +423,21 @@ export function StudentDetailPanel({
                     </p>
                   </div>
                 </div>
-                <WorkStatusBadge status={work.status} />
+                <div className="flex items-center space-x-2">
+                  <WorkStatusBadge status={work.status} />
+                  <button
+                    onClick={() => { void handleDownloadWork(work.id) }}
+                    disabled={downloadingWorkId === work.id}
+                    title="Download file"
+                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-50"
+                  >
+                    {downloadingWorkId === work.id ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Download className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
               </div>
             ))}
           </div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Lock, Loader2, AlertCircle, CheckCircle2 } from "lucide-react"
+import { useLanguage } from "@/contexts/language-context"
 
 interface ChangePasswordFormProps {
   onSubmit: (data: {
@@ -20,6 +21,7 @@ export function ChangePasswordForm({
   error,
   isForced = false,
 }: ChangePasswordFormProps) {
+  const { t } = useLanguage()
   const [currentPassword, setCurrentPassword] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -32,12 +34,12 @@ export function ChangePasswordForm({
     setSuccess(false)
 
     if (newPassword.length < 8) {
-      setLocalError("New password must be at least 8 characters")
+      setLocalError(t("spPasswordMinLength"))
       return
     }
 
     if (newPassword !== confirmPassword) {
-      setLocalError("Passwords do not match")
+      setLocalError(t("spPasswordsDontMatch"))
       return
     }
 
@@ -60,9 +62,9 @@ export function ChangePasswordForm({
         <div className="mb-4 flex items-center space-x-2 bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-3">
           <Lock className="w-5 h-5 text-amber-400 shrink-0" />
           <div>
-            <p className="text-amber-400 text-sm font-medium">Password Change Required</p>
+            <p className="text-amber-400 text-sm font-medium">{t("spPasswordChangeRequired")}</p>
             <p className="text-amber-400/70 text-xs mt-0.5">
-              You must change your temporary password before continuing.
+              {t("spMustChangeTempPassword")}
             </p>
           </div>
         </div>
@@ -71,7 +73,7 @@ export function ChangePasswordForm({
       {success && (
         <div className="mb-4 flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-3">
           <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-          <p className="text-emerald-400 text-sm">Password changed successfully!</p>
+          <p className="text-emerald-400 text-sm">{t("spPasswordChanged")}</p>
         </div>
       )}
 
@@ -85,7 +87,7 @@ export function ChangePasswordForm({
       <form onSubmit={(e) => { void handleSubmit(e) }} className="space-y-4">
         <div>
           <label htmlFor="current-password" className="block text-sm font-medium text-slate-300 mb-1.5">
-            Current Password
+            {t("spCurrentPassword")}
           </label>
           <input
             id="current-password"
@@ -100,7 +102,7 @@ export function ChangePasswordForm({
 
         <div>
           <label htmlFor="new-password" className="block text-sm font-medium text-slate-300 mb-1.5">
-            New Password
+            {t("spNewPassword")}
           </label>
           <input
             id="new-password"
@@ -110,14 +112,14 @@ export function ChangePasswordForm({
             minLength={8}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            placeholder="At least 8 characters"
+            placeholder={t("spNewPasswordHint")}
             className="w-full px-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-armath-blue focus:border-transparent"
           />
         </div>
 
         <div>
           <label htmlFor="confirm-password" className="block text-sm font-medium text-slate-300 mb-1.5">
-            Confirm New Password
+            {t("spConfirmNewPassword")}
           </label>
           <input
             id="confirm-password"
@@ -138,12 +140,12 @@ export function ChangePasswordForm({
           {isSubmitting ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span>Changing Password...</span>
+              <span>{t("spChangingPassword")}</span>
             </>
           ) : (
             <>
               <Lock className="w-4 h-4" />
-              <span>Change Password</span>
+              <span>{t("spChangePasswordBtn")}</span>
             </>
           )}
         </button>

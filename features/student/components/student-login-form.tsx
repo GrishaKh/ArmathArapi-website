@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { GraduationCap, Lock, User, Loader2, AlertCircle } from "lucide-react"
+import { useLanguage } from "@/contexts/language-context"
 
 interface StudentLoginFormProps {
   onLogin: (username: string, password: string) => Promise<{ success: boolean; mustChangePassword: boolean }>
@@ -10,6 +11,7 @@ interface StudentLoginFormProps {
 }
 
 export function StudentLoginForm({ onLogin, isAuthenticating, authError }: StudentLoginFormProps) {
+  const { t } = useLanguage()
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
 
@@ -27,8 +29,8 @@ export function StudentLoginForm({ onLogin, isAuthenticating, authError }: Stude
           <div className="w-16 h-16 bg-gradient-to-br from-armath-blue to-armath-red rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-armath-blue/25">
             <GraduationCap className="w-9 h-9 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Student Portal</h1>
-          <p className="text-slate-400 text-sm mt-1">Sign in with your student credentials</p>
+          <h1 className="text-2xl font-bold text-white">{t("spPortalTitle")}</h1>
+          <p className="text-slate-400 text-sm mt-1">{t("spPortalSignIn")}</p>
         </div>
 
         {/* Login card */}
@@ -46,7 +48,7 @@ export function StudentLoginForm({ onLogin, isAuthenticating, authError }: Stude
           >
             <div>
               <label htmlFor="student-username" className="block text-sm font-medium text-slate-300 mb-1.5">
-                Username
+                {t("spUsernameLabel")}
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -65,7 +67,7 @@ export function StudentLoginForm({ onLogin, isAuthenticating, authError }: Stude
 
             <div>
               <label htmlFor="student-password" className="block text-sm font-medium text-slate-300 mb-1.5">
-                Password
+                {t("spPasswordLabel")}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -76,7 +78,7 @@ export function StudentLoginForm({ onLogin, isAuthenticating, authError }: Stude
                   autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder={t("spPasswordPlaceholder")}
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-900/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-armath-blue focus:border-transparent"
                 />
               </div>
@@ -90,18 +92,18 @@ export function StudentLoginForm({ onLogin, isAuthenticating, authError }: Stude
               {isAuthenticating ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Signing in...</span>
+                  <span>{t("spSigningIn")}</span>
                 </>
               ) : (
-                <span>Sign In</span>
+                <span>{t("spSignIn")}</span>
               )}
             </button>
           </form>
 
           <p className="mt-5 text-center text-xs text-slate-500">
-            Your credentials were provided by the administrator.
+            {t("spCredentialsHint")}
             <br />
-            Contact your admin if you need help signing in.
+            {t("spCredentialsHint2")}
           </p>
         </div>
       </div>

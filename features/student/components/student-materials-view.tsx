@@ -4,15 +4,10 @@ import { useState } from "react"
 import { BookOpen, Loader2 } from "lucide-react"
 import { MaterialCard } from "@/features/student/components/material-card"
 import { useStudentMaterials } from "@/features/student/hooks/use-student-materials"
-
-const FILTER_TABS = [
-  { key: "", label: "All" },
-  { key: "not_started", label: "Not Started" },
-  { key: "in_progress", label: "In Progress" },
-  { key: "completed", label: "Completed" },
-]
+import { useLanguage } from "@/contexts/language-context"
 
 export function StudentMaterialsView() {
+  const { t } = useLanguage()
   const {
     materials,
     isLoading,
@@ -20,6 +15,13 @@ export function StudentMaterialsView() {
     setStatusFilter,
     updateProgress,
   } = useStudentMaterials()
+
+  const filterTabs = [
+    { key: "", label: t("spFilterAll") },
+    { key: "not_started", label: t("spFilterNotStarted") },
+    { key: "in_progress", label: t("spFilterInProgress") },
+    { key: "completed", label: t("spFilterCompleted") },
+  ]
 
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [actionError, setActionError] = useState("")
@@ -41,13 +43,13 @@ export function StudentMaterialsView() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">My Materials</h1>
-        <p className="text-slate-400 mt-1">Track your assigned learning materials</p>
+        <h1 className="text-2xl font-bold text-white">{t("spMyMaterialsTitle")}</h1>
+        <p className="text-slate-400 mt-1">{t("spTrackMaterials")}</p>
       </div>
 
       {/* Filter tabs */}
       <div className="flex flex-wrap gap-2">
-        {FILTER_TABS.map((tab) => (
+        {filterTabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setStatusFilter(tab.key)}
@@ -77,11 +79,11 @@ export function StudentMaterialsView() {
       ) : materials.length === 0 ? (
         <div className="text-center py-20">
           <BookOpen className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-          <p className="text-slate-400 font-medium">No materials found</p>
+          <p className="text-slate-400 font-medium">{t("spNoMaterialsFound")}</p>
           <p className="text-slate-500 text-sm mt-1">
             {statusFilter
-              ? "Try a different filter"
-              : "Your admin will assign materials to you"}
+              ? t("spTryDifferentFilter")
+              : t("spAdminWillAssign")}
           </p>
         </div>
       ) : (

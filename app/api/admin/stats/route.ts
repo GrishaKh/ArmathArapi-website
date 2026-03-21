@@ -41,7 +41,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   try {
     // Get counts for each table
-    const [students, support, contact] = await Promise.all([
+    const [applications, support, contact] = await Promise.all([
       supabaseAdmin.from('student_applications').select('status', { count: 'exact' }),
       supabaseAdmin.from('support_requests').select('status', { count: 'exact' }),
       supabaseAdmin.from('contact_messages').select('status', { count: 'exact' }),
@@ -57,16 +57,27 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // Get recent submissions (last 7 days)
     const weekAgo = new Date()
     weekAgo.setDate(weekAgo.getDate() - 7)
-    
+
     const [recentStudents, recentSupport, recentContact] = await Promise.all([
       supabaseAdmin.from('student_applications').select('id', { count: 'exact' }).gte('created_at', weekAgo.toISOString()),
       supabaseAdmin.from('support_requests').select('id', { count: 'exact' }).gte('created_at', weekAgo.toISOString()),
       supabaseAdmin.from('contact_messages').select('id', { count: 'exact' }).gte('created_at', weekAgo.toISOString()),
     ])
 
+    // Enrolled students counts
+    const [enrolledTotal, enrolledActive, enrolledInactive, enrolledGraduated, worksTotal, worksPendingReview, materialsTotal] = await Promise.all([
+      supabaseAdmin.from('students').select('id', { count: 'exact' }),
+      supabaseAdmin.from('students').select('id', { count: 'exact' }).eq('status', 'active'),
+      supabaseAdmin.from('students').select('id', { count: 'exact' }).eq('status', 'inactive'),
+      supabaseAdmin.from('students').select('id', { count: 'exact' }).eq('status', 'graduated'),
+      supabaseAdmin.from('student_works').select('id', { count: 'exact' }),
+      supabaseAdmin.from('student_works').select('id', { count: 'exact' }).eq('status', 'submitted'),
+      supabaseAdmin.from('student_materials').select('id', { count: 'exact' }),
+    ])
+
     const payload = {
       totals: {
-        students: students.count || 0,
+        students: applications.count || 0,
         support: support.count || 0,
         contact: contact.count || 0,
       },
@@ -79,6 +90,19 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         students: recentStudents.count || 0,
         support: recentSupport.count || 0,
         contact: recentContact.count || 0,
+      },
+      enrolledStudents: {
+        total: enrolledTotal.count || 0,
+        active: enrolledActive.count || 0,
+        inactive: enrolledInactive.count || 0,
+        graduated: enrolledGraduated.count || 0,
+      },
+      works: {
+        total: worksTotal.count || 0,
+        pendingReview: worksPendingReview.count || 0,
+      },
+      materials: {
+        total: materialsTotal.count || 0,
       },
     }
 

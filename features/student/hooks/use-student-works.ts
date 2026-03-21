@@ -52,6 +52,37 @@ export function useStudentWorks() {
     return null
   }, [])
 
+  const downloadWork = useCallback(async (id: string): Promise<string | null> => {
+    const result = await studentApiClient.downloadWork(id)
+    if (result.ok && result.data) {
+      return result.data.url
+    }
+    return null
+  }, [])
+
+  const updateWork = useCallback(
+    async (id: string, data: { title: string; description?: string }) => {
+      const result = await studentApiClient.updateWork(id, data)
+      if (!result.ok) {
+        throw new Error(result.error || 'Failed to update work')
+      }
+      void fetchWorks()
+      return result.data?.work
+    },
+    [fetchWorks],
+  )
+
+  const deleteWork = useCallback(
+    async (id: string) => {
+      const result = await studentApiClient.deleteWork(id)
+      if (!result.ok) {
+        throw new Error(result.error || 'Failed to delete work')
+      }
+      void fetchWorks()
+    },
+    [fetchWorks],
+  )
+
   return {
     works,
     isLoading,
@@ -59,6 +90,9 @@ export function useStudentWorks() {
     uploadError,
     uploadWork,
     fetchWorkDetail,
+    downloadWork,
+    updateWork,
+    deleteWork,
     refresh: fetchWorks,
   }
 }
