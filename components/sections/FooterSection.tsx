@@ -56,7 +56,7 @@ export function FooterSection() {
             },
           ].map((section, index) => (
             <AnimatedSection key={section.title} animation="fadeInUp" delay={index * 0.1}>
-              <h4 className="font-semibold mb-4">{section.title}</h4>
+              <h4 className="font-semibold mb-4 text-white">{section.title}</h4>
               {section.links.length > 0 ? (
                 <ul className="space-y-2 text-sm text-slate-400">
                   {section.links.map((link, linkIndex) => (
@@ -83,7 +83,7 @@ export function FooterSection() {
         <AnimatedSection animation="fadeInUp" delay={0.5}>
           <div className="text-center text-sm text-slate-400">
             <p>
-              © 2025 {t("footerRights")}
+              © 2026 {t("footerRights")}
             </p>
           </div>
         </AnimatedSection>

@@ -9,7 +9,6 @@ import { ArrowRight, Star } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { getProjectsSortedByYear } from "@/lib/projects"
-import { cn } from "@/lib/utils"
 
 export function ProjectsSection() {
   const { t, language } = useLanguage()
@@ -41,29 +40,17 @@ export function ProjectsSection() {
               key={project.id}
               animation="fadeInUp"
               delay={index * 0.15}
-              className={cn(
-                "w-full min-w-0 h-full",
-                index === 0 ? "md:col-span-2 lg:col-span-2" : "col-span-1"
-              )}
+              className="w-full min-w-0 h-full col-span-1"
             >
               <Link href={`/projects/${project.slug}`} className="block h-full w-full">
-                <Card className={cn(
-                  "group h-full w-full overflow-hidden border-slate-200/80 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex",
-                  index === 0 ? "flex-col lg:flex-row rounded-2xl" : "flex-col rounded-xl"
-                )}>
-                  <div className={cn(
-                    "relative overflow-hidden shrink-0",
-                    index === 0 ? "lg:w-[45%]" : "w-full"
-                  )}>
+                <Card className="group h-full w-full overflow-hidden border-slate-200/80 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg flex flex-col rounded-xl">
+                  <div className="relative overflow-hidden shrink-0 w-full">
                     <Image
                       src={project.image || "/placeholder.svg"}
                       alt={getProjectTitle(project)}
                       width={800}
                       height={500}
-                      className={cn(
-                        "object-cover group-hover:scale-105 transition-transform duration-700 w-full",
-                        index === 0 ? "h-64 sm:h-80 lg:h-full lg:absolute lg:inset-0" : "h-48"
-                      )}
+                      className="object-cover group-hover:scale-105 transition-transform duration-700 w-full h-48"
                     />
                     {/* Gradient overlay on hover */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -86,27 +73,18 @@ export function ProjectsSection() {
                     </div>
                   </div>
 
-                  <div className={cn(
-                    "flex flex-col grow",
-                    index === 0 ? "lg:w-[55%] lg:justify-center p-2 lg:p-6" : ""
-                  )}>
+                  <div className="flex flex-col grow">
                     <CardHeader className="pb-4 grow">
                       <div className="space-y-2">
                         {/* Category badge */}
                         <Badge variant="outline" className="w-fit text-xs border-armath-blue/30 text-armath-blue">
                           {getProjectCategory(project)}
                         </Badge>
-                        <CardTitle className={cn(
-                          "group-hover:text-armath-blue transition-colors line-clamp-2",
-                          index === 0 ? "text-xl sm:text-2xl lg:text-3xl" : "text-lg"
-                        )}>
+                        <CardTitle className="group-hover:text-armath-blue transition-colors line-clamp-2 text-lg">
                           {getProjectTitle(project)}
                         </CardTitle>
                       </div>
-                      <CardDescription className={cn(
-                        "leading-relaxed",
-                        index === 0 ? "line-clamp-3 text-base" : "line-clamp-2"
-                      )}>
+                      <CardDescription className="leading-relaxed line-clamp-2">
                         {getProjectDescription(project)}
                       </CardDescription>
                     </CardHeader>
