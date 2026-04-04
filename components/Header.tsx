@@ -26,6 +26,7 @@ const navItems: TranslationKey[] = [
   "ourProjects",
   "supportArmath",
   "contact",
+  "edukitPitch",
 ]
 
 export function Header({ subtitle, showNav = true }: HeaderProps) {
@@ -88,22 +89,37 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
         {showNav ? (
           <>
             <nav className="hidden xl:flex items-center gap-5">
-              {navItems.map((item, index) => (
-                <motion.a
-                  key={item}
-                  href={`/#${item}`}
-                  className={cn(
-                    "group relative text-slate-500 hover:text-slate-900 transition-colors whitespace-nowrap pb-1",
-                    language === "hy" ? "text-sm tracking-normal" : "text-sm font-medium"
-                  )}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.08 + 0.3 }}
-                >
-                  {t(item)}
-                  <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-armath-blue transition-all duration-300 group-hover:w-full rounded-full" />
-                </motion.a>
-              ))}
+              {navItems.map((item, index) => {
+                const isExternalPage = item === "edukitPitch"
+                const href = isExternalPage ? "/edukit-pitch" : `/#${item}`
+                return (
+                  <motion.div key={item} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.08 + 0.3 }}>
+                    {isExternalPage ? (
+                      <Link
+                        href={href}
+                        className={cn(
+                          "group relative text-slate-500 hover:text-slate-900 transition-colors whitespace-nowrap pb-1",
+                          language === "hy" ? "text-sm tracking-normal" : "text-sm font-medium"
+                        )}
+                      >
+                        {t(item)}
+                        <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-armath-blue transition-all duration-300 group-hover:w-full rounded-full" />
+                      </Link>
+                    ) : (
+                      <a
+                        href={href}
+                        className={cn(
+                          "group relative text-slate-500 hover:text-slate-900 transition-colors whitespace-nowrap pb-1",
+                          language === "hy" ? "text-sm tracking-normal" : "text-sm font-medium"
+                        )}
+                      >
+                        {t(item)}
+                        <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-armath-blue transition-all duration-300 group-hover:w-full rounded-full" />
+                      </a>
+                    )}
+                  </motion.div>
+                )
+              })}
               <LanguageToggle />
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8 }}>
                 <MagneticWrapper>
@@ -144,19 +160,35 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
         >
           <div className="rounded-2xl border border-slate-200 bg-white shadow-lg p-4">
             <div className="grid gap-2">
-              {navItems.map((item) => (
-                <a
-                  key={item}
-                  href={`/#${item}`}
-                  className={cn(
-                    "block py-2 px-3 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors",
-                    language === "hy" ? "text-sm tracking-tight" : "text-base"
-                  )}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {t(item)}
-                </a>
-              ))}
+              {navItems.map((item) => {
+                const isExternalPage = item === "edukitPitch"
+                const href = isExternalPage ? "/edukit-pitch" : `/#${item}`
+                return isExternalPage ? (
+                  <Link
+                    key={item}
+                    href={href}
+                    className={cn(
+                      "block py-2 px-3 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors",
+                      language === "hy" ? "text-sm tracking-tight" : "text-base"
+                    )}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {t(item)}
+                  </Link>
+                ) : (
+                  <a
+                    key={item}
+                    href={href}
+                    className={cn(
+                      "block py-2 px-3 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors",
+                      language === "hy" ? "text-sm tracking-tight" : "text-base"
+                    )}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {t(item)}
+                  </a>
+                )
+              })}
             </div>
             <div className="mt-3">
               <Button
