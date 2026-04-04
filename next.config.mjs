@@ -25,6 +25,14 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/edukit-pitch',
+        destination: '/edukit-pitch.html',
+      },
+    ]
+  },
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },

@@ -20,16 +20,19 @@
 
 ## About The Project
 
-Armath Arapi is an engineering makerspace located in Arapi, Armenia. This website serves as the digital hub for our community, showcasing student projects, events, and providing a platform for new students to join our programs.
+Armath Arapi is an engineering makerspace located in Arapi, Armenia. This website serves as the digital hub for our community — showcasing student projects, events, and learning materials, while providing a full-featured student portal and admin dashboard for managing the makerspace.
 
 ### Key Features
 
-- **Bilingual Support** - Full Armenian (Հայերեն) and English language support
-- **Student Projects Gallery** - Showcase of innovative projects built by our students
-- **Events & Achievements** - Documentation of competitions, workshops, and camps
-- **Online Applications** - Student enrollment and support request forms
-- **Admin Dashboard** - Manage submissions and track applications
-- **Responsive Design** - Optimized for all devices
+- **Bilingual Support** — Full Armenian (Հայերեն) and English language support with 400+ translation keys
+- **Student Portal** — Authenticated student dashboard with materials, work submissions, progress tracking, and notifications
+- **Admin Dashboard** — Student management, material assignment, work review, submission tracking, and announcements
+- **Learning Materials** — Structured learning paths with progress tracking, difficulty levels, and topic categories
+- **Work Submission & Review** — Students upload work, admins review with feedback and status tracking
+- **Student Projects Gallery** — Showcase of innovative projects built by our students
+- **Events & Achievements** — Documentation of competitions, workshops, and camps
+- **Online Applications** — Student enrollment, support request, and contact forms
+- **Responsive Design** — Optimized for all devices with mobile-specific UI enhancements
 
 ---
 
@@ -44,8 +47,11 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 | Animations | Framer Motion 11 |
 | Content | Contentlayer (MDX) |
 | Database | Supabase (PostgreSQL) |
+| Authentication | bcryptjs + httpOnly session cookies |
 | Email | Resend |
 | Validation | Zod |
+| Icons | Lucide React |
+| Testing | Node.js built-in test runner |
 | Deployment | Vercel |
 
 ---
@@ -74,16 +80,28 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
    ```bash
    cp .env.example .env.local
    ```
-   
+
    Fill in the required values:
    ```env
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   # Supabase
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+   SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+   NEXT_PUBLIC_SITE_URL=https://your-site-url.com
+
+   # Email (Resend)
    RESEND_API_KEY=your_resend_api_key
    ADMIN_EMAIL=admin@example.com
+
+   # Admin Dashboard
    ADMIN_PASSWORD=your_secure_admin_password
-   ADMIN_SESSION_SECRET=complex_random_string_for_session_encryption
+   ADMIN_SESSION_SECRET=your_long_random_session_secret
+
+   # Student Portal
+   STUDENT_SESSION_SECRET=your_long_random_student_session_secret
+
+   # Cron Jobs
+   CRON_SECRET=your_long_random_cron_secret
    ```
 
 4. **Run the development server**
@@ -93,37 +111,107 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 
 5. **Open [http://localhost:3000](http://localhost:3000)**
 
+### Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start development server |
+| `pnpm build` | Build for production |
+| `pnpm start` | Start production server |
+| `pnpm lint` | Run ESLint |
+| `pnpm typecheck` | Run TypeScript type checking |
+| `pnpm test` | Run all tests |
+| `pnpm test:api` | Run API tests only |
+| `pnpm test:e2e` | Run end-to-end tests only |
+| `pnpm content:qa` | Run content quality checks |
+| `pnpm ci` | Full CI pipeline (lint + typecheck + test + build + content:qa) |
+
 ---
 
 ## Project Structure
 
 ```
 ├── app/
-│   ├── api/              # API routes (submissions, admin)
-│   ├── admin/            # Admin dashboard
-│   ├── events/           # Events pages
-│   ├── projects/         # Projects pages
-│   ├── layout.tsx        # Root layout
-│   └── page.tsx          # Home page
+│   ├── api/
+│   │   ├── admin/              # Admin API endpoints
+│   │   ├── student/            # Student portal API endpoints
+│   │   ├── submissions/        # Public form submissions
+│   │   └── cron/               # Scheduled tasks
+│   ├── admin/                  # Admin dashboard page
+│   ├── events/                 # Events pages
+│   ├── materials/              # Learning materials pages
+│   ├── projects/               # Student projects pages
+│   ├── student/
+│   │   ├── login/              # Student login
+│   │   └── (portal)/           # Protected portal routes
+│   │       ├── materials/      # Assigned materials
+│   │       ├── works/          # Work submissions
+│   │       └── settings/       # Account settings
+│   ├── layout.tsx              # Root layout
+│   ├── page.tsx                # Home page
+│   ├── sitemap.ts              # Dynamic sitemap
+│   └── robots.ts               # Robots.txt config
 ├── components/
-│   ├── sections/         # Page sections (Hero, About, etc.)
-│   ├── ui/               # Reusable UI components
-│   └── Header.tsx        # Shared header component
-├── content/              # MDX Content
-│   ├── events/           # Event posts (en/hy)
-│   └── projects/         # Project posts (en/hy)
+│   ├── sections/               # Page sections (Hero, About, etc.)
+│   └── ui/                     # Reusable UI components (shadcn/ui)
+├── features/
+│   ├── admin/                  # Admin feature module
+│   │   ├── components/         # Admin UI (dashboard, forms, panels)
+│   │   ├── hooks/              # Admin state management
+│   │   └── lib/                # Admin API clients
+│   └── student/                # Student feature module
+│       ├── components/         # Student UI (dashboard, materials, works)
+│       ├── hooks/              # Student state management
+│       └── lib/                # Student API client
+├── content/                    # MDX content (bilingual)
+│   ├── events/                 # Event posts (en/hy)
+│   ├── materials/              # Learning material posts (en/hy)
+│   └── projects/               # Project posts (en/hy)
 ├── contexts/
-│   └── language-context.tsx  # i18n context
+│   ├── language-context.tsx    # i18n context (EN/HY)
+│   └── student-auth-context.tsx # Student auth state
 ├── lib/
-│   ├── events.ts         # Events data
-│   ├── projects.ts       # Projects data
-│   ├── translations.ts   # Translation strings
-│   ├── supabase.ts       # Database client
-│   └── validations.ts    # Zod schemas
-├── public/               # Static assets
-├── types/                # TypeScript type definitions
-└── contentlayer.config.ts # Contentlayer configuration
+│   ├── admin-auth.ts           # Admin session management
+│   ├── student-auth.ts         # Student session management
+│   ├── supabase.ts             # Database client & types
+│   ├── translations.ts         # Translation strings
+│   ├── validations.ts          # Zod schemas
+│   ├── email.ts                # Resend email service
+│   ├── api/                    # Shared API logic
+│   ├── supabase-schema.sql     # Main database schema
+│   └── student-portal-schema.sql # Student portal schema
+├── hooks/                      # Shared React hooks
+├── tests/
+│   ├── api/                    # API unit tests
+│   └── e2e/                    # End-to-end tests
+├── scripts/                    # Build & QA scripts
+├── public/                     # Static assets
+├── types/                      # TypeScript type definitions
+└── contentlayer.config.ts      # Contentlayer configuration
 ```
+
+---
+
+## Student Portal
+
+The student portal provides an authenticated experience for enrolled students:
+
+- **Dashboard** — Overview of progress, assigned materials, submitted works, and notifications
+- **Materials** — Browse assigned learning materials, track progress (%, score, time spent), filter by status
+- **Works** — Upload work submissions, view admin feedback, track review status (submitted / reviewed / needs revision / approved)
+- **Settings** — Change password, view profile information
+- **Notifications** — Alerts for material assignments, feedback, work reviews, and announcements
+
+## Admin Dashboard
+
+Admins can manage the makerspace through:
+
+- **Student Management** — Create, edit, delete student accounts; reset passwords
+- **Material Assignment** — Assign/unassign learning materials to students; bulk assignment support
+- **Work Review** — Review student submissions with feedback; download uploaded files
+- **Submissions** — Track and manage application, support, and contact form submissions
+- **Announcements** — Send notifications to all students
+- **Statistics** — Dashboard overview of student activity and submission counts
 
 ---
 
