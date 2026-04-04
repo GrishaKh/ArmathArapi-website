@@ -10,7 +10,6 @@ export const translations = {
     joinAsStudent: "Join as a Student",
     supportArmath: "Support Armath",
     contact: "Contact",
-    edukitPitch: "EduKit Pitch",
     more: "More",
 
     // Team member names
@@ -375,7 +374,6 @@ export const translations = {
     joinAsStudent: "Միացեք",
     supportArmath: "Աջակցություն",
     contact: "Կապ",
-    edukitPitch: "EduKit Ներկայացում",
     more: "Ավելին",
 
     // Team member names
