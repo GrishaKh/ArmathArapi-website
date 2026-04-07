@@ -346,6 +346,87 @@
   }
   .partner-footer img { height: 36px; opacity: 0.5; }
 
+  /* ======= 3D KIT ANIMATION ======= */
+  .kit-3d-scene {
+    perspective: 900px;
+    width: 360px; height: 380px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .kit-3d-container {
+    width: 260px; height: 340px;
+    transform-style: preserve-3d;
+    animation: kitRotate 12s ease-in-out infinite;
+    position: relative;
+  }
+  @keyframes kitRotate {
+    0%, 100% { transform: rotateY(-8deg) rotateX(5deg); }
+    25% { transform: rotateY(8deg) rotateX(2deg); }
+    50% { transform: rotateY(-4deg) rotateX(-3deg); }
+    75% { transform: rotateY(10deg) rotateX(4deg); }
+  }
+  .kit-layer {
+    position: absolute; left: 0; width: 100%;
+    border-radius: 16px; padding: 18px;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease;
+    box-shadow: 0 8px 32px rgba(16,6,159,0.1), 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .kit-3d-container:hover .kit-layer-guide { transform: translateZ(60px) translateY(-20px); }
+  .kit-3d-container:hover .kit-layer-hardware { transform: translateZ(30px); }
+  .kit-3d-container:hover .kit-layer-platform { transform: translateZ(0) translateY(20px); }
+  .kit-layer-guide {
+    top: 0; background: linear-gradient(135deg, #fff, #f0faf9);
+    border: 1.5px solid #b2ebe7; height: 100px; z-index: 3;
+    animation: floatGuide 6s ease-in-out infinite;
+  }
+  @keyframes floatGuide {
+    0%, 100% { transform: translateZ(40px) translateY(0); }
+    50% { transform: translateZ(40px) translateY(-8px); }
+  }
+  .kit-layer-hardware {
+    top: 115px; background: linear-gradient(135deg, #fff, #f8f9ff);
+    border: 1.5px solid #c7c3f0; height: 120px; z-index: 2;
+    animation: floatHardware 6s ease-in-out infinite 0.5s;
+  }
+  @keyframes floatHardware {
+    0%, 100% { transform: translateZ(20px) translateY(0); }
+    50% { transform: translateZ(20px) translateY(-6px); }
+  }
+  .kit-layer-platform {
+    top: 250px; background: linear-gradient(135deg, #fff, #f9fcf0);
+    border: 1.5px solid #dde6a0; height: 90px; z-index: 1;
+    animation: floatPlatform 6s ease-in-out infinite 1s;
+  }
+  @keyframes floatPlatform {
+    0%, 100% { transform: translateZ(0) translateY(0); }
+    50% { transform: translateZ(0) translateY(-4px); }
+  }
+  .kit-layer-title {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; margin-bottom: 6px;
+  }
+  .kit-layer-desc { font-size: 11px; color: var(--gray); line-height: 1.4; }
+  .kit-layer-guide .kit-layer-title { color: var(--teal); }
+  .kit-layer-hardware .kit-layer-title { color: var(--navy); }
+  .kit-layer-platform .kit-layer-title { color: #9CA000; }
+  .kit-components { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .kit-chip {
+    padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 600;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .kit-chip-esp { background: #e6faf9; color: #00B2A9; border: 1px solid #b2ebe7; }
+  .kit-chip-pm { background: #fef8e0; color: #FF8F1C; border: 1px solid #ffd699; }
+  .kit-chip-co2 { background: #fce7f0; color: #EF3340; border: 1px solid #f5b3be; }
+  .kit-chip-board { background: #f0f9e0; color: #9CA000; border: 1px solid #dde6a0; }
+  .kit-connector {
+    position: absolute; left: 50%; width: 2px;
+    border-left: 2px dashed rgba(16,6,159,0.15); z-index: 0;
+  }
+  .kit-connector-1 { top: 100px; height: 15px; }
+  .kit-connector-2 { top: 235px; height: 15px; }
+  .kit-guide-lines { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+  .kit-guide-line { height: 3px; border-radius: 2px; background: #b2ebe7; }
+
   /* ======= RESPONSIVE: TABLET (max-width: 1024px) ======= */
   @media (max-width: 1024px) {
     .slide { padding: 50px 40px; overflow-y: auto; }
@@ -409,6 +490,14 @@
     .solution-features li { font-size: 14px; gap: 10px; }
     .check-circle { width: 22px; height: 22px; min-width: 22px; }
     .solution-layout svg[width="360"] { width: 100%; height: auto; max-width: 280px; }
+    .kit-3d-scene { width: 100%; height: 320px; }
+    .kit-3d-container { width: 220px; height: 300px; }
+    .kit-layer { padding: 14px; }
+    .kit-layer-guide { height: 85px; }
+    .kit-layer-hardware { top: 100px; height: 105px; }
+    .kit-layer-platform { top: 218px; height: 80px; }
+    .kit-connector-1 { top: 85px; }
+    .kit-connector-2 { top: 205px; }
 
     /* Slide 4: Value Chain */
     .how-steps { flex-direction: column; gap: 12px; }
@@ -494,6 +583,18 @@
     .slide-cta h2 { font-size: 24px; }
     .slide-cta p { font-size: 14px; }
 
+    .kit-3d-scene { height: 280px; }
+    .kit-3d-container { width: 200px; height: 270px; }
+    .kit-layer { padding: 12px; }
+    .kit-layer-title { font-size: 9px; }
+    .kit-layer-desc { font-size: 10px; }
+    .kit-layer-guide { height: 75px; }
+    .kit-layer-hardware { top: 88px; height: 95px; }
+    .kit-layer-platform { top: 196px; height: 72px; }
+    .kit-connector-1 { top: 75px; height: 13px; }
+    .kit-connector-2 { top: 183px; height: 13px; }
+    .kit-chip { font-size: 8px; padding: 2px 6px; }
+
     .team-card { padding: 18px 14px; gap: 12px; }
     .team-avatar { width: 48px; height: 48px; min-width: 48px; font-size: 18px; }
 
@@ -536,12 +637,13 @@
     <div class="problems-grid">
       <div class="problem-card">
         <div class="problem-icon" style="background:#e6faf9">
-          <!-- LED icon - teal -->
+          <!-- Language barrier icon -->
           <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
-            <path d="M15 4C11 4 8 7 8 11V16H10V20H20V16H22V11C22 7 19 4 15 4Z" fill="#00B2A9" opacity="0.2" stroke="#00B2A9" stroke-width="1.5"/>
-            <line x1="12" y1="20" x2="12" y2="26" stroke="#00B2A9" stroke-width="2" stroke-linecap="round"/>
-            <line x1="18" y1="20" x2="18" y2="26" stroke="#00B2A9" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="15" cy="9" r="2" fill="#00B2A9" opacity="0.4"/>
+            <circle cx="15" cy="13" r="8" stroke="#00B2A9" stroke-width="1.5" fill="#00B2A9" fill-opacity="0.15"/>
+            <path d="M7 13h16M15 5c-2.5 3-4 5.5-4 8s1.5 5 4 8c2.5-3 4-5.5 4-8s-1.5-5-4-8z" stroke="#00B2A9" stroke-width="1.5" fill="none"/>
+            <path d="M10 24l2-3h6l2 3" stroke="#00B2A9" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+            <line x1="20" y1="22" x2="22" y2="24" stroke="#EF3340" stroke-width="2" stroke-linecap="round"/>
+            <line x1="22" y1="22" x2="20" y2="24" stroke="#EF3340" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
         <div>
@@ -551,12 +653,13 @@
       </div>
       <div class="problem-card">
         <div class="problem-icon" style="background:#fef8e0">
-          <!-- LED icon - orange -->
+          <!-- Missing infrastructure / toolkit icon -->
           <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
-            <path d="M15 4C11 4 8 7 8 11V16H10V20H20V16H22V11C22 7 19 4 15 4Z" fill="#FF8F1C" opacity="0.2" stroke="#FF8F1C" stroke-width="1.5"/>
-            <line x1="12" y1="20" x2="12" y2="26" stroke="#FF8F1C" stroke-width="2" stroke-linecap="round"/>
-            <line x1="18" y1="20" x2="18" y2="26" stroke="#FF8F1C" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="15" cy="9" r="2" fill="#FF8F1C" opacity="0.4"/>
+            <rect x="5" y="12" width="20" height="14" rx="2" stroke="#FF8F1C" stroke-width="1.5" fill="#FF8F1C" fill-opacity="0.15"/>
+            <path d="M10 12V9a5 5 0 0 1 10 0v3" stroke="#FF8F1C" stroke-width="1.5" fill="none"/>
+            <rect x="9" y="16" width="5" height="4" rx="1" fill="#FF8F1C" opacity="0.4"/>
+            <rect x="16" y="16" width="5" height="4" rx="1" fill="#FF8F1C" opacity="0.4"/>
+            <rect x="12" y="22" width="6" height="2" rx="1" fill="#FF8F1C" opacity="0.3"/>
           </svg>
         </div>
         <div>
@@ -566,12 +669,12 @@
       </div>
       <div class="problem-card">
         <div class="problem-icon" style="background:#fce7f0">
-          <!-- LED icon - red -->
+          <!-- Declining interest / chart down icon -->
           <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
-            <path d="M15 4C11 4 8 7 8 11V16H10V20H20V16H22V11C22 7 19 4 15 4Z" fill="#EF3340" opacity="0.2" stroke="#EF3340" stroke-width="1.5"/>
-            <line x1="12" y1="20" x2="12" y2="26" stroke="#EF3340" stroke-width="2" stroke-linecap="round"/>
-            <line x1="18" y1="20" x2="18" y2="26" stroke="#EF3340" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="15" cy="9" r="2" fill="#EF3340" opacity="0.4"/>
+            <rect x="4" y="4" width="22" height="22" rx="3" stroke="#EF3340" stroke-width="1.5" fill="#EF3340" fill-opacity="0.1"/>
+            <polyline points="8,10 13,14 17,11 23,20" stroke="#EF3340" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <polygon points="23,20 23,15 18,20" fill="#EF3340" opacity="0.5"/>
+            <circle cx="8" cy="10" r="1.5" fill="#EF3340"/>
           </svg>
         </div>
         <div>
@@ -581,12 +684,13 @@
       </div>
       <div class="problem-card">
         <div class="problem-icon" style="background:#f0f9e0">
-          <!-- LED icon - lime -->
+          <!-- Environmental data gap / cloud with question -->
           <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
-            <path d="M15 4C11 4 8 7 8 11V16H10V20H20V16H22V11C22 7 19 4 15 4Z" fill="#C4D600" opacity="0.2" stroke="#C4D600" stroke-width="1.5"/>
-            <line x1="12" y1="20" x2="12" y2="26" stroke="#C4D600" stroke-width="2" stroke-linecap="round"/>
-            <line x1="18" y1="20" x2="18" y2="26" stroke="#C4D600" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="15" cy="9" r="2" fill="#C4D600" opacity="0.4"/>
+            <path d="M8 20c-2.5 0-4.5-2-4.5-4.5 0-2.2 1.6-4 3.7-4.4C8 8.2 10.8 6 14 6c3.9 0 7 3.1 7 7h.5c2.5 0 4.5 2 4.5 4.5S24 22 21.5 22H8z" stroke="#C4D600" stroke-width="1.5" fill="#C4D600" fill-opacity="0.15"/>
+            <text x="14" y="19" text-anchor="middle" fill="#9CA000" font-family="Inter" font-size="11" font-weight="800">?</text>
+            <circle cx="22" cy="24" r="4" fill="#EF3340" opacity="0.2" stroke="#EF3340" stroke-width="1"/>
+            <line x1="20" y1="22" x2="24" y2="26" stroke="#EF3340" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="24" y1="22" x2="20" y2="26" stroke="#EF3340" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </div>
         <div>
@@ -615,43 +719,64 @@
           <li><span class="check-circle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7L6 10L11 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Citizen Science data collection model</li>
         </ul>
       </div>
-      <div style="display:flex;justify-content:center;align-items:center">
-        <!-- Air quality device SVG -->
-        <svg width="360" height="340" viewBox="0 0 360 340" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="80" y="60" width="200" height="220" rx="20" fill="white" stroke="#E2E8F0" stroke-width="2"/>
-          <rect x="80" y="60" width="200" height="50" rx="20" fill="url(#gSol)"/>
-          <rect x="80" y="90" width="200" height="20" fill="url(#gSol)"/>
-          <text x="180" y="93" text-anchor="middle" fill="white" font-family="Inter" font-size="15" font-weight="700">EduKit Eco-STEM</text>
-          <rect x="105" y="125" width="150" height="80" rx="10" fill="#f0faf9" stroke="#b2ebe7" stroke-width="1.5"/>
-          <rect x="120" y="175" width="16" height="20" rx="3" fill="#00B2A9" opacity="0.6"/>
-          <rect x="142" y="160" width="16" height="35" rx="3" fill="#00B2A9"/>
-          <rect x="164" y="168" width="16" height="27" rx="3" fill="#00B2A9" opacity="0.7"/>
-          <rect x="186" y="150" width="16" height="45" rx="3" fill="#00B2A9" opacity="0.9"/>
-          <rect x="208" y="165" width="16" height="30" rx="3" fill="#C4D600"/>
-          <text x="180" y="143" text-anchor="middle" fill="#00B2A9" font-family="Inter" font-size="10" font-weight="600">PM2.5: 12 ug/m3</text>
-          <!-- LED sensor -->
-          <path d="M140 222C136 222 133 225 133 229V234H135V238H145V234H147V229C147 225 144 222 140 222Z" fill="#FF8F1C" opacity="0.3" stroke="#FF8F1C" stroke-width="1"/>
-          <line x1="137" y1="238" x2="137" y2="250" stroke="#FF8F1C" stroke-width="1.5"/>
-          <line x1="143" y1="238" x2="143" y2="250" stroke="#FF8F1C" stroke-width="1.5"/>
-          <text x="140" y="263" text-anchor="middle" fill="#94A3B8" font-family="Inter" font-size="9" font-weight="500">SENSOR</text>
-          <!-- WiFi -->
-          <circle cx="220" cy="237" r="14" stroke="#94A3B8" stroke-width="1.5" fill="#F8FAFC"/>
-          <path d="M213 240C215 234 218 232 220 232C222 232 225 234 227 240" stroke="#10069F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <path d="M215.5 239C217 235 219 234 220 234C221 234 223 235 224.5 239" stroke="#10069F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-          <circle cx="220" cy="241" r="1.5" fill="#10069F"/>
-          <text x="220" y="263" text-anchor="middle" fill="#94A3B8" font-family="Inter" font-size="9" font-weight="500">WiFi</text>
-          <path d="M30 170 L80 170" stroke="#00B2A9" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.4"/>
-          <path d="M280 170 L330 170" stroke="#C4D600" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.4"/>
-          <!-- Air particles -->
-          <circle cx="45" cy="140" r="4" fill="#FF8F1C" opacity="0.2"/>
-          <circle cx="35" cy="165" r="3" fill="#EF3340" opacity="0.15"/>
-          <circle cx="50" cy="190" r="5" fill="#FF8F1C" opacity="0.15"/>
-          <circle cx="40" cy="155" r="2" fill="#00B2A9" opacity="0.2"/>
-          <!-- Cloud -->
-          <path d="M305 145 Q315 130 330 140 Q345 130 345 145 Q355 145 350 158 Q355 170 340 170 L310 170 Q295 170 300 158 Q290 148 305 145Z" fill="#e6faf9" stroke="#00B2A9" stroke-width="1" opacity="0.7"/>
-          <text x="326" y="162" text-anchor="middle" fill="#00B2A9" font-family="Inter" font-size="8" font-weight="600">CLOUD</text>
-          <defs><linearGradient id="gSol" x1="80" y1="60" x2="280" y2="60"><stop stop-color="#00B2A9"/><stop offset="0.5" stop-color="#10069F"/><stop offset="1" stop-color="#C4D600"/></linearGradient></defs>
-        </svg>
+      <div class="kit-3d-scene">
+        <div class="kit-3d-container">
+          <!-- Dashed connectors -->
+          <div class="kit-connector kit-connector-1"></div>
+          <div class="kit-connector kit-connector-2"></div>
+
+          <!-- Layer 1: The Guide -->
+          <div class="kit-layer kit-layer-guide">
+            <div class="kit-layer-title">The Guide</div>
+            <div class="kit-layer-desc">Armenian-Language Practical Manuals &amp; Methodology</div>
+            <div class="kit-guide-lines">
+              <div class="kit-guide-line" style="width:90%"></div>
+              <div class="kit-guide-line" style="width:70%"></div>
+              <div class="kit-guide-line" style="width:80%"></div>
+            </div>
+          </div>
+
+          <!-- Layer 2: The Hardware -->
+          <div class="kit-layer kit-layer-hardware">
+            <div class="kit-layer-title">The Hardware</div>
+            <div class="kit-layer-desc">ESP32, sensors &amp; electronics in 3D-printed case</div>
+            <div class="kit-components">
+              <span class="kit-chip kit-chip-esp">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="1" y="2" width="8" height="6" rx="1" stroke="currentColor" stroke-width="0.8"/><rect x="3" y="3.5" width="4" height="3" rx="0.5" fill="currentColor" opacity="0.3"/></svg>
+                ESP32
+              </span>
+              <span class="kit-chip kit-chip-pm">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="3.5" stroke="currentColor" stroke-width="0.8"/><circle cx="5" cy="5" r="1.5" fill="currentColor" opacity="0.4"/></svg>
+                PM2.5
+              </span>
+              <span class="kit-chip kit-chip-co2">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 7.5c0-3 2.5-5.5 3-5.5s3 2.5 3 5.5" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg>
+                CO2
+              </span>
+              <span class="kit-chip kit-chip-board">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="1" y="1" width="8" height="8" rx="1" stroke="currentColor" stroke-width="0.8"/><line x1="3" y1="1" x2="3" y2="9" stroke="currentColor" stroke-width="0.5" opacity="0.3"/><line x1="5" y1="1" x2="5" y2="9" stroke="currentColor" stroke-width="0.5" opacity="0.3"/><line x1="7" y1="1" x2="7" y2="9" stroke="currentColor" stroke-width="0.5" opacity="0.3"/></svg>
+                Breadboard
+              </span>
+            </div>
+          </div>
+
+          <!-- Layer 3: The Platform -->
+          <div class="kit-layer kit-layer-platform">
+            <div class="kit-layer-title">The Platform</div>
+            <div class="kit-layer-desc">Open-Source Web Platform for real-time environmental data</div>
+            <div class="kit-components" style="margin-top:6px">
+              <span class="kit-chip kit-chip-esp">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="0.8"/><path d="M3.5 6c0-1.5 1-3 1.5-3s1.5 1.5 1.5 3" stroke="currentColor" stroke-width="0.6"/><line x1="2" y1="5" x2="8" y2="5" stroke="currentColor" stroke-width="0.5"/></svg>
+                Open Data
+              </span>
+              <span class="kit-chip kit-chip-pm">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 7L3 4L5 5.5L7 3L9 4.5" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg>
+                Real-time
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
   </div>
@@ -666,10 +791,11 @@
       <div class="how-step">
         <svg class="step-icon" viewBox="0 0 56 56" fill="none">
           <rect x="8" y="8" width="40" height="40" rx="10" fill="#e6faf9"/>
-          <path d="M28 18C24 18 21 21 21 25V30H23V34H33V30H35V25C35 21 32 18 28 18Z" fill="#00B2A9" opacity="0.3" stroke="#00B2A9" stroke-width="1.5"/>
-          <line x1="25" y1="34" x2="25" y2="42" stroke="#00B2A9" stroke-width="2" stroke-linecap="round"/>
-          <line x1="31" y1="34" x2="31" y2="42" stroke="#00B2A9" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="28" cy="23" r="2" fill="#00B2A9"/>
+          <!-- Student with kit box -->
+          <circle cx="28" cy="18" r="5" stroke="#00B2A9" stroke-width="1.5" fill="#00B2A9" fill-opacity="0.2"/>
+          <path d="M20 38c0-5 3.5-9 8-9s8 4 8 9" stroke="#00B2A9" stroke-width="1.5" fill="none"/>
+          <rect x="24" y="28" width="8" height="7" rx="1.5" stroke="#00B2A9" stroke-width="1.5" fill="#00B2A9" fill-opacity="0.15"/>
+          <path d="M26 31h4" stroke="#00B2A9" stroke-width="1" stroke-linecap="round"/>
         </svg>
         <div class="step-number" style="background:#00B2A9">1</div>
         <h3>Student Gets Kit</h3>
@@ -678,10 +804,13 @@
       <div class="how-step">
         <svg class="step-icon" viewBox="0 0 56 56" fill="none">
           <rect x="8" y="8" width="40" height="40" rx="10" fill="#fef8e0"/>
-          <path d="M28 18C24 18 21 21 21 25V30H23V34H33V30H35V25C35 21 32 18 28 18Z" fill="#FF8F1C" opacity="0.3" stroke="#FF8F1C" stroke-width="1.5"/>
-          <line x1="25" y1="34" x2="25" y2="42" stroke="#FF8F1C" stroke-width="2" stroke-linecap="round"/>
-          <line x1="31" y1="34" x2="31" y2="42" stroke="#FF8F1C" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="28" cy="23" r="2" fill="#FF8F1C"/>
+          <!-- Teacher with whiteboard -->
+          <rect x="18" y="14" width="20" height="14" rx="2" stroke="#FF8F1C" stroke-width="1.5" fill="#FF8F1C" fill-opacity="0.15"/>
+          <line x1="22" y1="19" x2="34" y2="19" stroke="#FF8F1C" stroke-width="1" stroke-linecap="round"/>
+          <line x1="22" y1="22" x2="30" y2="22" stroke="#FF8F1C" stroke-width="1" stroke-linecap="round"/>
+          <line x1="22" y1="25" x2="32" y2="25" stroke="#FF8F1C" stroke-width="1" stroke-linecap="round"/>
+          <circle cx="22" cy="36" r="4" stroke="#FF8F1C" stroke-width="1.5" fill="#FF8F1C" fill-opacity="0.2"/>
+          <path d="M16 46c0-3.5 2.7-6 6-6s6 2.5 6 6" stroke="#FF8F1C" stroke-width="1.5" fill="none"/>
         </svg>
         <div class="step-number" style="background:#FF8F1C">2</div>
         <h3>Teacher Gets Methods</h3>
@@ -690,10 +819,13 @@
       <div class="how-step">
         <svg class="step-icon" viewBox="0 0 56 56" fill="none">
           <rect x="8" y="8" width="40" height="40" rx="10" fill="#fce7f0"/>
-          <path d="M28 18C24 18 21 21 21 25V30H23V34H33V30H35V25C35 21 32 18 28 18Z" fill="#EF3340" opacity="0.3" stroke="#EF3340" stroke-width="1.5"/>
-          <line x1="25" y1="34" x2="25" y2="42" stroke="#EF3340" stroke-width="2" stroke-linecap="round"/>
-          <line x1="31" y1="34" x2="31" y2="42" stroke="#EF3340" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="28" cy="23" r="2" fill="#EF3340"/>
+          <!-- People / hands working together -->
+          <circle cx="21" cy="20" r="4" stroke="#EF3340" stroke-width="1.5" fill="#EF3340" fill-opacity="0.2"/>
+          <circle cx="35" cy="20" r="4" stroke="#EF3340" stroke-width="1.5" fill="#EF3340" fill-opacity="0.2"/>
+          <path d="M14 34c0-4 3-7 7-7h2" stroke="#EF3340" stroke-width="1.5" fill="none"/>
+          <path d="M42 34c0-4-3-7-7-7h-2" stroke="#EF3340" stroke-width="1.5" fill="none"/>
+          <path d="M24 30l4 4 4-4" stroke="#EF3340" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <rect x="22" y="36" width="12" height="6" rx="2" stroke="#EF3340" stroke-width="1.5" fill="#EF3340" fill-opacity="0.15"/>
         </svg>
         <div class="step-number" style="background:#EF3340">3</div>
         <h3>Vulnerable Groups Get Work</h3>
@@ -702,10 +834,13 @@
       <div class="how-step">
         <svg class="step-icon" viewBox="0 0 56 56" fill="none">
           <rect x="8" y="8" width="40" height="40" rx="10" fill="#f0f9e0"/>
-          <path d="M28 18C24 18 21 21 21 25V30H23V34H33V30H35V25C35 21 32 18 28 18Z" fill="#C4D600" opacity="0.3" stroke="#C4D600" stroke-width="1.5"/>
-          <line x1="25" y1="34" x2="25" y2="42" stroke="#C4D600" stroke-width="2" stroke-linecap="round"/>
-          <line x1="31" y1="34" x2="31" y2="42" stroke="#C4D600" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="28" cy="23" r="2" fill="#C4D600"/>
+          <!-- Data / map chart icon -->
+          <rect x="14" y="14" width="28" height="22" rx="3" stroke="#C4D600" stroke-width="1.5" fill="#C4D600" fill-opacity="0.15"/>
+          <polyline points="18,30 23,24 27,27 32,20 38,23" stroke="#C4D600" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="23" cy="24" r="1.5" fill="#C4D600"/>
+          <circle cx="32" cy="20" r="1.5" fill="#C4D600"/>
+          <circle cx="28" cy="40" r="3" stroke="#C4D600" stroke-width="1.5" fill="#C4D600" fill-opacity="0.3"/>
+          <path d="M28 37c0 0-5 5-5 7.5a5 5 0 0 0 10 0c0-2.5-5-7.5-5-7.5z" stroke="#C4D600" stroke-width="1" fill="#C4D600" fill-opacity="0.15"/>
         </svg>
         <div class="step-number" style="background:#C4D600">4</div>
         <h3>Community Gets Data</h3>
@@ -851,16 +986,43 @@
           <circle cx="190" cy="170" r="30" fill="#10069F"/>
           <text x="190" y="166" text-anchor="middle" fill="white" font-family="Inter" font-size="9" font-weight="700">DATA</text>
           <text x="190" y="178" text-anchor="middle" fill="white" font-family="Inter" font-size="9" font-weight="700">HUB</text>
-          <!-- Sensor nodes as LEDs -->
-          <circle cx="140" cy="120" r="14" fill="#00B2A9" opacity="0.85"/><text x="140" y="124" text-anchor="middle" fill="white" font-family="Inter" font-size="8" font-weight="600">S1</text>
-          <circle cx="240" cy="100" r="14" fill="#FF8F1C" opacity="0.85"/><text x="240" y="104" text-anchor="middle" fill="white" font-family="Inter" font-size="8" font-weight="600">S2</text>
-          <circle cx="130" cy="210" r="14" fill="#C4D600" opacity="0.85"/><text x="130" y="214" text-anchor="middle" fill="white" font-family="Inter" font-size="8" font-weight="600">S3</text>
-          <circle cx="260" cy="220" r="14" fill="#00B2A9" opacity="0.85"/><text x="260" y="224" text-anchor="middle" fill="white" font-family="Inter" font-size="8" font-weight="600">S4</text>
-          <circle cx="190" cy="80" r="14" fill="#FF8F1C" opacity="0.85"/><text x="190" y="84" text-anchor="middle" fill="white" font-family="Inter" font-size="8" font-weight="600">S5</text>
-          <circle cx="100" cy="170" r="14" fill="#C4D600" opacity="0.85"/><text x="100" y="174" text-anchor="middle" fill="white" font-family="Inter" font-size="8" font-weight="600">S6</text>
-          <circle cx="280" cy="160" r="14" fill="#00B2A9" opacity="0.85"/><text x="280" y="164" text-anchor="middle" fill="white" font-family="Inter" font-size="8" font-weight="600">S7</text>
-          <circle cx="170" cy="260" r="14" fill="#FF8F1C" opacity="0.6"/><text x="170" y="264" text-anchor="middle" fill="white" font-family="Inter" font-size="8" font-weight="600">S8</text>
-          <circle cx="230" cy="270" r="14" fill="#C4D600" opacity="0.6"/><text x="230" y="274" text-anchor="middle" fill="white" font-family="Inter" font-size="8" font-weight="600">S9</text>
+          <!-- Sensor nodes as mini devices -->
+          <g class="sensor-node">
+            <circle cx="140" cy="120" r="16" fill="white" stroke="#00B2A9" stroke-width="1.5"/><circle cx="140" cy="120" r="20" fill="#00B2A9" opacity="0.08"><animate attributeName="r" values="16;24;16" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.12;0;0.12" dur="3s" repeatCount="indefinite"/></circle>
+            <rect x="133" y="114" width="14" height="10" rx="2" fill="#e6faf9" stroke="#00B2A9" stroke-width="1"/><rect x="136" y="117" width="4" height="4" rx="0.5" fill="#00B2A9" opacity="0.6"/><circle cx="143" cy="119" r="1.5" fill="#00B2A9"/>
+          </g>
+          <g class="sensor-node">
+            <circle cx="240" cy="100" r="16" fill="white" stroke="#FF8F1C" stroke-width="1.5"/><circle cx="240" cy="100" r="20" fill="#FF8F1C" opacity="0.08"><animate attributeName="r" values="16;24;16" dur="3.5s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.12;0;0.12" dur="3.5s" repeatCount="indefinite"/></circle>
+            <rect x="233" y="94" width="14" height="10" rx="2" fill="#fef8e0" stroke="#FF8F1C" stroke-width="1"/><rect x="236" y="97" width="4" height="4" rx="0.5" fill="#FF8F1C" opacity="0.6"/><circle cx="243" cy="99" r="1.5" fill="#FF8F1C"/>
+          </g>
+          <g class="sensor-node">
+            <circle cx="130" cy="210" r="16" fill="white" stroke="#C4D600" stroke-width="1.5"/><circle cx="130" cy="210" r="20" fill="#C4D600" opacity="0.08"><animate attributeName="r" values="16;24;16" dur="2.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.12;0;0.12" dur="2.8s" repeatCount="indefinite"/></circle>
+            <rect x="123" y="204" width="14" height="10" rx="2" fill="#f0f9e0" stroke="#C4D600" stroke-width="1"/><rect x="126" y="207" width="4" height="4" rx="0.5" fill="#C4D600" opacity="0.6"/><circle cx="133" cy="209" r="1.5" fill="#C4D600"/>
+          </g>
+          <g class="sensor-node">
+            <circle cx="260" cy="220" r="16" fill="white" stroke="#00B2A9" stroke-width="1.5"/><circle cx="260" cy="220" r="20" fill="#00B2A9" opacity="0.08"><animate attributeName="r" values="16;24;16" dur="3.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.12;0;0.12" dur="3.2s" repeatCount="indefinite"/></circle>
+            <rect x="253" y="214" width="14" height="10" rx="2" fill="#e6faf9" stroke="#00B2A9" stroke-width="1"/><rect x="256" y="217" width="4" height="4" rx="0.5" fill="#00B2A9" opacity="0.6"/><circle cx="263" cy="219" r="1.5" fill="#00B2A9"/>
+          </g>
+          <g class="sensor-node">
+            <circle cx="190" cy="80" r="16" fill="white" stroke="#FF8F1C" stroke-width="1.5"/><circle cx="190" cy="80" r="20" fill="#FF8F1C" opacity="0.08"><animate attributeName="r" values="16;24;16" dur="3.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.12;0;0.12" dur="3.8s" repeatCount="indefinite"/></circle>
+            <rect x="183" y="74" width="14" height="10" rx="2" fill="#fef8e0" stroke="#FF8F1C" stroke-width="1"/><rect x="186" y="77" width="4" height="4" rx="0.5" fill="#FF8F1C" opacity="0.6"/><circle cx="193" cy="79" r="1.5" fill="#FF8F1C"/>
+          </g>
+          <g class="sensor-node">
+            <circle cx="100" cy="170" r="16" fill="white" stroke="#C4D600" stroke-width="1.5"/><circle cx="100" cy="170" r="20" fill="#C4D600" opacity="0.08"><animate attributeName="r" values="16;24;16" dur="2.5s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.12;0;0.12" dur="2.5s" repeatCount="indefinite"/></circle>
+            <rect x="93" y="164" width="14" height="10" rx="2" fill="#f0f9e0" stroke="#C4D600" stroke-width="1"/><rect x="96" y="167" width="4" height="4" rx="0.5" fill="#C4D600" opacity="0.6"/><circle cx="103" cy="169" r="1.5" fill="#C4D600"/>
+          </g>
+          <g class="sensor-node">
+            <circle cx="280" cy="160" r="16" fill="white" stroke="#00B2A9" stroke-width="1.5"/><circle cx="280" cy="160" r="20" fill="#00B2A9" opacity="0.08"><animate attributeName="r" values="16;24;16" dur="3.3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.12;0;0.12" dur="3.3s" repeatCount="indefinite"/></circle>
+            <rect x="273" y="154" width="14" height="10" rx="2" fill="#e6faf9" stroke="#00B2A9" stroke-width="1"/><rect x="276" y="157" width="4" height="4" rx="0.5" fill="#00B2A9" opacity="0.6"/><circle cx="283" cy="159" r="1.5" fill="#00B2A9"/>
+          </g>
+          <g class="sensor-node" opacity="0.65">
+            <circle cx="170" cy="260" r="16" fill="white" stroke="#FF8F1C" stroke-width="1.5"/><circle cx="170" cy="260" r="20" fill="#FF8F1C" opacity="0.06"><animate attributeName="r" values="16;24;16" dur="4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.08;0;0.08" dur="4s" repeatCount="indefinite"/></circle>
+            <rect x="163" y="254" width="14" height="10" rx="2" fill="#fef8e0" stroke="#FF8F1C" stroke-width="1"/><rect x="166" y="257" width="4" height="4" rx="0.5" fill="#FF8F1C" opacity="0.6"/><circle cx="173" cy="259" r="1.5" fill="#FF8F1C"/>
+          </g>
+          <g class="sensor-node" opacity="0.65">
+            <circle cx="230" cy="270" r="16" fill="white" stroke="#C4D600" stroke-width="1.5"/><circle cx="230" cy="270" r="20" fill="#C4D600" opacity="0.06"><animate attributeName="r" values="16;24;16" dur="3.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.08;0;0.08" dur="3.6s" repeatCount="indefinite"/></circle>
+            <rect x="223" y="264" width="14" height="10" rx="2" fill="#f0f9e0" stroke="#C4D600" stroke-width="1"/><rect x="226" y="267" width="4" height="4" rx="0.5" fill="#C4D600" opacity="0.6"/><circle cx="233" cy="269" r="1.5" fill="#C4D600"/>
+          </g>
           <rect x="110" y="305" width="160" height="28" rx="14" fill="white" stroke="#b2ebe7" stroke-width="1"/>
           <circle cx="130" cy="319" r="5" fill="#00B2A9"/><text x="140" y="323" fill="#5A6578" font-family="Inter" font-size="10" font-weight="500">Community Sensor Network</text>
         </svg>
