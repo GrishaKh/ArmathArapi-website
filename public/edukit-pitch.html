@@ -346,111 +346,6 @@
   }
   .partner-footer img { height: 36px; opacity: 0.5; }
 
-  /* ======= UNBOXING ANIMATION ======= */
-  .unbox-scene {
-    position: relative; width: 380px; height: 400px;
-    display: flex; align-items: flex-end; justify-content: center;
-  }
-  /* The box */
-  .unbox-box {
-    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 180px; height: 120px; z-index: 10;
-  }
-  .unbox-box-body {
-    width: 100%; height: 100%;
-    background: linear-gradient(145deg, #10069F 0%, #1a10c0 100%);
-    border-radius: 10px 10px 14px 14px;
-    position: relative; overflow: hidden;
-    box-shadow: 0 8px 30px rgba(16,6,159,0.35);
-  }
-  .unbox-box-body::after {
-    content: ''; position: absolute; top: 0; left: 50%;
-    transform: translateX(-50%); width: 20px; height: 100%;
-    background: rgba(0,178,169,0.25);
-  }
-  .unbox-box-label {
-    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
-    color: white; font-size: 11px; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; white-space: nowrap; opacity: 0.7;
-  }
-  /* Lid */
-  .unbox-lid {
-    position: absolute; bottom: 110px; left: 50%; transform: translateX(-50%);
-    width: 192px; height: 26px; z-index: 20;
-    background: linear-gradient(145deg, #1a10c0, #2218d4);
-    border-radius: 8px 8px 0 0;
-    box-shadow: 0 -4px 16px rgba(16,6,159,0.2);
-    transition: all 1s cubic-bezier(0.23,1,0.32,1);
-    transform-origin: left bottom;
-  }
-  .unbox-lid::after {
-    content: ''; position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%,-50%); width: 30px; height: 6px;
-    background: rgba(0,178,169,0.4); border-radius: 3px;
-  }
-  .slide-solution.active .unbox-lid {
-    transform: translateX(-50%) rotateX(-120deg) translateY(-30px);
-    opacity: 0.3;
-  }
-  /* Flying items */
-  .unbox-item {
-    position: absolute; left: 50%; bottom: 60px;
-    transform: translateX(-50%) translateY(40px) scale(0.5);
-    opacity: 0; z-index: 15;
-    transition: all 0.9s cubic-bezier(0.23,1,0.32,1);
-    pointer-events: none;
-  }
-  .unbox-item-card {
-    background: white; border-radius: 14px; padding: 16px 18px;
-    box-shadow: 0 10px 40px rgba(16,6,159,0.12), 0 2px 10px rgba(0,0,0,0.06);
-    border: 1.5px solid #E2E8F0;
-    display: flex; align-items: center; gap: 14px;
-    width: 260px;
-    backdrop-filter: blur(8px);
-  }
-  .unbox-item-icon {
-    width: 48px; height: 48px; min-width: 48px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .unbox-item-card h4 {
-    font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 3px;
-  }
-  .unbox-item-card p {
-    font-size: 11px; color: var(--gray); line-height: 1.45;
-  }
-  /* Item positions when revealed */
-  .slide-solution.active .unbox-item.revealed {
-    opacity: 1; transform: translateX(-50%) translateY(0) scale(1);
-    pointer-events: auto;
-  }
-  .slide-solution.active .unbox-item:nth-child(2) { bottom: 310px; transition-delay: 0.8s; }
-  .slide-solution.active .unbox-item:nth-child(3) { bottom: 248px; transition-delay: 1.4s; }
-  .slide-solution.active .unbox-item:nth-child(4) { bottom: 186px; transition-delay: 2.0s; }
-  .slide-solution.active .unbox-item:nth-child(5) { bottom: 124px; transition-delay: 2.6s; }
-
-  /* Glow pulse from box */
-  .unbox-glow {
-    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-    width: 140px; height: 60px; border-radius: 50%;
-    background: radial-gradient(ellipse, rgba(0,178,169,0.25) 0%, transparent 70%);
-    z-index: 9; opacity: 0;
-    transition: opacity 0.6s ease 0.3s;
-  }
-  .slide-solution.active .unbox-glow { opacity: 1; animation: glowPulse 2s ease-in-out infinite; }
-  @keyframes glowPulse {
-    0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.6; }
-    50% { transform: translateX(-50%) scale(1.3); opacity: 1; }
-  }
-
-  /* Item number badge */
-  .unbox-badge {
-    position: absolute; top: -6px; left: -6px;
-    width: 22px; height: 22px; border-radius: 50%;
-    font-size: 10px; font-weight: 800; color: white;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  }
-
   /* ======= RESPONSIVE: TABLET (max-width: 1024px) ======= */
   @media (max-width: 1024px) {
     .slide { padding: 50px 40px; overflow-y: auto; }
@@ -514,10 +409,6 @@
     .solution-features li { font-size: 14px; gap: 10px; }
     .check-circle { width: 22px; height: 22px; min-width: 22px; }
     .solution-layout svg[width="360"] { width: 100%; height: auto; max-width: 280px; }
-    .unbox-scene { width: 100%; height: 360px; }
-    .unbox-item-card { width: 230px; padding: 12px 14px; }
-    .unbox-item-card h4 { font-size: 12px; }
-    .unbox-item-card p { font-size: 10px; }
 
     /* Slide 4: Value Chain */
     .how-steps { flex-direction: column; gap: 12px; }
@@ -602,19 +493,6 @@
 
     .slide-cta h2 { font-size: 24px; }
     .slide-cta p { font-size: 14px; }
-
-    .unbox-scene { height: 320px; }
-    .unbox-box { width: 140px; height: 95px; }
-    .unbox-lid { width: 152px; height: 22px; bottom: 87px; }
-    .unbox-item-card { width: 200px; padding: 10px 12px; gap: 10px; }
-    .unbox-item-icon { width: 38px; height: 38px; min-width: 38px; }
-    .unbox-item-card h4 { font-size: 11px; }
-    .unbox-item-card p { font-size: 9.5px; }
-    .unbox-badge { width: 18px; height: 18px; font-size: 8px; }
-    .slide-solution.active .unbox-item:nth-child(2) { bottom: 260px; }
-    .slide-solution.active .unbox-item:nth-child(3) { bottom: 208px; }
-    .slide-solution.active .unbox-item:nth-child(4) { bottom: 156px; }
-    .slide-solution.active .unbox-item:nth-child(5) { bottom: 104px; }
 
     .team-card { padding: 18px 14px; gap: 12px; }
     .team-avatar { width: 48px; height: 48px; min-width: 48px; font-size: 18px; }
@@ -740,76 +618,43 @@
           <li><span class="check-circle"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7L6 10L11 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Citizen Science data collection model</li>
         </ul>
       </div>
-      <div class="unbox-scene" id="unboxScene">
-        <!-- Glow effect under box -->
-        <div class="unbox-glow"></div>
-
-        <!-- Box lid (flies open) -->
-        <div class="unbox-lid"></div>
-
-        <!-- Box body -->
-        <div class="unbox-box">
-          <div class="unbox-box-body">
-            <div class="unbox-box-label">EduKit</div>
-          </div>
-        </div>
-
-        <!-- Item 1: Armenian Guide Manual -->
-        <div class="unbox-item" data-unbox="1">
-          <div class="unbox-item-card">
-            <div class="unbox-badge" style="background:var(--teal)">1</div>
-            <div class="unbox-item-icon" style="background:#e6faf9">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="5" y="3" width="18" height="22" rx="2.5" stroke="#00B2A9" stroke-width="1.5" fill="#00B2A9" fill-opacity="0.1"/><path d="M9 8h10M9 12h8M9 16h6" stroke="#00B2A9" stroke-width="1.2" stroke-linecap="round"/><rect x="17" y="15" width="4" height="5" rx="1" fill="#00B2A9" opacity="0.2"/></svg>
-            </div>
-            <div>
-              <h4>Armenian-Language Guide</h4>
-              <p>Step-by-step practical manuals &amp; methodology</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Item 2: ESP32 Microcontroller -->
-        <div class="unbox-item" data-unbox="2">
-          <div class="unbox-item-card">
-            <div class="unbox-badge" style="background:var(--navy)">2</div>
-            <div class="unbox-item-icon" style="background:#eee8ff">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="6" y="8" width="16" height="12" rx="2" stroke="#10069F" stroke-width="1.5" fill="#10069F" fill-opacity="0.08"/><rect x="10" y="11" width="8" height="6" rx="1" fill="#10069F" opacity="0.15" stroke="#10069F" stroke-width="0.8"/><line x1="8" y1="8" x2="8" y2="5" stroke="#10069F" stroke-width="1.2"/><line x1="12" y1="8" x2="12" y2="5" stroke="#10069F" stroke-width="1.2"/><line x1="16" y1="8" x2="16" y2="5" stroke="#10069F" stroke-width="1.2"/><line x1="20" y1="8" x2="20" y2="5" stroke="#10069F" stroke-width="1.2"/><line x1="8" y1="20" x2="8" y2="23" stroke="#10069F" stroke-width="1.2"/><line x1="12" y1="20" x2="12" y2="23" stroke="#10069F" stroke-width="1.2"/><line x1="16" y1="20" x2="16" y2="23" stroke="#10069F" stroke-width="1.2"/><line x1="20" y1="20" x2="20" y2="23" stroke="#10069F" stroke-width="1.2"/><circle cx="14" cy="14" r="2" fill="#00B2A9" opacity="0.5"/></svg>
-            </div>
-            <div>
-              <h4>ESP32 Microcontroller</h4>
-              <p>WiFi-enabled brain of the device</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Item 3: PM2.5 & CO2 Sensors -->
-        <div class="unbox-item" data-unbox="3">
-          <div class="unbox-item-card">
-            <div class="unbox-badge" style="background:var(--orange)">3</div>
-            <div class="unbox-item-icon" style="background:#fef8e0">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="9" stroke="#FF8F1C" stroke-width="1.5" fill="#FF8F1C" fill-opacity="0.08"/><circle cx="14" cy="14" r="4" stroke="#FF8F1C" stroke-width="1" fill="#FF8F1C" fill-opacity="0.15"/><circle cx="14" cy="14" r="1.5" fill="#FF8F1C"/><path d="M14 5v3M14 20v3M5 14h3M20 14h3" stroke="#FF8F1C" stroke-width="1" stroke-linecap="round"/></svg>
-            </div>
-            <div>
-              <h4>PM2.5 &amp; CO2 Sensors</h4>
-              <p>Environmental monitoring modules</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Item 4: Breadboard & Electronics -->
-        <div class="unbox-item" data-unbox="4">
-          <div class="unbox-item-card">
-            <div class="unbox-badge" style="background:var(--lime)">4</div>
-            <div class="unbox-item-icon" style="background:#f0f9e0">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="7" width="20" height="14" rx="2" stroke="#C4D600" stroke-width="1.5" fill="#C4D600" fill-opacity="0.08"/><circle cx="8" cy="11" r="1" fill="#C4D600"/><circle cx="12" cy="11" r="1" fill="#C4D600"/><circle cx="16" cy="11" r="1" fill="#C4D600"/><circle cx="20" cy="11" r="1" fill="#C4D600"/><circle cx="8" cy="14" r="1" fill="#C4D600" opacity="0.5"/><circle cx="12" cy="14" r="1" fill="#C4D600" opacity="0.5"/><circle cx="16" cy="14" r="1" fill="#C4D600" opacity="0.5"/><circle cx="20" cy="14" r="1" fill="#C4D600" opacity="0.5"/><circle cx="8" cy="17" r="1" fill="#C4D600"/><circle cx="12" cy="17" r="1" fill="#C4D600"/><circle cx="16" cy="17" r="1" fill="#C4D600"/><circle cx="20" cy="17" r="1" fill="#C4D600"/><path d="M8 11 L12 17" stroke="#EF3340" stroke-width="0.8"/><path d="M16 11 L20 17" stroke="#10069F" stroke-width="0.8"/></svg>
-            </div>
-            <div>
-              <h4>Breadboard &amp; Wiring</h4>
-              <p>Prototyping board with jumper cables</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div style="display:flex;justify-content:center;align-items:center">
+        <!-- Air quality device SVG -->
+        <svg width="360" height="340" viewBox="0 0 360 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="80" y="60" width="200" height="220" rx="20" fill="white" stroke="#E2E8F0" stroke-width="2"/>
+          <rect x="80" y="60" width="200" height="50" rx="20" fill="url(#gSol)"/>
+          <rect x="80" y="90" width="200" height="20" fill="url(#gSol)"/>
+          <text x="180" y="93" text-anchor="middle" fill="white" font-family="Inter" font-size="15" font-weight="700">EduKit Eco-STEM</text>
+          <rect x="105" y="125" width="150" height="80" rx="10" fill="#f0faf9" stroke="#b2ebe7" stroke-width="1.5"/>
+          <rect x="120" y="175" width="16" height="20" rx="3" fill="#00B2A9" opacity="0.6"/>
+          <rect x="142" y="160" width="16" height="35" rx="3" fill="#00B2A9"/>
+          <rect x="164" y="168" width="16" height="27" rx="3" fill="#00B2A9" opacity="0.7"/>
+          <rect x="186" y="150" width="16" height="45" rx="3" fill="#00B2A9" opacity="0.9"/>
+          <rect x="208" y="165" width="16" height="30" rx="3" fill="#C4D600"/>
+          <text x="180" y="143" text-anchor="middle" fill="#00B2A9" font-family="Inter" font-size="10" font-weight="600">PM2.5: 12 ug/m3</text>
+          <!-- Sensor icon -->
+          <circle cx="140" cy="232" r="14" stroke="#FF8F1C" stroke-width="1.5" fill="#fef8e0"/>
+          <circle cx="140" cy="232" r="6" stroke="#FF8F1C" stroke-width="1" fill="#FF8F1C" fill-opacity="0.2"/>
+          <circle cx="140" cy="232" r="2" fill="#FF8F1C"/>
+          <text x="140" y="258" text-anchor="middle" fill="#94A3B8" font-family="Inter" font-size="9" font-weight="500">SENSOR</text>
+          <!-- WiFi -->
+          <circle cx="220" cy="237" r="14" stroke="#94A3B8" stroke-width="1.5" fill="#F8FAFC"/>
+          <path d="M213 240C215 234 218 232 220 232C222 232 225 234 227 240" stroke="#10069F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <path d="M215.5 239C217 235 219 234 220 234C221 234 223 235 224.5 239" stroke="#10069F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <circle cx="220" cy="241" r="1.5" fill="#10069F"/>
+          <text x="220" y="263" text-anchor="middle" fill="#94A3B8" font-family="Inter" font-size="9" font-weight="500">WiFi</text>
+          <path d="M30 170 L80 170" stroke="#00B2A9" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.4"/>
+          <path d="M280 170 L330 170" stroke="#C4D600" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.4"/>
+          <!-- Air particles -->
+          <circle cx="45" cy="140" r="4" fill="#FF8F1C" opacity="0.2"/>
+          <circle cx="35" cy="165" r="3" fill="#EF3340" opacity="0.15"/>
+          <circle cx="50" cy="190" r="5" fill="#FF8F1C" opacity="0.15"/>
+          <circle cx="40" cy="155" r="2" fill="#00B2A9" opacity="0.2"/>
+          <!-- Cloud -->
+          <path d="M305 145 Q315 130 330 140 Q345 130 345 145 Q355 145 350 158 Q355 170 340 170 L310 170 Q295 170 300 158 Q290 148 305 145Z" fill="#e6faf9" stroke="#00B2A9" stroke-width="1" opacity="0.7"/>
+          <text x="326" y="162" text-anchor="middle" fill="#00B2A9" font-family="Inter" font-size="8" font-weight="600">CLOUD</text>
+          <defs><linearGradient id="gSol" x1="80" y1="60" x2="280" y2="60"><stop stop-color="#00B2A9"/><stop offset="0.5" stop-color="#10069F"/><stop offset="1" stop-color="#C4D600"/></linearGradient></defs>
+        </svg>
       </div>
     </div>
   </div>
@@ -1239,27 +1084,6 @@
     slides[current].classList.add('active');
     nav.children[current].classList.add('active');
     counter.textContent = (current + 1) + ' / ' + slides.length;
-    triggerUnbox(index);
-  }
-
-  /* Unboxing animation controller */
-  let unboxTimeout = [];
-  function triggerUnbox(slideIndex) {
-    const items = document.querySelectorAll('.unbox-item');
-    // Reset all items
-    unboxTimeout.forEach(t => clearTimeout(t));
-    unboxTimeout = [];
-    items.forEach(item => item.classList.remove('revealed'));
-
-    // Slide 2 = Solution (data-index="2")
-    if (slideIndex === 2) {
-      items.forEach((item, i) => {
-        const t = setTimeout(() => {
-          item.classList.add('revealed');
-        }, 800 + i * 600);
-        unboxTimeout.push(t);
-      });
-    }
   }
 
   function changeSlide(dir) { goToSlide(current + dir); }
