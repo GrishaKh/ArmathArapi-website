@@ -345,6 +345,161 @@
     z-index: 3;
   }
   .partner-footer img { height: 36px; opacity: 0.5; }
+
+  /* ======= RESPONSIVE: TABLET (max-width: 1024px) ======= */
+  @media (max-width: 1024px) {
+    .slide { padding: 50px 40px; overflow-y: auto; }
+
+    .slide-header h2 { font-size: 34px; }
+
+    .problems-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .solution-layout { grid-template-columns: 1fr; gap: 30px; }
+    .how-steps { flex-wrap: wrap; gap: 16px; }
+    .how-step { flex: 1 1 calc(50% - 16px); min-width: 200px; }
+    .impact-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .business-layout { grid-template-columns: 1fr; gap: 24px; }
+    .eco-layout { grid-template-columns: 1fr; gap: 30px; }
+    .budget-layout { grid-template-columns: 1fr; gap: 30px; }
+    .team-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .risks-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+    .slide-cta h2 { font-size: 36px; }
+  }
+
+  /* ======= RESPONSIVE: MOBILE (max-width: 768px) ======= */
+  @media (max-width: 768px) {
+    .slide {
+      padding: 70px 20px 90px;
+      overflow-y: auto;
+      justify-content: flex-start;
+    }
+
+    /* Navigation */
+    .nav { bottom: 16px; padding: 8px 14px; gap: 6px; }
+    .nav-dot { width: 10px; height: 10px; }
+    .slide-counter { top: 16px; right: 16px; font-size: 12px; }
+    .arrow-nav { width: 36px; height: 36px; }
+    .arrow-prev { left: 8px; }
+    .arrow-next { right: 8px; }
+    .arrow-nav svg { width: 16px; height: 16px; }
+    .kb-hint { display: none; }
+
+    /* Shared */
+    .slide-header { margin-bottom: 24px; }
+    .slide-header .label { font-size: 11px; letter-spacing: 2px; }
+    .slide-header h2 { font-size: 24px; }
+
+    /* Slide 1: Title */
+    .slide-title { padding: 40px 20px; }
+    .slide-title .logo { max-width: 260px; margin-bottom: 20px; }
+    .slide-title .subtitle { font-size: 15px; margin-bottom: 28px; line-height: 1.55; }
+    .slide-title .meta { flex-direction: column; gap: 12px; align-items: center; font-size: 13px; }
+
+    /* Slide 2: Problem */
+    .problems-grid { grid-template-columns: 1fr; gap: 12px; }
+    .problem-card { padding: 20px; gap: 14px; }
+    .problem-icon { width: 44px; height: 44px; min-width: 44px; }
+    .problem-card h3 { font-size: 15px; }
+    .problem-card p { font-size: 13px; }
+
+    /* Slide 3: Solution */
+    .solution-layout { grid-template-columns: 1fr; gap: 20px; }
+    .solution-text h3 { font-size: 18px; }
+    .solution-text p { font-size: 14px; margin-bottom: 16px; }
+    .solution-features li { font-size: 14px; gap: 10px; }
+    .check-circle { width: 22px; height: 22px; min-width: 22px; }
+    .solution-layout svg[width="360"] { width: 100%; height: auto; max-width: 280px; }
+
+    /* Slide 4: Value Chain */
+    .how-steps { flex-direction: column; gap: 12px; }
+    .how-step { padding: 20px 14px; }
+    .how-step h3 { font-size: 13px; }
+    .how-step p { font-size: 12px; }
+    .step-icon { width: 44px; height: 44px; }
+    .step-number { width: 32px; height: 32px; font-size: 14px; }
+
+    /* Slide 5: Impact */
+    .impact-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .impact-card { padding: 20px 14px; }
+    .impact-number { font-size: 32px; }
+    .impact-label { font-size: 11.5px; }
+    .slide-impact > div[style*="display:flex"] {
+      flex-direction: column !important;
+      gap: 12px !important;
+      margin-top: 20px !important;
+    }
+
+    /* Slide 6: Business Model */
+    .business-layout { grid-template-columns: 1fr; gap: 20px; }
+    .revenue-item { padding: 14px 16px; gap: 12px; }
+    .revenue-icon { width: 40px; height: 40px; min-width: 40px; }
+    .revenue-item h4 { font-size: 13px; }
+    .revenue-item p { font-size: 12px; }
+    .social-mission { padding: 24px; }
+    .social-mission h3 { font-size: 17px; }
+    .mission-stat .big-num { font-size: 38px; }
+    .mission-stat p { font-size: 13px; }
+
+    /* Slide 7: Eco-STEM */
+    .eco-layout { grid-template-columns: 1fr; gap: 20px; }
+    .eco-feature-icon { width: 36px; height: 36px; min-width: 36px; }
+    .eco-feature h4 { font-size: 14px; }
+    .eco-feature p { font-size: 12.5px; }
+    .eco-layout svg[width="380"] { width: 100%; height: auto; max-width: 280px; }
+
+    /* Slide 8: Budget */
+    .budget-layout { grid-template-columns: 1fr; gap: 24px; }
+    .budget-row { padding: 12px 14px; }
+    .budget-row .name { font-size: 13px; }
+    .budget-row .amount { font-size: 13px; }
+    .budget-chart svg, .budget-chart canvas { max-width: 220px; height: auto; }
+
+    /* Slide 9: Team */
+    .team-grid { grid-template-columns: 1fr; gap: 14px; max-width: 100%; }
+    .team-card { padding: 24px 18px; display: flex; flex-direction: row; text-align: left; gap: 16px; align-items: center; }
+    .team-avatar { width: 56px; height: 56px; min-width: 56px; margin: 0; font-size: 20px; }
+    .team-card h3 { font-size: 15px; }
+    .team-card .role { font-size: 11px; margin-bottom: 4px; }
+    .team-card p { font-size: 12px; }
+
+    /* Slide 10: Risks */
+    .risks-grid { grid-template-columns: 1fr; gap: 12px; }
+    .risk-card { padding: 20px; }
+    .risk-card h3 { font-size: 14px; }
+    .risk-card p { font-size: 12.5px; }
+    .risk-card .mitigation { font-size: 12px; }
+
+    /* Slide 11: CTA */
+    .slide-cta .logo { max-width: 200px; margin-bottom: 20px; }
+    .slide-cta h2 { font-size: 28px; }
+    .slide-cta p { font-size: 15px; margin-bottom: 24px; }
+    .contact-row { flex-direction: column; gap: 14px; align-items: center; }
+    .contact-item { font-size: 13px; }
+    .partner-footer img { height: 28px; }
+  }
+
+  /* ======= RESPONSIVE: SMALL MOBILE (max-width: 480px) ======= */
+  @media (max-width: 480px) {
+    .slide { padding: 60px 16px 85px; }
+
+    .slide-header h2 { font-size: 20px; }
+    .slide-header .label { font-size: 10px; }
+
+    .slide-title .logo { max-width: 200px; }
+    .slide-title .subtitle { font-size: 13.5px; }
+
+    .impact-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .impact-number { font-size: 28px; }
+
+    .slide-cta h2 { font-size: 24px; }
+    .slide-cta p { font-size: 14px; }
+
+    .team-card { padding: 18px 14px; gap: 12px; }
+    .team-avatar { width: 48px; height: 48px; min-width: 48px; font-size: 18px; }
+
+    .mission-stat .big-num { font-size: 32px; }
+    .social-mission { padding: 18px; }
+  }
 </style>
 </head>
 <body>
