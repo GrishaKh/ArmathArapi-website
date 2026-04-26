@@ -8,6 +8,7 @@ import {
   FolderUp,
   Settings,
   GraduationCap,
+  ShieldCheck,
   X,
 } from "lucide-react"
 import { useLanguage } from "@/contexts/language-context"
@@ -26,6 +27,7 @@ export function StudentSidebar({ isOpen, onClose, studentName }: StudentSidebarP
     { href: "/student", label: t("spDashboard"), icon: LayoutDashboard },
     { href: "/student/materials", label: t("spMyMaterials"), icon: BookOpen },
     { href: "/student/works", label: t("spMyWorks"), icon: FolderUp },
+    { href: "/student/attendance", label: t("attendanceMyNav"), icon: ShieldCheck },
     { href: "/student/settings", label: t("spSettings"), icon: Settings },
   ]
 

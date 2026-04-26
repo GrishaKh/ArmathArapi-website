@@ -362,6 +362,46 @@ export const translations = {
     spWorkTitlePlaceholder: "My project submission",
     spWorkDescPlaceholder: "Describe your work...",
     spPasswordPlaceholder: "Enter your password",
+
+    // Attendance — admin command center
+    attendanceNav: "Attendance",
+    attendanceCommandCenter: "Attendance Command Center",
+    attendanceLiveFeed: "Live Feed",
+    attendanceAuthorized: "Authorized entries",
+    attendanceRejected: "Rejected entries",
+    attendanceBreach: "Breaches",
+    attendanceSilenceAlarm: "Silence alarm",
+    attendanceEnrollFingerprint: "Enroll fingerprint",
+    attendanceRefresh: "Refresh",
+
+    // Attendance — modes
+    attendanceModeAttendance: "Attendance",
+    attendanceModeSilent: "Silent",
+    attendanceModeExam: "Exam",
+    attendanceModeMaintenance: "Maintenance",
+
+    // Attendance — status / reasons
+    attendanceStatusPresent: "Present",
+    attendanceStatusLate: "Late",
+    attendanceStatusAbsent: "Absent",
+    attendanceReasonNoAuth: "No auth",
+    attendanceReasonRejected: "Rejected auth",
+    attendanceReasonTamper: "Tamper",
+
+    // Attendance — student-facing
+    attendanceMyNav: "My Attendance",
+    attendanceMyTitle: "My attendance",
+    attendanceMySubtitle: "Your tap-ins from the lab door and how they map to scheduled sessions.",
+    attendanceMyLedger: "Sessions",
+    attendanceMyEntries: "Recent tap-ins",
+    attendanceTotalSessions: "Total sessions",
+    attendanceColScheduled: "Scheduled",
+    attendanceColSubject: "Subject",
+    attendanceColGroup: "Group",
+    attendanceColStatus: "Status",
+    attendanceColEntered: "Entered",
+    attendanceNoLedgerYet: "No scheduled sessions for you yet.",
+    attendanceNoEntriesYet: "No tap-ins recorded yet.",
   },
   hy: {
     // Navigation
@@ -726,6 +766,46 @@ export const translations = {
     spWorkTitlePlaceholder: "",
     spWorkDescPlaceholder: "",
     spPasswordPlaceholder: "",
+
+    // Attendance — admin command center
+    attendanceNav: "Հաճախելիություն",
+    attendanceCommandCenter: "Հաճախելիության կենտրոն",
+    attendanceLiveFeed: "Ուղիղ հոսք",
+    attendanceAuthorized: "Թույլատրված մուտքեր",
+    attendanceRejected: "Մերժված փորձեր",
+    attendanceBreach: "Խախտումներ",
+    attendanceSilenceAlarm: "Անջատել տագնապը",
+    attendanceEnrollFingerprint: "Գրանցել մատնահետք",
+    attendanceRefresh: "Թարմացնել",
+
+    // Attendance — modes
+    attendanceModeAttendance: "Հաճախելիություն",
+    attendanceModeSilent: "Լուռ",
+    attendanceModeExam: "Քննություն",
+    attendanceModeMaintenance: "Սպասարկում",
+
+    // Attendance — status / reasons
+    attendanceStatusPresent: "Ներկա",
+    attendanceStatusLate: "Ուշացած",
+    attendanceStatusAbsent: "Բացակա",
+    attendanceReasonNoAuth: "Առանց նույնականացման",
+    attendanceReasonRejected: "Մերժված նույնականացում",
+    attendanceReasonTamper: "Միջամտություն",
+
+    // Attendance — student-facing
+    attendanceMyNav: "Իմ ներկայությունը",
+    attendanceMyTitle: "Իմ ներկայությունը",
+    attendanceMySubtitle: "Ձեր մուտքերը լաբորատորիա և դրանց համապատասխան պարապմունքները։",
+    attendanceMyLedger: "Պարապմունքներ",
+    attendanceMyEntries: "Վերջին մուտքեր",
+    attendanceTotalSessions: "Ընդհանուր պարապմունքներ",
+    attendanceColScheduled: "Նախատեսված",
+    attendanceColSubject: "Առարկա",
+    attendanceColGroup: "Խումբ",
+    attendanceColStatus: "Կարգավիճակ",
+    attendanceColEntered: "Մուտք գործեց",
+    attendanceNoLedgerYet: "Դեռ նախատեսված պարապմունքներ չկան։",
+    attendanceNoEntriesYet: "Մուտքեր դեռ գրանցված չեն։",
   },
 }
 
