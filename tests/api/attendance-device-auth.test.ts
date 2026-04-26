@@ -5,7 +5,7 @@ import {
   isValidDeviceId,
   parseDeviceBearer,
   verifyDeviceToken,
-} from "../../features/attendance/lib/device-auth.ts"
+} from "../../features/attendance/lib/device-token.ts"
 
 describe("device-auth: device_id validation", () => {
   it("accepts well-formed ids", () => {
