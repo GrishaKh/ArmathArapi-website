@@ -190,6 +190,22 @@ export const attendanceApiClient = {
     ),
 
   // --- enrollment ---
+  listEnrollableStudents: (search?: string) =>
+    requestJson<{
+      students: {
+        id: string
+        full_name: string
+        username: string
+        status: string
+        rfid_uid: string | null
+        fingerprint_id: number | null
+        student_code: string | null
+      }[]
+    }>(
+      `/api/admin/attendance/enroll${
+        search && search.length > 0 ? `?search=${encodeURIComponent(search)}` : ""
+      }`,
+    ),
   enrollStudent: (body: EnrollStudentRequest) =>
     requestJson<{ student: { id: string; full_name: string; rfid_uid: string | null; fingerprint_id: number | null; student_code: string | null } }>(
       "/api/admin/attendance/enroll",

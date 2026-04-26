@@ -6,6 +6,31 @@ function isValidFingerprintId(value: unknown): value is number {
   return typeof value === "number" && Number.isInteger(value) && value >= 1 && value <= 1000
 }
 
+export async function GET(request: NextRequest): Promise<NextResponse> {
+  const gate = await adminAttendanceGate(request, "enroll:get")
+  if (!gate.ok) return gate.response
+
+  const { searchParams } = new URL(request.url)
+  const search = searchParams.get("search")?.trim()
+
+  let query = gate.supabase
+    .from("students")
+    .select("id, full_name, username, status, rfid_uid, fingerprint_id, student_code")
+    .eq("status", "active")
+    .order("full_name", { ascending: true })
+    .limit(200)
+
+  if (search && search.length > 0) {
+    query = query.ilike("full_name", `%${search}%`)
+  }
+
+  const { data, error } = await query
+  if (error) {
+    return NextResponse.json({ error: "fetch_failed" }, { status: 500 })
+  }
+  return NextResponse.json({ students: data ?? [] })
+}
+
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const gate = await adminAttendanceGate(request, "enroll:post")
   if (!gate.ok) return gate.response

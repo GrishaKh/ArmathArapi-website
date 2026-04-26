@@ -1,8 +1,8 @@
 "use client"
 
-import { Inbox, Users } from "lucide-react"
+import { Inbox, ShieldCheck, Users } from "lucide-react"
 
-export type AdminView = "submissions" | "students"
+export type AdminView = "submissions" | "students" | "attendance"
 
 interface AdminViewToggleProps {
   activeView: AdminView
@@ -13,6 +13,7 @@ export function AdminViewToggle({ activeView, onViewChange }: AdminViewTogglePro
   const views: { key: AdminView; label: string; icon: typeof Inbox }[] = [
     { key: "submissions", label: "Submissions", icon: Inbox },
     { key: "students", label: "Students", icon: Users },
+    { key: "attendance", label: "Attendance", icon: ShieldCheck },
   ]
 
   return (

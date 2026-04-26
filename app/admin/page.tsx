@@ -7,6 +7,7 @@ import { AdminLoginView } from "@/features/admin/components/admin-login-view"
 import { AdminViewToggle, type AdminView } from "@/features/admin/components/admin-view-toggle"
 import { StudentManagementView } from "@/features/admin/components/student-management-view"
 import { useAdminDashboard } from "@/features/admin/hooks/use-admin-dashboard"
+import { AttendanceView } from "@/features/attendance/components/admin/attendance-view"
 import {
   GraduationCap,
   LogOut,
@@ -103,8 +104,10 @@ export default function AdminPage() {
             onUpdateStatus={updateStatus}
             onDeleteSubmission={deleteSubmission}
           />
-        ) : (
+        ) : adminView === "students" ? (
           <StudentManagementView />
+        ) : (
+          <AttendanceView />
         )}
       </main>
     </div>
