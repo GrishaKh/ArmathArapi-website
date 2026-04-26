@@ -9,8 +9,8 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "test": "node --experimental-strip-types --test --test-concurrency=1 tests/api/admin-auth-core.test.ts tests/api/submission-core.test.ts tests/e2e/admin-client-journey.test.ts",
-    "test:api": "node --experimental-strip-types --test --test-concurrency=1 tests/api/admin-auth-core.test.ts tests/api/submission-core.test.ts",
+    "test": "node --experimental-strip-types --test --test-concurrency=1 tests/api/admin-auth-core.test.ts tests/api/submission-core.test.ts tests/api/attendance-event-core.test.ts tests/api/attendance-device-auth.test.ts tests/e2e/admin-client-journey.test.ts",
+    "test:api": "node --experimental-strip-types --test --test-concurrency=1 tests/api/admin-auth-core.test.ts tests/api/submission-core.test.ts tests/api/attendance-event-core.test.ts tests/api/attendance-device-auth.test.ts",
     "test:e2e": "node --experimental-strip-types --test --test-concurrency=1 tests/e2e/admin-client-journey.test.ts",
     "typecheck": "tsc --noEmit"
   },
