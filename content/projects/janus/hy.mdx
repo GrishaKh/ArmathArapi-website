@@ -1,0 +1,98 @@
+---
+id: "3"
+title: "Janus"
+shortDescription: "Hybrid IoT system: classroom attendance by day, armed intrusion detection by night."
+description: "Janus is a single ESP32-based device that doubles as an automated classroom logbook and an armed intrusion-detection system. It combines fingerprint and RFID authentication, an IR-beam doorway sensor, GSM SMS and voice-call alerts, and an offline-first durability model with a real-time web Command Center."
+image: "/placeholder.svg" # TODO: replace with /projects/Janus.png when the hero image is ready
+category: "IoT & Security Systems"
+year: 2026
+featured: true
+tools:
+  - "ESP32-WROOM-32"
+  - "R503 Fingerprint"
+  - "MFRC522 RFID"
+  - "SIM800L GSM"
+  - "PostgreSQL"
+  - "React + Tailwind"
+challenge: "School engineering labs need both an automated attendance log and after-hours physical security, but commercial systems treat these as separate products and assume reliable Wi-Fi. We needed one device that does both, survives Wi-Fi outages, and never silently loses data."
+solution: "A single ESP32 device mounted by the door arbitrates between two roles via a 5-second authentication window. RFID and fingerprint scans open the window; an IR-beam break inside the window is logged as authorized entry, while a beam break outside the window is a BREACH that triggers a local alarm and a SIM800L-driven SMS plus voice call to administrators. Every event is written to microSD before being pushed to the cloud, so connectivity loss never costs data."
+results:
+  - "Two coexisting roles (attendance + intrusion) on one ESP32 device"
+  - "Hybrid identification: fast RFID daily path plus strong-auth fingerprint with optional 2FA"
+  - "Offline-first logging to microSD with cloud resync on reconnect"
+  - "GSM fallback for SMS and voice alerts when Wi-Fi is unavailable"
+  - "Live Command Center dashboard with logbook export to CSV and PDF"
+  - "Designed for DigiCode 2026"
+impact: "Janus shows how a single, well-architected embedded device can replace two separate commercial products while remaining transparent and auditable for the school. The offline-first design and tiered authentication model translate directly into lessons on real-world systems engineering for Armath students."
+presentedAt: "DigiCode 2026"
+technologies:
+  - name: "ESP32-WROOM-32"
+    description: "Dual-core MCU running the auth gate, intrusion detector, and alert manager as cooperating FreeRTOS tasks."
+  - name: "R503 Capacitive Fingerprint"
+    description: "UART biometric reader with native 3.3 V logic and an RGB ring LED for user feedback during enrollment and authentication."
+  - name: "MFRC522 RFID"
+    description: "13.56 MHz SPI card reader for the fast daily attendance path, with a tap-in time of around 200 ms."
+  - name: "E18-D80NK IR Beam"
+    description: "Direct emitter and receiver pair across the doorway. The digital active-low signal is the trigger that classifies entries as authorized or BREACH."
+  - name: "SIM800L GSM"
+    description: "2G modem on its own 4 V power rail; sends SMS and places a 20-second voice call to admins on a confirmed breach."
+  - name: "microSD + DS3231 RTC"
+    description: "Offline-first NDJSON event log with battery-backed timestamps so a Wi-Fi outage never loses an entry."
+  - name: "Node.js + PostgreSQL Backend"
+    description: "MQTT bridge and REST API; persists events and exposes a derived attendance ledger view."
+  - name: "React + Tailwind Command Center"
+    description: "Live MQTT-fed dashboard with logbook grid, CSV and PDF export, alarm-silence control, and a fingerprint enrollment wizard."
+---
+
+## Overview
+
+Janus is a hybrid IoT platform that takes on two coexisting roles inside a single device mounted beside the laboratory door. During the school day it acts as an automated classroom logbook: students tap an RFID card or scan a fingerprint, and every successful authentication is written as an attendance record. After hours it switches into an armed intrusion-detection system, and any unauthorized passage through the doorway triggers a local alarm and a GSM-based alert to administrators.
+
+The project is being built for **DigiCode 2026** as a flagship example of how Armath students can ship production-quality embedded systems that solve a real institutional problem.
+
+## How It Works
+
+The core rule is a 5-second authentication window. When a student presents a card or finger, Janus opens a short window during which a beam-break across the doorway is interpreted as authorized entry. If the beam breaks without a recent successful authentication, or with an authentication that was rejected, the system raises a BREACH event.
+
+This single rule lets one device cleanly serve two purposes: a student fumbling a card three times at the door is logged but never alarms the administrator, while an unknown person walking through the door at 02:00 is detected, recorded, and reported within seconds.
+
+## Architecture
+
+The system is structured as four cooperating layers:
+
+- **Sensors.** R503 fingerprint reader, MFRC522 RFID reader, E18-D80NK IR beam, DS3231 RTC, and a magnetic tamper switch on the enclosure.
+- **Firmware.** An ESP32-WROOM-32 runs an authentication gate, an intrusion detector, a mode manager, a logger, and an alert manager as FreeRTOS tasks so that the sensor loop never blocks on slow operations like SMS dispatch.
+- **Durability.** A microSD card stores every event as NDJSON before anything else happens. SPIFFS acts as a fallback if the SD card is unavailable. Once Wi-Fi returns, pending events are resynced to the cloud.
+- **Cloud and UI.** A Node.js backend with PostgreSQL persists events through both REST and an MQTT bridge. A React and Tailwind Command Center subscribes over WebSockets and renders a live feed, the attendance ledger, and admin controls.
+
+## Operating Modes
+
+Janus runs in one of four modes, switchable from the Command Center:
+
+- **Attendance** — typical school hours. RFID and fingerprint scans log entries, and beam events outside the auth window are flagged but do not alarm.
+- **Silent** — after-hours mode. Any unauthorized beam break is an instant BREACH. Disarming requires two-factor authentication.
+- **Exam** — manual lockdown for assessments. Two-factor entry is mandatory and every event is flagged in the logbook.
+- **Maintenance** — admin-only mode. Alarms are muted, but breaches continue to be logged for audit purposes.
+
+## Offline-First Durability
+
+Connectivity is treated as a nice-to-have, never a requirement. Every authentication, rejection, and breach is appended to a local NDJSON log on microSD before any network call is attempted. The DS3231 real-time clock keeps timestamps accurate even when Wi-Fi is down. When the network returns, the logger streams pending events to the backend in order. If the SD card itself fails, SPIFFS on the ESP32 takes over as a fallback so a device-level failure still does not silently drop records.
+
+For alarm dispatch, GSM is the primary alerting channel rather than the secondary one. Even with a clean Wi-Fi connection, breaches are reported by SMS and voice call through the SIM800L, because reaching an administrator's phone is the actual goal — not pushing a row to a database.
+
+## Roadmap to DigiCode 2026
+
+The build is scheduled across roughly eight weeks of part-time work, with each phase gated by a binary success criterion before the next begins:
+
+- Planning and component procurement
+- Breadboard prototyping of all sensors on one sketch
+- Power-rail validation, including a stress test of SIM800L bursts
+- Authentication drivers for RFID and fingerprint, plus the OLED feedback loop
+- Intrusion-detector state machine and buzzer driver
+- GSM alert manager as a non-blocking FreeRTOS task
+- Backend, database schema, and MQTT bridge
+- Command Center dashboard with the live feed and logbook export
+- Enclosure design, in-room mounting, and tamper switch installation
+- End-to-end testing with chaos scenarios such as Wi-Fi loss mid-breach, SD-card exhaustion, and brown-out recovery
+
+The deliverable for DigiCode 2026 is the complete system installed on a real lab door, running unattended for at least 48 hours before the demo.
