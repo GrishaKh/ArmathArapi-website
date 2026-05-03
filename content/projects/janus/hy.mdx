@@ -24,6 +24,7 @@ results:
   - "Live Command Center dashboard with logbook export to CSV and PDF"
   - "Designed for DigiCode 2026"
 impact: "Janus shows how a single, well-architected embedded device can replace two separate commercial products while remaining transparent and auditable for the school. The offline-first design and tiered authentication model translate directly into lessons on real-world systems engineering for Armath students."
+studentName: "Վարդան Մարտիրոսյան և Սևակ Խաչատրյան"
 presentedAt: "DigiCode 2026"
 technologies:
   - name: "ESP32-WROOM-32"
@@ -79,20 +80,3 @@ Janus runs in one of four modes, switchable from the Command Center:
 Connectivity is treated as a nice-to-have, never a requirement. Every authentication, rejection, and breach is appended to a local NDJSON log on microSD before any network call is attempted. The DS3231 real-time clock keeps timestamps accurate even when Wi-Fi is down. When the network returns, the logger streams pending events to the backend in order. If the SD card itself fails, SPIFFS on the ESP32 takes over as a fallback so a device-level failure still does not silently drop records.
 
 For alarm dispatch, GSM is the primary alerting channel rather than the secondary one. Even with a clean Wi-Fi connection, breaches are reported by SMS and voice call through the SIM800L, because reaching an administrator's phone is the actual goal — not pushing a row to a database.
-
-## Roadmap to DigiCode 2026
-
-The build is scheduled across roughly eight weeks of part-time work, with each phase gated by a binary success criterion before the next begins:
-
-- Planning and component procurement
-- Breadboard prototyping of all sensors on one sketch
-- Power-rail validation, including a stress test of SIM800L bursts
-- Authentication drivers for RFID and fingerprint, plus the OLED feedback loop
-- Intrusion-detector state machine and buzzer driver
-- GSM alert manager as a non-blocking FreeRTOS task
-- Backend, database schema, and MQTT bridge
-- Command Center dashboard with the live feed and logbook export
-- Enclosure design, in-room mounting, and tamper switch installation
-- End-to-end testing with chaos scenarios such as Wi-Fi loss mid-breach, SD-card exhaustion, and brown-out recovery
-
-The deliverable for DigiCode 2026 is the complete system installed on a real lab door, running unattended for at least 48 hours before the demo.
