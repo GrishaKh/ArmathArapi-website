@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, Noto_Sans_Armenian } from "next/font/google"
+import { Inter, Google_Sans } from "next/font/google"
 import "./globals.css"
 import { LanguageProvider } from "@/contexts/language-context"
 import { HtmlLangUpdater } from "@/components/html-lang-updater"
@@ -8,8 +8,11 @@ import { cn } from "@/lib/utils"
 import { getSiteUrlAsURL } from "@/lib/site"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
-const notoSansArmenian = Noto_Sans_Armenian({ subsets: ["armenian"], variable: "--font-noto-sans-armenian" })
-const googleSans = { variable: "--font-google-sans" }
+const googleSans = Google_Sans({
+  subsets: ["latin", "latin-ext", "armenian"],
+  variable: "--font-google-sans",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: "Armath Engineering Makerspace - Arapi",
@@ -35,7 +38,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn("relative font-sans antialiased", inter.variable, notoSansArmenian.variable, googleSans.variable)}>
+      <body className={cn("relative font-sans antialiased", inter.variable, googleSans.variable)}>
         <LanguageProvider>
           <HtmlLangUpdater />
           {children}
