@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { use } from "react"
-import { useMDXComponent } from "next-contentlayer/hooks"
+import { useMDXComponent } from "next-contentlayer2/hooks"
 import { AnimatedSection } from "@/components/animated-section"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -64,7 +64,7 @@ export default function MaterialDetailPage({ params }: Props) {
     ul: (props: React.ComponentPropsWithoutRef<"ul">) => <ul className="space-y-4 mb-6" {...props} />,
     li: (props: React.ComponentPropsWithoutRef<"li">) => (
       <li className="flex gap-4" {...props}>
-        <Zap className="w-6 h-6 text-armath-blue flex-shrink-0 mt-1" />
+        <Zap className="w-6 h-6 text-armath-blue shrink-0 mt-1" />
         <span className="text-slate-600 text-lg">{props.children}</span>
       </li>
     ),
@@ -154,7 +154,7 @@ export default function MaterialDetailPage({ params }: Props) {
                   <ul className="space-y-3">
                     {material.learningObjectives.map((objective, index) => (
                       <li key={`${objective}-${index}`} className="flex gap-3 text-slate-700">
-                        <span className="text-armath-blue font-bold mt-1 flex-shrink-0">✓</span>
+                        <span className="text-armath-blue font-bold mt-1 shrink-0">✓</span>
                         <span className="text-lg leading-relaxed">{objective}</span>
                       </li>
                     ))}
@@ -192,11 +192,11 @@ export default function MaterialDetailPage({ params }: Props) {
                           >
                             <div className="flex items-center gap-2 min-w-0">
                               {status === "completed" ? (
-                                <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-emerald-600" />
+                                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
                               ) : status === "current" ? (
-                                <CircleDot className="h-4 w-4 flex-shrink-0 text-armath-blue" />
+                                <CircleDot className="h-4 w-4 shrink-0 text-armath-blue" />
                               ) : (
-                                <CircleDot className="h-4 w-4 flex-shrink-0 text-slate-300" />
+                                <CircleDot className="h-4 w-4 shrink-0 text-slate-300" />
                               )}
                               <span className="line-clamp-1 text-slate-700">{pathMaterial.title}</span>
                             </div>

@@ -187,7 +187,7 @@ export function SupportSection() {
                           role="alert"
                           aria-live="assertive"
                         >
-                          <XCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                          <XCircle className="w-5 h-5 text-red-500 shrink-0" />
                           <p className="text-sm text-red-600">{errorMessage}</p>
                           <button 
                             type="button" 

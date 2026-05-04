@@ -35,7 +35,7 @@ export const supportRequestSchema = z.object({
     .email('Please enter a valid email address'),
   supportType: z
     .enum(['workshop', 'equipment', 'financial', 'mentoring'], {
-      errorMap: () => ({ message: 'Please select a support type' }),
+      error: () => ({ message: 'Please select a support type' }),
     }),
   message: z
     .string()

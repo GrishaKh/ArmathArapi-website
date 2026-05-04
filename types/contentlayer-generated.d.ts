@@ -1,4 +1,4 @@
-declare module 'contentlayer/generated' {
+declare module 'contentlayer2/generated' {
   export interface Event {
     id: string
     slug: string

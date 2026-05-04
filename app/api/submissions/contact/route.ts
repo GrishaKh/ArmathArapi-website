@@ -15,7 +15,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
     const validationResult = contactMessageSchema.safeParse(body)
     const gate = evaluateSubmissionGate({
       isRateAllowed: rateLimiter.check(logMeta.ip),
-      validationErrors: validationResult.success ? [] : validationResult.error.errors.map(e => e.message),
+      validationErrors: validationResult.success ? [] : validationResult.error.issues.map(e => e.message),
       isDatabaseConfigured: Boolean(isSupabaseConfigured() && supabaseAdmin),
     })
 
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
           status: 429,
         })
       } else if (gate.status === 400) {
-        const issues = validationResult.success ? 0 : validationResult.error.errors.length
+        const issues = validationResult.success ? 0 : validationResult.error.issues.length
         logRequestEvent('info', 'submission.contact.validation_failed', 'Contact submission validation failed', logMeta, {
           status: 400,
           details: { issues },

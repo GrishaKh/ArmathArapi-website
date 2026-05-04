@@ -1,7 +1,7 @@
 "use client"
 
 import { use } from "react"
-import { useMDXComponent } from "next-contentlayer/hooks"
+import { useMDXComponent } from "next-contentlayer2/hooks"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AnimatedSection } from "@/components/animated-section"
@@ -38,7 +38,7 @@ export default function ProjectDetailPage({ params }: Props) {
     ul: (props: any) => <ul className="space-y-4 mb-6" {...props} />,
     li: (props: any) => (
       <li className="flex gap-4" {...props}>
-        <Zap className="w-6 h-6 text-armath-blue flex-shrink-0 mt-1" />
+        <Zap className="w-6 h-6 text-armath-blue shrink-0 mt-1" />
         <span className="text-slate-600 text-lg">{props.children}</span>
       </li>
     ),
@@ -165,7 +165,7 @@ export default function ProjectDetailPage({ params }: Props) {
                         transition={{ delay: index * 0.1 }}
                         className="flex gap-3 text-slate-600"
                       >
-                        <span className="text-armath-blue font-bold mt-1 flex-shrink-0">✓</span>
+                        <span className="text-armath-blue font-bold mt-1 shrink-0">✓</span>
                         <span className="text-lg leading-relaxed">{result}</span>
                       </motion.li>
                     ))}

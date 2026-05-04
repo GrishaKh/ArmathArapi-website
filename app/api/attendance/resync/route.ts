@@ -77,8 +77,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       continue
     }
 
-    const table = decision.kind === "log" ? "attendance_logs" : "attendance_breaches"
-    const { error } = await supabaseAdmin.from(table).insert(decision.insert)
+    const { error, table } =
+      decision.kind === "log"
+        ? { error: (await supabaseAdmin.from("attendance_logs").insert(decision.insert)).error, table: "attendance_logs" as const }
+        : { error: (await supabaseAdmin.from("attendance_breaches").insert(decision.insert)).error, table: "attendance_breaches" as const }
     if (error) {
       if (error.code === "23505") {
         summary.duplicates++

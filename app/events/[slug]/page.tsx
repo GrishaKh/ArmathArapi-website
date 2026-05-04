@@ -1,7 +1,7 @@
 "use client"
 
 import { use } from "react"
-import { useMDXComponent } from "next-contentlayer/hooks"
+import { useMDXComponent } from "next-contentlayer2/hooks"
 import { CardTitle, CardHeader, Card } from "@/components/ui/card"
 import { useLanguage } from "@/contexts/language-context"
 import { AnimatedSection } from "@/components/animated-section"
@@ -56,7 +56,7 @@ export default function EventDetailPage({ params }: PageProps) {
     ul: (props: any) => <ul className="space-y-4 mb-6" {...props} />,
     li: (props: any) => (
       <li className="flex gap-4" {...props}>
-        <Zap className="w-6 h-6 text-armath-blue flex-shrink-0 mt-1" />
+        <Zap className="w-6 h-6 text-armath-blue shrink-0 mt-1" />
         <span className="text-slate-600 text-lg">{props.children}</span>
       </li>
     ),

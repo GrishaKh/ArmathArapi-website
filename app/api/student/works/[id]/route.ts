@@ -84,7 +84,7 @@ export async function PATCH(
     const body = await request.json()
     const parsed = studentWorkUpdateSchema.safeParse(body)
     if (!parsed.success) {
-      return NextResponse.json({ error: parsed.error.errors[0]?.message || 'Invalid input' }, { status: 400 })
+      return NextResponse.json({ error: parsed.error.issues[0]?.message || 'Invalid input' }, { status: 400 })
     }
 
     const { data: updated, error: updateError } = await supabaseAdmin

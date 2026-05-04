@@ -54,7 +54,7 @@ export function WorkUploadForm({
     return null
   }
 
-  const handleFileSelect = (f: File) => {
+  const handleFileSelect = useCallback((f: File) => {
     const error = validateFile(f)
     if (error) {
       setLocalError(error)
@@ -62,14 +62,14 @@ export function WorkUploadForm({
     }
     setLocalError("")
     setFile(f)
-  }
+  }, [t])
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
     setDragOver(false)
     const f = e.dataTransfer.files[0]
     if (f) handleFileSelect(f)
-  }, [])
+  }, [handleFileSelect])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

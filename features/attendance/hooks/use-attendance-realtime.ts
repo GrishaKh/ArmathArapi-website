@@ -27,7 +27,7 @@ interface Options {
  */
 export function useAttendanceRealtime(options: Options = {}): AttendanceRealtimeFeed {
   const bufferSize = options.bufferSize ?? 50
-  const [status, setStatus] = useState<RealtimeStatus>("idle")
+  const [status, setStatus] = useState<RealtimeStatus>(supabase ? "idle" : "disabled")
   const [recentLogs, setRecentLogs] = useState<AttendanceLog[]>(options.initialLogs ?? [])
   const [recentBreaches, setRecentBreaches] = useState<AttendanceBreach[]>(options.initialBreaches ?? [])
 
@@ -39,10 +39,7 @@ export function useAttendanceRealtime(options: Options = {}): AttendanceRealtime
   breachesRef.current = recentBreaches
 
   useEffect(() => {
-    if (!supabase) {
-      setStatus("disabled")
-      return
-    }
+    if (!supabase) return
 
     setStatus("connecting")
     const channel = supabase

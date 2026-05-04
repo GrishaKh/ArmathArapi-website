@@ -32,7 +32,7 @@ export function hasAdminEnv(): boolean {
 export function getAdminEnvOrThrow(): z.infer<typeof adminEnvSchema> {
   const parsed = adminEnvSchema.safeParse(readAdminEnv())
   if (!parsed.success) {
-    const fields = parsed.error.errors.map((error) => error.path.join('.')).join(', ')
+    const fields = parsed.error.issues.map((error) => error.path.join('.')).join(', ')
     throw new Error(`Missing or invalid admin environment variables: ${fields}`)
   }
   return parsed.data
@@ -46,7 +46,7 @@ export function hasDeviceEnv(): boolean {
 export function getDeviceEnvOrThrow(): z.infer<typeof deviceEnvSchema> {
   const parsed = deviceEnvSchema.safeParse(readDeviceEnv())
   if (!parsed.success) {
-    const fields = parsed.error.errors.map((error) => error.path.join('.')).join(', ')
+    const fields = parsed.error.issues.map((error) => error.path.join('.')).join(', ')
     throw new Error(`Missing or invalid device environment variables: ${fields}`)
   }
   return parsed.data
@@ -59,7 +59,7 @@ export function validateStartupEnv() {
   const parsed = adminEnvSchema.safeParse(readAdminEnv())
   if (parsed.success) return
 
-  const message = parsed.error.errors
+  const message = parsed.error.issues
     .map((error) => `${error.path.join('.')}: ${error.message}`)
     .join('; ')
 

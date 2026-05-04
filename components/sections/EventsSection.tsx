@@ -81,7 +81,7 @@ export function EventsSection() {
 
                     {/* Location */}
                     <div className="flex items-center text-sm text-slate-500 gap-1">
-                      <MapPin className="w-4 h-4 flex-shrink-0" />
+                      <MapPin className="w-4 h-4 shrink-0" />
                       <span className="truncate">
                         {event.location}
                       </span>
