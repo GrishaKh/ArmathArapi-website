@@ -28,7 +28,7 @@ import {
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Clock3, Filter, GraduationCap, Search, X } from "lucide-react"
+import { ArrowRight, Clock3, Filter, GraduationCap, Search, Workflow, X } from "lucide-react"
 
 type TopicFilter = MaterialTopic | "all"
 type DifficultyFilter = MaterialDifficulty | "all"
@@ -98,6 +98,34 @@ export default function MaterialsPage() {
         <AnimatedSection className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">{t("materialsAndLessons")}</h1>
           <p className="text-slate-600 max-w-2xl mx-auto text-lg">{t("materialsDescriptionLong")}</p>
+        </AnimatedSection>
+
+        <AnimatedSection className="mb-10">
+          <Link href="/tutorials/marked-graphs" className="group block">
+            <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-22px_rgba(164,35,126,0.45)]">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(62,193,207,0.16),transparent_42%),radial-gradient(circle_at_100%_100%,rgba(164,35,126,0.13),transparent_46%)]" />
+              <div className="relative flex flex-col gap-6 p-6 sm:p-8 md:flex-row md:items-center md:justify-between">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-armath-blue/30 bg-armath-blue/10 text-armath-blue">
+                    <Workflow className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <span className="inline-block rounded-full bg-armath-red/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-armath-red">
+                      {t("interactiveLab")}
+                    </span>
+                    <h2 className="mt-3 text-2xl font-bold text-slate-900 sm:text-3xl">
+                      {t("markedGraphsTitle")}
+                    </h2>
+                    <p className="mt-2 max-w-xl text-slate-600">{t("markedGraphsBlurb")}</p>
+                  </div>
+                </div>
+                <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-armath-red px-6 py-3 font-medium text-white shadow-md transition-transform duration-300 group-hover:translate-x-1 md:self-auto">
+                  {t("openLab")}
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+              </div>
+            </div>
+          </Link>
         </AnimatedSection>
 
         <AnimatedSection className="mb-10">
