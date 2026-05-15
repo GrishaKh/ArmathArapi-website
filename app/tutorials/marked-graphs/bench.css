@@ -1,0 +1,167 @@
+/* Signal Bench — scoped styling for the marked-graph tutorial.
+   Engineering-instrument aesthetic: blueprint paper, plotted ink, live signal teal. */
+
+.bench-root {
+  --ink: #1a1714;
+  --paper: #fbfaf6;
+  --paper-edge: #f1eee4;
+  --rule: #d8d3c4;
+  --signal: #16b6c4; /* live token / signal teal (brand #3EC1CF, deepened) */
+  --signal-soft: rgba(22, 182, 196, 0.14);
+  --delay: #a4237e; /* brand magenta — initial tokens / delays */
+  --delay-soft: rgba(164, 35, 126, 0.12);
+  --graphite: #5b554a;
+
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(circle at 12% -10%, rgba(22, 182, 196, 0.07), transparent 38%),
+    radial-gradient(circle at 92% 0%, rgba(164, 35, 126, 0.055), transparent 34%),
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 28px 28px, 28px 28px;
+  background-position: 0 0, 0 0, -1px -1px, -1px -1px;
+  font-family: var(--font-google-sans), system-ui, sans-serif;
+}
+
+.bench-root ::selection {
+  background: var(--signal);
+  color: #fff;
+}
+
+.bench-display {
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.bench-mono {
+  font-family: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+  font-feature-settings: "ss01", "zero";
+}
+
+/* Sectional spec rule — the engineering-notebook left margin */
+.spec-rule {
+  position: relative;
+  padding-left: clamp(1.25rem, 5vw, 4rem);
+}
+.spec-rule::before {
+  content: "";
+  position: absolute;
+  left: clamp(0.6rem, 2.4vw, 2rem);
+  top: 0.15em;
+  bottom: 0.1em;
+  width: 1px;
+  background: linear-gradient(var(--delay), transparent);
+  opacity: 0.5;
+}
+
+.bench-tag {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--delay);
+}
+
+/* The instrument panel — plotted on the paper */
+.instrument {
+  border: 1px solid var(--ink);
+  background: #fffefb;
+  box-shadow:
+    0 1px 0 #fff inset,
+    14px 14px 0 -2px rgba(22, 182, 196, 0.1),
+    0 30px 60px -38px rgba(26, 23, 20, 0.5);
+}
+
+.instrument-screen {
+  background:
+    radial-gradient(circle at 50% 40%, rgba(22, 182, 196, 0.05), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(26, 23, 20, 0.035) 0 1px, transparent 1px 24px),
+    repeating-linear-gradient(90deg, rgba(26, 23, 20, 0.035) 0 1px, transparent 1px 24px),
+    #fdfcf8;
+}
+
+.btn-bench {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid var(--ink);
+  background: #fffefb;
+  color: var(--ink);
+  transition: transform 0.12s ease, background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: 3px 3px 0 -1px rgba(26, 23, 20, 0.22);
+}
+.btn-bench:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 -1px rgba(26, 23, 20, 0.28);
+}
+.btn-bench:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 -1px rgba(26, 23, 20, 0.22);
+}
+.btn-bench:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.btn-bench[data-active="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+.btn-bench[data-tone="signal"]:not(:disabled) {
+  border-color: var(--signal);
+  color: #0a6970;
+}
+.btn-bench[data-tone="signal"][data-active="true"] {
+  background: var(--signal);
+  color: #042e31;
+}
+
+.readout-chip {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  border: 1px dashed var(--rule);
+  background: #fffefb;
+}
+
+.bench-link {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: #0a6970;
+  border-bottom: 1px solid currentColor;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+.bench-link:hover {
+  opacity: 0.65;
+}
+
+@keyframes bench-blink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0.15; }
+}
+.bench-blink { animation: bench-blink 1.1s steps(1) infinite; }
+
+@keyframes bench-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+.bench-shake { animation: bench-shake 0.42s ease; }
+
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bench-blink, .bench-shake { animation: none; }
+}

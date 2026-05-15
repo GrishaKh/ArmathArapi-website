@@ -104,6 +104,23 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
                   <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-armath-blue transition-all duration-300 group-hover:w-full rounded-full" />
                 </motion.a>
               ))}
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: navItems.length * 0.08 + 0.3 }}
+              >
+                <Link
+                  href="/tutorials/marked-graphs"
+                  className={cn(
+                    "group relative inline-flex items-center gap-1.5 whitespace-nowrap pb-1 text-armath-red transition-colors hover:text-armath-red/80",
+                    language === "hy" ? "text-sm tracking-normal" : "text-sm font-medium"
+                  )}
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-armath-blue" />
+                  {t("interactiveLab")}
+                  <span className="absolute bottom-0 left-0 h-[2px] w-0 rounded-full bg-armath-red transition-all duration-300 group-hover:w-full" />
+                </Link>
+              </motion.div>
               <LanguageToggle />
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8 }}>
                 <MagneticWrapper>
@@ -157,6 +174,17 @@ export function Header({ subtitle, showNav = true }: HeaderProps) {
                   {t(item)}
                 </a>
               ))}
+              <Link
+                href="/tutorials/marked-graphs"
+                className={cn(
+                  "flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-armath-red transition-colors hover:bg-slate-100",
+                  language === "hy" ? "text-sm tracking-tight" : "text-base"
+                )}
+                onClick={() => setMobileOpen(false)}
+              >
+                <span className="h-1.5 w-1.5 rounded-full bg-armath-blue" />
+                {t("interactiveLab")}
+              </Link>
             </div>
             <div className="mt-3">
               <Button

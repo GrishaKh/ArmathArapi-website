@@ -7,6 +7,7 @@ export const translations = {
     events: "Events",
     ourProjects: "Our Projects",
     learningMaterials: "Learning Materials",
+    interactiveLab: "Interactive Lab",
     joinAsStudent: "Join as a Student",
     supportArmath: "Support Armath",
     contact: "Contact",
@@ -91,6 +92,10 @@ export const translations = {
     materialsAndLessons: "Materials & Lessons",
     materialsDescriptionLong:
       "Explore structured lessons, project guides, and worksheets designed to support hands-on STEM learning.",
+    markedGraphsTitle: "Marked Graphs & Dataflow",
+    markedGraphsBlurb:
+      "Fire actors, watch tokens flow, and see repetition vectors and static schedules computed live — a hands-on signal bench.",
+    openLab: "Open the interactive bench",
     viewAllMaterials: "View All Materials",
     viewMaterial: "View Material",
     backToMaterials: "Back to Materials",
@@ -411,6 +416,7 @@ export const translations = {
     events: "Միջոցառումներ",
     ourProjects: "Նախագծեր",
     learningMaterials: "Նյութեր",
+    interactiveLab: "Ինտերակտիվ լաբորատորիա",
     joinAsStudent: "Միացեք",
     supportArmath: "Աջակցություն",
     contact: "Կապ",
@@ -495,6 +501,10 @@ export const translations = {
     materialsAndLessons: "Նյութեր և դասեր",
     materialsDescriptionLong:
       "Բացահայտեք կառուցված դասեր, նախագծային ուղեցույցներ և թերթիկներ, որոնք աջակցում են գործնական ԲՏՃՄ ուսուցմանը:",
+    markedGraphsTitle: "Մարկավորված գրաֆներ և տվյալների հոսք",
+    markedGraphsBlurb:
+      "Գործարկեք ակտորները, դիտեք թոքենների հոսքը և տեսեք կրկնության վեկտորներն ու ստատիկ ժամանակացույցները ուղիղ եթերում՝ գործնական ազդանշանային սեղան:",
+    openLab: "Բացել ինտերակտիվ սեղանը",
     viewAllMaterials: "Դիտել բոլոր նյութերը",
     viewMaterial: "Դիտել նյութը",
     backToMaterials: "Վերադառնալ նյութերին",
