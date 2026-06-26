@@ -31,6 +31,10 @@ const nextConfig = {
         source: '/edukit-pitch',
         destination: '/edukit-pitch.html',
       },
+      {
+        source: '/telegram-offer',
+        destination: '/telegram-offer.html',
+      },
     ]
   },
   experimental: {
