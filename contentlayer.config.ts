@@ -126,7 +126,39 @@ export const Material = defineDocumentType(() => ({
     },
 }))
 
+export const Student = defineDocumentType(() => ({
+    name: 'Student',
+    filePathPattern: `students/**/*.mdx`,
+    contentType: 'mdx',
+    fields: {
+        id: { type: 'string', required: true },
+        name: { type: 'string', required: true },
+        photo: { type: 'string', required: false },
+        tagline: { type: 'string', required: false },
+        grade: { type: 'string', required: false },
+        age: { type: 'number', required: false },
+        joinedYear: { type: 'number', required: false },
+        interests: { type: 'list', of: { type: 'string' }, required: false },
+        skills: { type: 'list', of: { type: 'string' }, required: false },
+        projects: { type: 'list', of: { type: 'string' }, required: false },
+        achievements: { type: 'list', of: { type: 'string' }, required: false },
+        links: { type: 'json', required: false }, // Array<{ label: string; url: string }>
+        featured: { type: 'boolean', required: false },
+        order: { type: 'number', required: false },
+    },
+    computedFields: {
+        slug: {
+            type: 'string',
+            resolve: (doc) => doc._raw.flattenedPath.split('/')[1],
+        },
+        language: {
+            type: 'string',
+            resolve: (doc) => doc._raw.sourceFileName.replace(/\.mdx$/, '') as 'en' | 'hy',
+        }
+    },
+}))
+
 export default makeSource({
     contentDirPath: 'content',
-    documentTypes: [Event, Project, Material],
+    documentTypes: [Event, Project, Material, Student],
 })
