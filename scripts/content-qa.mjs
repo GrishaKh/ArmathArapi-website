@@ -20,6 +20,9 @@ const docTypeConfig = {
   materials: {
     requiredKeys: ["id", "title", "summary", "topic", "difficulty", "format", "ageGroup", "durationMinutes", "year", "image"],
   },
+  students: {
+    requiredKeys: ["id", "name"],
+  },
 }
 
 function readFile(filePath) {
