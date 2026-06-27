@@ -26,7 +26,7 @@ export function StudentsSection() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 w-full">
           {students.map((student, index) => (
             <AnimatedSection
-              key={student.id}
+              key={student.slug}
               animation="fadeInUp"
               delay={index * 0.1}
               className="w-full min-w-0"
