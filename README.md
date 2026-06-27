@@ -30,6 +30,7 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 - **Learning Materials** — Structured learning paths with progress tracking, difficulty levels, and topic categories
 - **Work Submission & Review** — Students upload work, admins review with feedback and status tracking
 - **Student Projects Gallery** — Showcase of innovative projects built by our students
+- **Students Directory** — Curated student profiles (bilingual MDX) with a homepage photo grid and per-student profile pages
 - **Events & Achievements** — Documentation of competitions, workshops, and camps
 - **Online Applications** — Student enrollment, support request, and contact forms
 - **Responsive Design** — Optimized for all devices with mobile-specific UI enhancements
@@ -166,7 +167,8 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 ├── content/                    # MDX content (bilingual)
 │   ├── events/                 # Event posts (en/hy)
 │   ├── materials/              # Learning material posts (en/hy)
-│   └── projects/               # Project posts (en/hy)
+│   ├── projects/               # Project posts (en/hy)
+│   └── students/               # Student profiles (en/hy) — see Students Directory below
 ├── contexts/
 │   ├── language-context.tsx    # i18n context (EN/HY)
 │   └── student-auth-context.tsx # Student auth state
@@ -212,6 +214,16 @@ Admins can manage the makerspace through:
 - **Submissions** — Track and manage application, support, and contact form submissions
 - **Announcements** — Send notifications to all students
 - **Statistics** — Dashboard overview of student activity and submission counts
+
+---
+
+## Students Directory
+
+Student profiles are curated MDX, mirroring the Projects pipeline. Each student lives in
+`content/students/<slug>/en.mdx` + `hy.mdx` with an optional photo under `public/students/`
+(falls back to `/placeholder.svg`). They render as a photo grid on the homepage (`#students`)
+and as profile pages at `/students/[slug]`. Run `pnpm content:qa` to validate locale pairs,
+required fields, linked project slugs, and photo paths.
 
 ---
 
