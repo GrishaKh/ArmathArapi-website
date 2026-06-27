@@ -10,6 +10,7 @@ import { AboutSection } from "@/components/sections/AboutSection"
 import { StructureSection } from "@/components/sections/StructureSection"
 import { FieldsOfStudySection } from "@/components/sections/FieldsOfStudySection"
 import { MaterialsSection } from "@/components/sections/MaterialsSection"
+import { StudentsSection } from "@/components/sections/StudentsSection"
 import { JoinSection } from "@/components/sections/JoinSection"
 import { SupportSection } from "@/components/sections/SupportSection"
 import { ContactSection } from "@/components/sections/ContactSection"
@@ -35,6 +36,8 @@ export default function HomePage() {
       <EventsSection />
       {/* Projects Section */}
       <ProjectsSection />
+      {/* Students Section */}
+      <StudentsSection />
       {/* Join Section */}
       <JoinSection />
       {/* Support Section */}
