@@ -130,12 +130,12 @@ function validateStudentExtras(typeDir, slugDirName) {
     const source = readFile(filePath)
     const relativePath = path.relative(root, filePath)
     // validateLocalePair already parsed (and, on malformed frontmatter, reported)
-    // this file. Re-parse only to read fields; if it returns null the file is
-    // malformed and was already flagged once — skip silently to avoid a duplicate.
-    const frontmatter = parseFrontmatter(source, relativePath)
-    if (!frontmatter) {
-      continue
-    }
+    // this file. Extract the frontmatter body silently (no push to errors[]) so
+    // a malformed file is reported exactly once (by validateLocalePair).
+    if (!source.startsWith("---\n")) continue
+    const fmEnd = source.indexOf("\n---\n", 4)
+    if (fmEnd === -1) continue
+    const frontmatter = source.slice(4, fmEnd)
 
     // photo path (when set and root-relative) must exist under public/
     // (generalizes the spec's public/students/ wording to allow root-level
@@ -144,7 +144,7 @@ function validateStudentExtras(typeDir, slugDirName) {
     if (photo && photo.startsWith("/")) {
       const assetPath = path.join(publicRoot, photo.replace(/^\//, ""))
       if (!fs.existsSync(assetPath)) {
-        errors.push(`students/${slugDirName}/${locale}.mdx: photo asset not found at public${photo}`)
+        errors.push(`${relativePath}: photo asset not found at public${photo}`)
       }
     }
 
@@ -157,7 +157,7 @@ function validateStudentExtras(typeDir, slugDirName) {
         const projectSlug = match[1].trim()
         if (!knownProjectSlugs.includes(projectSlug)) {
           errors.push(
-            `students/${slugDirName}/${locale}.mdx: projects slug "${projectSlug}" does not resolve to content/projects/${projectSlug}`
+            `${relativePath}: projects slug "${projectSlug}" does not resolve to content/projects/${projectSlug}`
           )
         }
       }
