@@ -407,6 +407,19 @@ export const translations = {
     attendanceColEntered: "Entered",
     attendanceNoLedgerYet: "No scheduled sessions for you yet.",
     attendanceNoEntriesYet: "No tap-ins recorded yet.",
+    // Students
+    students: "Students",
+    studentsDescription: "Meet the students building at Armath Arapi",
+    viewProfile: "View profile",
+    studentJoined: "Joined",
+    studentGrade: "Grade",
+    studentAge: "Age",
+    studentInterests: "Interests",
+    studentSkills: "Skills",
+    studentProjects: "Projects",
+    studentAchievements: "Achievements",
+    studentLinks: "Links",
+    backToStudents: "Back to students",
   },
   hy: {
     // Navigation
@@ -816,6 +829,19 @@ export const translations = {
     attendanceColEntered: "Մուտք գործեց",
     attendanceNoLedgerYet: "Դեռ նախատեսված պարապմունքներ չկան։",
     attendanceNoEntriesYet: "Մուտքեր դեռ գրանցված չեն։",
+    // Students
+    students: "Աշակերտներ",
+    studentsDescription: "Ծանոթացեք Արմաթ Արափիի աշակերտներին",
+    viewProfile: "Դիտել պրոֆիլը",
+    studentJoined: "Միացել է",
+    studentGrade: "Դասարան",
+    studentAge: "Տարիք",
+    studentInterests: "Հետաքրքրություններ",
+    studentSkills: "Հմտություններ",
+    studentProjects: "Նախագծեր",
+    studentAchievements: "Ձեռքբերումներ",
+    studentLinks: "Հղումներ",
+    backToStudents: "Վերադառնալ աշակերտներ",
   },
 }
 
