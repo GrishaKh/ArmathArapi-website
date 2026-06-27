@@ -113,6 +113,58 @@ function validateLocalePair(typeDir, slugDirName) {
   }
 }
 
+function validateStudentExtras(typeDir, slugDirName) {
+  const projectsDir = path.join(contentRoot, "projects")
+  const knownProjectSlugs = fs.existsSync(projectsDir)
+    ? fs
+        .readdirSync(projectsDir, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => entry.name)
+    : []
+
+  for (const locale of locales) {
+    const filePath = path.join(typeDir, slugDirName, `${locale}.mdx`)
+    if (!fs.existsSync(filePath)) {
+      continue
+    }
+    const source = readFile(filePath)
+    const relativePath = path.relative(root, filePath)
+    // validateLocalePair already parsed (and, on malformed frontmatter, reported)
+    // this file. Re-parse only to read fields; if it returns null the file is
+    // malformed and was already flagged once — skip silently to avoid a duplicate.
+    const frontmatter = parseFrontmatter(source, relativePath)
+    if (!frontmatter) {
+      continue
+    }
+
+    // photo path (when set and root-relative) must exist under public/
+    // (generalizes the spec's public/students/ wording to allow root-level
+    // placeholders such as /placeholder.svg, which the fallback design relies on)
+    const photo = getFrontmatterScalar(frontmatter, "photo")
+    if (photo && photo.startsWith("/")) {
+      const assetPath = path.join(publicRoot, photo.replace(/^\//, ""))
+      if (!fs.existsSync(assetPath)) {
+        errors.push(`students/${slugDirName}/${locale}.mdx: photo asset not found at public${photo}`)
+      }
+    }
+
+    // every projects: slug must resolve to an existing content/projects/<slug>
+    const projectsBlockMatch = frontmatter.match(/^projects:\s*\n((?:\s*-\s*.+\n?)+)/m)
+    if (projectsBlockMatch) {
+      const itemRegex = /^\s*-\s*["']?([^\n"']+?)["']?\s*$/gm
+      let match
+      while ((match = itemRegex.exec(projectsBlockMatch[1])) !== null) {
+        const projectSlug = match[1].trim()
+        if (!knownProjectSlugs.includes(projectSlug)) {
+          errors.push(
+            `students/${slugDirName}/${locale}.mdx: projects slug "${projectSlug}" does not resolve to content/projects/${projectSlug}`
+          )
+        }
+      }
+    }
+  }
+}
+
 for (const [contentType] of Object.entries(docTypeConfig)) {
   const typeDir = path.join(contentRoot, contentType)
   const slugs = fs
@@ -123,6 +175,9 @@ for (const [contentType] of Object.entries(docTypeConfig)) {
 
   for (const slug of slugs) {
     validateLocalePair(typeDir, slug)
+    if (contentType === "students") {
+      validateStudentExtras(typeDir, slug)
+    }
   }
 }
 
