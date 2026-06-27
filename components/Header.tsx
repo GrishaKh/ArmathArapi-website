@@ -24,6 +24,7 @@ const navItems: TranslationKey[] = [
   "learningMaterials",
   "events",
   "ourProjects",
+  "students",
   "supportArmath",
   "contact",
 ]
