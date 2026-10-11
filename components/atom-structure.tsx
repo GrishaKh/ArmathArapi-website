@@ -1,16 +1,14 @@
 "use client"
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
-import type React from "react"
-import { useLayoutEffect, useEffect, useMemo, useRef, useState, useCallback } from "react"
+import { motion, useAnimationFrame, useMotionValue, useReducedMotion, useTransform } from "framer-motion"
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react"
 import { createPortal } from "react-dom"
-import { Card, CardContent } from "@/components/ui/card"
-import { useLanguage } from "@/contexts/language-context"
 import Image from "next/image"
-
+import type React from "react"
+import { useLanguage } from "@/contexts/language-context"
 import { type TranslationKey } from "@/lib/translations"
+import { getAtomLayout, getTooltipPosition, advanceOrbit } from "@/lib/atom-layout"
 
-// --- Types ---
 interface TeamMember {
   id: string
   name: string
@@ -21,7 +19,7 @@ interface TeamMember {
   image?: string
 }
 
-// --- Sample Data ---
+// Team profiles share the existing translated names, roles, and descriptions.
 const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
   {
     id: "grisha-kh",
@@ -65,743 +63,209 @@ const getTeamMembers = (t: (key: TranslationKey) => string): TeamMember[] => [
   },
 ]
 
-// --- Constants ---
-const GOLDEN_ANGLE = 137.5 // Golden angle in degrees for optimal spacing
-const MIN_NUCLEUS_DIAMETER = 110 // Increased for better mobile spacing
-const MIN_ORBIT_RADIUS_MULTIPLIER = 0.9
 
-// --- Helpers ---
-const getInitials = (full: string): string => {
-  if (!full || typeof full !== "string") return "?"
-  return full
-    .trim()
-    .split(/\s+/)
-    .map((w) => w.charAt(0))
-    .join("")
-    .toUpperCase()
+const subscribeTouch = (callback: () => void) => {
+  const query = window.matchMedia("(pointer: coarse)")
+  query.addEventListener("change", callback)
+  return () => query.removeEventListener("change", callback)
+}
+const touchSnapshot = () => window.matchMedia("(pointer: coarse)").matches
+const serverSnapshot = () => false
+const initials = (name: string) => name.trim().split(/\s+/).map(word => word[0]).join("").toUpperCase()
+
+function Profile({ member, compact = false }: { member: TeamMember; compact?: boolean }) {
+  return <div className="rounded-2xl bg-white p-5 text-center shadow-2xl border border-slate-100">
+    <div className={`h-1.5 w-16 mx-auto mb-5 rounded-full ${member.isCore ? "bg-armath-blue" : "bg-armath-red"}`} />
+    {member.image && <Image src={member.image} alt="" width={compact ? 64 : 96} height={compact ? 64 : 96} className={`mx-auto mb-4 rounded-full object-cover ${compact ? "h-16 w-16" : "h-24 w-24"}`} />}
+    <h3 id={`profile-name-${member.id}`} className="text-lg font-bold text-gray-900">{member.name}</h3>
+    <p className="mt-1 text-sm font-semibold text-armath-teal">{member.role}</p>
+    <p className="mt-3 text-sm leading-relaxed text-gray-600">{member.details ?? member.contribution}</p>
+  </div>
 }
 
-// Observe element size
-function useMeasure<T extends HTMLElement>() {
-  const ref = useRef<T | null>(null)
-  const [rect, setRect] = useState({ width: 0, height: 0 })
-
+function Tooltip({ member, anchor, onEnter, onLeave }: {
+  member: TeamMember; anchor: React.RefObject<HTMLButtonElement | null>; onEnter: () => void; onLeave: () => void
+}) {
+  const panel = useRef<HTMLDivElement>(null)
+  const [position, setPosition] = useState({ x: 8, y: 8 })
+  const reduceMotion = useReducedMotion()
   useLayoutEffect(() => {
-    if (!ref.current) return
-    const el = ref.current
-    const ro = new ResizeObserver((entries) => {
-      const cr = entries[0].contentRect
-      setRect({ width: cr.width, height: cr.height })
-    })
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [])
-
-  return { ref, ...rect }
-}
-
-// Hook to handle keyboard events (Escape key)
-function useEscapeKey(callback: () => void) {
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        callback()
-      }
+    const update = () => {
+      if (!anchor.current || !panel.current) return
+      const next = getTooltipPosition(anchor.current.getBoundingClientRect(), panel.current.offsetWidth,
+        panel.current.offsetHeight, window.innerWidth, window.innerHeight)
+      setPosition(prev => prev.x === next.x && prev.y === next.y ? prev : next)
     }
-    window.addEventListener("keydown", handleEscape)
-    return () => window.removeEventListener("keydown", handleEscape)
-  }, [callback])
-}
-
-// Hook to detect touch devices for tap-to-toggle behavior
-function useIsTouchDevice() {
-  const [isTouch, setIsTouch] = useState(false)
-
-  useEffect(() => {
-    // Check for coarse pointer (touch) OR no fine pointer (hover)
-    const touchQuery = window.matchMedia("(pointer: coarse)")
-    setIsTouch(touchQuery.matches)
-
-    const handler = (e: MediaQueryListEvent) => setIsTouch(e.matches)
-    touchQuery.addEventListener("change", handler)
-    return () => touchQuery.removeEventListener("change", handler)
-  }, [])
-
-  return isTouch
-}
-
-// --- Floating Tooltip Component ---
-// Renders in a portal to document.body with fixed positioning
-type FloatingTooltipProps = {
-  isVisible: boolean
-  anchorRef: React.RefObject<HTMLElement | null>
-  children: React.ReactNode
-  id: string
-}
-
-const FloatingTooltip: React.FC<FloatingTooltipProps> = ({ isVisible, anchorRef, children, id }) => {
-  const [position, setPosition] = useState({ x: 0, y: 0, flipToBottom: false })
-  const [isMounted, setIsMounted] = useState(false)
-  const tooltipRef = useRef<HTMLDivElement>(null)
-
-  // Only render portal on client
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  useEffect(() => {
-    if (!isVisible || !anchorRef.current) return
-
-    const updatePosition = () => {
-      if (!anchorRef.current) return
-      const rect = anchorRef.current.getBoundingClientRect()
-
-      // Measure tooltip if possible (fallback to the known width)
-      const tooltipWidth = tooltipRef.current?.offsetWidth ?? 280
-      const tooltipHeight = tooltipRef.current?.offsetHeight ?? 0
-      const gap = 12
-      const margin = 8
-
-      // Use viewport dimensions directly
-      const viewportWidth = window.innerWidth
-      const viewportHeight = window.innerHeight
-
-      // Calculate the element's true center position in viewport coordinates
-      const elementCenterX = rect.left + rect.width / 2
-
-      // Clamp tooltip position to prevent horizontal overflow
-      const minX = tooltipWidth / 2 + margin
-      const maxX = viewportWidth - tooltipWidth / 2 - margin
-      const clampedX = Math.max(minX, Math.min(maxX, elementCenterX))
-
-      // Determine if we need to flip (prefer top, but pick the side that fits best)
-      const spaceAbove = rect.top
-      const spaceBelow = viewportHeight - rect.bottom
-      const needed = tooltipHeight > 0 ? tooltipHeight + gap : 200
-      const canFitAbove = spaceAbove >= needed
-      const canFitBelow = spaceBelow >= needed
-
-      let flipToBottom = false
-      if (!canFitAbove && canFitBelow) flipToBottom = true
-      else if (canFitAbove && !canFitBelow) flipToBottom = false
-      else if (!canFitAbove && !canFitBelow) flipToBottom = spaceBelow > spaceAbove
-      else flipToBottom = false
-
-      setPosition({
-        x: clampedX,
-        y: flipToBottom ? rect.bottom + gap : rect.top - gap,
-        flipToBottom,
-      })
+    update()
+    const observer = new ResizeObserver(update)
+    if (panel.current) observer.observe(panel.current)
+    if (anchor.current) observer.observe(anchor.current)
+    window.addEventListener("resize", update)
+    window.addEventListener("scroll", update, true)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener("resize", update)
+      window.removeEventListener("scroll", update, true)
     }
-
-    updatePosition()
-    // Follow moving electrons smoothly (and stay in sync with rAF-driven motion)
-    let rafId = 0
-    const loop = () => {
-      updatePosition()
-      rafId = window.requestAnimationFrame(loop)
-    }
-    rafId = window.requestAnimationFrame(loop)
-    return () => window.cancelAnimationFrame(rafId)
-  }, [isVisible, anchorRef])
-
-  // Don't render on server or before mount
-  if (!isMounted || typeof document === 'undefined') return null
-
-  return createPortal(
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          ref={tooltipRef}
-          key={id}
-          id={id}
-          role="tooltip"
-          initial={{ opacity: 0, y: position.flipToBottom ? -10 : 10, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: position.flipToBottom ? -10 : 10, scale: 0.95 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-          className="pointer-events-none z-[9999]"
-          style={{
-            position: 'fixed',
-            left: position.x,
-            top: position.y,
-            transform: position.flipToBottom
-              ? "translate(-50%, 0)"
-              : "translate(-50%, -100%)",
-          }}
-        >
-          {children}
-        </motion.div>
-      )}
-    </AnimatePresence>,
-    document.body
-  )
+  }, [anchor])
+  return createPortal(<div ref={panel} id={`tip-${member.id}`} role="tooltip" data-atom-profile="true"
+    onMouseEnter={onEnter} onMouseLeave={onLeave}
+    className="fixed z-[9999] w-[280px] max-w-[calc(100vw-16px)] max-h-[calc(100dvh-16px)] overflow-y-auto rounded-2xl"
+    style={{ left: position.x, top: position.y }}>
+    <motion.div initial={reduceMotion ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.15 }}>
+      <Profile member={member} compact />
+    </motion.div>
+  </div>, document.body)
 }
 
-// --- Mobile Profile Bottom Sheet ---
-type MobileProfileSheetProps = {
-  member: TeamMember | null
-  onClose: () => void
-}
-
-const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({ member, onClose }) => {
-  const [isMounted, setIsMounted] = useState(false)
+function MobileProfileSheet({ member, onClose }: { member: TeamMember; onClose: () => void }) {
+  const dialog = useRef<HTMLDialogElement>(null)
+  const { t } = useLanguage()
   const reduceMotion = useReducedMotion()
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
-
-  // Lock body scroll while sheet is open
-  useEffect(() => {
-    if (!member) return
-    const prev = document.body.style.overflow
+  useLayoutEffect(() => {
+    const element = dialog.current
+    if (!element) return
+    const opener = document.activeElement as HTMLElement | null
+    const overflow = document.body.style.overflow
+    element.showModal()
     document.body.style.overflow = "hidden"
-    return () => { document.body.style.overflow = prev }
-  }, [member])
-
-  if (!isMounted || typeof document === "undefined") return null
-
-  return createPortal(
-    <AnimatePresence>
-      {member && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            key="sheet-backdrop"
-            className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={onClose}
-          />
-          {/* Sheet */}
-          <motion.div
-            key="sheet-panel"
-            className="fixed bottom-0 left-0 right-0 z-[9999] rounded-t-3xl bg-white shadow-2xl"
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            drag="y"
-            dragConstraints={{ top: 0, bottom: 0 }}
-            dragElastic={{ top: 0, bottom: 0.4 }}
-            onDragEnd={(_, info) => {
-              if (info.offset.y > 80 || info.velocity.y > 400) onClose()
-            }}
-            transition={reduceMotion ? { duration: 0 } : { type: "spring", damping: 30, stiffness: 300 }}
-          >
-            {/* Drag handle */}
-            <div className="flex justify-center pt-3 pb-1">
-              <div className="h-1.5 w-12 rounded-full bg-slate-300" />
-            </div>
-            {/* Close button */}
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 transition-colors"
-              aria-label="Close"
-            >
-              <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            {/* Content */}
-            <div className="px-6 pb-10 pt-2">
-              {/* Colour bar */}
-              <div className={`h-1.5 w-16 rounded-full mx-auto mb-5 ${member.isCore ? "bg-gradient-to-r from-armath-blue to-armath-blue/70" : "bg-gradient-to-r from-armath-red to-armath-red/70"}`} />
-              <div className="flex flex-col items-center text-center">
-                {/* Profile image */}
-                <div className={`w-24 h-24 rounded-full overflow-hidden ring-4 ring-offset-2 shadow-xl mb-4 ${member.isCore ? "ring-armath-blue/20" : "ring-armath-red/20"}`}>
-                  {member.image ? (
-                    <Image src={member.image} alt={member.name} width={96} height={96} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className={`w-full h-full flex items-center justify-center text-white text-2xl font-bold ${member.isCore ? "bg-gradient-to-br from-armath-blue to-armath-blue/70" : "bg-gradient-to-br from-armath-red to-armath-red/70"}`}>
-                      {getInitials(member.name)}
-                    </div>
-                  )}
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
-                <p className={`text-sm font-semibold mb-4 ${member.isCore ? "text-armath-teal" : "text-armath-red"}`}>{member.role}</p>
-                <p className="text-base leading-relaxed text-gray-600 max-w-sm">{member.details ?? member.contribution ?? "—"}</p>
-              </div>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>,
-    document.body
-  )
-}
-
-// --- Subcomponents ---
-
-type NucleusProps = {
-  diameter: number
-  coreMembers: TeamMember[]
-  activeId: string | null
-  setActiveId: (id: string | null) => void
-  togglePin: (id: string) => void
-}
-
-// Individual core member button with ref for tooltip positioning
-type CoreMemberButtonProps = {
-  member: TeamMember
-  angleDeg: number
-  orbitRadius: number
-  dotSize: number
-  activeId: string | null
-  setActiveId: (id: string | null) => void
-  togglePin: (id: string) => void
-  index: number
-}
-
-const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
-  member,
-  angleDeg,
-  orbitRadius,
-  dotSize,
-  activeId,
-  setActiveId,
-  togglePin,
-  index,
-}) => {
-  const reduceMotion = useReducedMotion()
-  const wrapperRef = useRef<HTMLDivElement>(null)
-  const tipId = `tip-${member.id}`
-  const isActive = activeId === member.id
-  const isTouch = useIsTouchDevice()
-
-  // Click-to-pin works on all devices (needed for orbiting electrons and accessibility)
-  const handleClick = () => togglePin(member.id)
-
-  // Calculate actual x,y position from angle and radius
-  const angleRad = (angleDeg * Math.PI) / 180
-  const offsetX = Math.cos(angleRad) * orbitRadius
-  const offsetY = Math.sin(angleRad) * orbitRadius
-
-  return (
-    <div
-      ref={wrapperRef}
-      className="absolute"
-      style={{
-        left: '50%',
-        top: '50%',
-        transform: `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px))`,
-        zIndex: isActive ? 50 : 1,
-      }}
-    >
-      <motion.button
-        type="button"
-        data-atom-member-button="true"
-        data-member-id={member.id}
-        aria-describedby={isActive ? tipId : undefined}
-        aria-label={`${member.name}, ${member.role}`}
-        className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-armath-blue"
-        initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
-        animate={reduceMotion ? {} : { scale: 1, opacity: 1 }}
-        transition={{ delay: 0.4 + index * 0.2, type: "spring", stiffness: 300 }}
-        onClick={handleClick}
-        onMouseEnter={() => !isTouch && setActiveId(member.id)}
-        onMouseLeave={() => !isTouch && setActiveId(null)}
-        onFocus={() => setActiveId(member.id)}
-        onBlur={() => !isTouch && setActiveId(null)}
-        whileHover={reduceMotion ? undefined : { scale: 1.2 }}
-      >
-        <div
-          className="flex flex-col items-center justify-center rounded-full border-2 border-armath-blue/20 bg-white text-xs font-bold text-armath-teal shadow-md cursor-pointer hover:bg-armath-blue/5 transition-colors"
-          style={{ width: dotSize, height: dotSize }}
-        >
-          <span>{getInitials(member.name)}</span>
-        </div>
-      </motion.button>
-
-      {!isTouch && (
-        <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId}>
-          <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
-            {/* Gradient header */}
-            <div className="h-2 bg-gradient-to-r from-armath-blue to-armath-blue/70" />
-            <CardContent className="p-5">
-              <div className="flex flex-col items-center text-center">
-                {/* Profile image */}
-                <div className="relative mb-3">
-                  <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-blue/20 ring-offset-2 shadow-lg">
-                    {member.image ? (
-                      <Image
-                        src={member.image}
-                        alt={member.name}
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-armath-blue to-armath-blue/70 flex items-center justify-center text-white text-lg font-bold">
-                        {getInitials(member.name)}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                {/* Name and role */}
-                <h3 className="text-base font-bold text-gray-900 mb-1">{member.name}</h3>
-                <p className="text-sm font-semibold text-armath-teal mb-3">{member.role}</p>
-                {/* Details */}
-                <p className="text-sm leading-relaxed text-gray-600">{member.details ?? "—"}</p>
-              </div>
-            </CardContent>
-          </Card>
-        </FloatingTooltip>
-      )}
-    </div>
-  )
-}
-
-const Nucleus: React.FC<NucleusProps> = ({ diameter, coreMembers, activeId, setActiveId, togglePin }) => {
-  const reduceMotion = useReducedMotion()
-
-  // Early return if no core members
-  if (coreMembers.length === 0) {
-    return null
-  }
-
-  const count = coreMembers.length
-
-  // Calculate dot size - smaller minimum for mobile, scales with diameter
-  const dotSize = Math.round(Math.max(20, Math.min(32, diameter * 0.18)))
-
-  // Calculate minimum orbit radius needed to prevent overlap
-  // For n items evenly spaced on a circle, the minimum radius to avoid overlap is:
-  // r >= dotSize / (2 * sin(π / n))
-  // We use 0.75 multiplier to add extra breathing room between elements
-  const minSafeRadius = count > 1
-    ? (dotSize * 0.75) / Math.sin(Math.PI / count)
-    : 0
-
-  // Available radius from nucleus edge
-  const padding = 6
-  const maxRadius = diameter / 2 - dotSize / 2 - padding
-
-  // Use the larger of minimum safe radius or 70% of max, capped at max
-  const orbitRadius = Math.min(maxRadius, Math.max(minSafeRadius, maxRadius * 0.7))
-
-  return (
-    <motion.div
-      className="relative z-20 flex items-center justify-center rounded-full bg-gradient-to-br from-armath-blue to-armath-blue/80 shadow-xl border-4 border-white shadow-[0_0_30px_rgba(59,130,246,0.25)]"
-      style={{ width: diameter, height: diameter }}
-      initial={reduceMotion ? false : { scale: 0 }}
-      animate={reduceMotion ? {} : { scale: 1 }}
-      transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-    >
-      {coreMembers.map((member, index) => {
-        const angleDeg = (360 / count) * index - 90
-        return (
-          <CoreMemberButton
-            key={member.id}
-            member={member}
-            angleDeg={angleDeg}
-            orbitRadius={orbitRadius}
-            dotSize={dotSize}
-            activeId={activeId}
-            setActiveId={setActiveId}
-            togglePin={togglePin}
-            index={index}
-          />
-        )
-      })}
-    </motion.div>
-  )
-}
-
-type OrbitProps = { radius: number; delay: number; dashed?: boolean }
-const Orbit: React.FC<OrbitProps> = ({ radius, delay, dashed }) => {
-  const reduceMotion = useReducedMotion()
-  return (
-    <motion.div
-      aria-hidden
-      className={`absolute rounded-full border border-armath-blue/20 pointer-events-none z-10 ${dashed ? "border-dashed" : ""}`}
-      style={{ width: radius * 2, height: radius * 2 }}
-      initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
-      animate={reduceMotion ? {} : { scale: 1, opacity: 1 }}
-      transition={{ delay, duration: 0.8 }}
-    />
-  )
-}
-
-type ElectronProps = {
-  supporter: TeamMember
-  orbitRadius: number
-  duration: number
-  startingAngle: number
-  activeId: string | null
-  setActiveId: (id: string | null) => void
-  togglePin: (id: string) => void
-  size: number
-}
-
-const Electron: React.FC<ElectronProps> = ({
-  supporter,
-  orbitRadius,
-  duration,
-  startingAngle,
-  activeId,
-  setActiveId,
-  togglePin,
-  size,
-}) => {
-  const reduceMotion = useReducedMotion()
-  const wrapperRef = useRef<HTMLDivElement>(null)
-  const isActive = activeId === supporter.id
-  const tipId = `tip-${supporter.id}`
-  const isTouch = useIsTouchDevice()
-
-  const transition = useMemo(() => {
-    if (reduceMotion) {
-      return { duration: 0 as number }
+    return () => {
+      element.close()
+      document.body.style.overflow = overflow
+      if (opener?.isConnected) opener.focus()
     }
-    return { duration, ease: "linear" as const, repeat: Number.POSITIVE_INFINITY as number }
-  }, [duration, reduceMotion])
-
-  // Memoize initials to avoid recalculating on every render
-  const initials = useMemo(() => getInitials(supporter.name), [supporter.name])
-
-  // Click-to-pin works on all devices (hover can't reliably stay on a moving electron)
-  const handleClick = () => togglePin(supporter.id)
-
-  return (
-    <motion.div
-      className="absolute left-1/2 top-1/2"
-      style={{
-        transform: "translate(-50%, -50%)",
-        zIndex: isActive ? 50 : 30, // Lift electrons above next section (z-10) and orbits
-      }}
-      initial={{ rotate: startingAngle }}
-      animate={{ rotate: startingAngle + 360 }}
-      transition={transition}
-    >
-      <div 
-        ref={wrapperRef}
-        className="absolute" 
-        style={{ left: `${orbitRadius}px`, transform: "translate(-50%, -50%)" }}
-      >
-        <motion.button
-          type="button"
-          data-atom-member-button="true"
-          data-member-id={supporter.id}
-          aria-describedby={isActive ? tipId : undefined}
-          aria-label={`${supporter.name}, ${supporter.role}`}
-          className="relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-armath-red"
-          onClick={handleClick}
-          onMouseEnter={() => !isTouch && setActiveId(supporter.id)}
-          onMouseLeave={() => !isTouch && setActiveId(null)}
-          onFocus={() => setActiveId(supporter.id)}
-          onBlur={() => !isTouch && setActiveId(null)}
-          whileHover={reduceMotion ? undefined : { scale: 1.1 }}
-        >
-          <motion.div
-            className="relative"
-            initial={{ rotate: -startingAngle }}
-            animate={{ rotate: -(startingAngle + 360) }}
-            transition={transition}
-          >
-            <div
-              className="relative flex items-center justify-center rounded-full border-2 border-white bg-armath-red text-sm font-bold text-white shadow-lg cursor-pointer hover:bg-armath-red/90 transition-colors"
-              style={{ width: size, height: size }}
-            >
-              {initials}
-            </div>
-          </motion.div>
-        </motion.button>
-
-        {!isTouch && (
-          <FloatingTooltip isVisible={isActive} anchorRef={wrapperRef} id={tipId}>
-            <Card className="shadow-2xl border-0 w-[280px] overflow-hidden bg-white">
-              {/* Gradient header */}
-              <div className="h-2 bg-gradient-to-r from-armath-red to-armath-red/70" />
-              <CardContent className="p-5">
-                <div className="flex flex-col items-center text-center">
-                  {/* Profile image */}
-                  <div className="relative mb-3">
-                    <div className="w-16 h-16 rounded-full overflow-hidden ring-3 ring-armath-red/20 ring-offset-2 shadow-lg">
-                      {supporter.image ? (
-                        <Image
-                          src={supporter.image}
-                          alt={supporter.name}
-                          width={64}
-                          height={64}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-armath-red to-armath-red/70 flex items-center justify-center text-white text-lg font-bold">
-                          {initials}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  {/* Name and role */}
-                  <h3 className="text-base font-bold text-gray-900 mb-1">{supporter.name}</h3>
-                  <p className="text-sm font-semibold text-armath-red mb-3">{supporter.role}</p>
-                  {/* Contribution */}
-                  <p className="text-sm leading-relaxed text-gray-600">{supporter.contribution ?? "—"}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </FloatingTooltip>
-        )}
-      </div>
+  }, [])
+  return createPortal(<dialog ref={dialog} aria-modal="true" aria-labelledby={`profile-name-${member.id}`}
+    className="fixed inset-x-0 top-auto bottom-0 m-0 w-full max-w-none max-h-[90dvh] overflow-y-auto rounded-t-3xl border-0 bg-white p-0 backdrop:bg-black/40 backdrop:backdrop-blur-sm"
+    onCancel={event => { event.preventDefault(); onClose() }}
+    onClick={event => { if (event.target === event.currentTarget) {
+      const bounds = event.currentTarget.getBoundingClientRect()
+      if (event.clientY < bounds.top || event.clientY > bounds.bottom || event.clientX < bounds.left || event.clientX > bounds.right) onClose()
+    } }}>
+    <motion.div initial={reduceMotion ? false : { y: 80 }} animate={{ y: 0 }}
+      transition={{ duration: reduceMotion ? 0 : 0.2 }} className="relative pt-14 pb-6 px-4">
+      <button type="button" autoFocus onClick={onClose} aria-label={t("close")}
+        className="absolute right-3 top-2 flex h-11 w-11 items-center justify-center rounded-full text-2xl text-slate-700 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-armath-teal">×</button>
+      <Profile member={member} />
     </motion.div>
-  )
+  </dialog>, document.body)
 }
 
-// --- Legend Component ---
-const Legend: React.FC = () => {
-  const { t } = useLanguage()
-  return (
-    <div className="mt-4 text-center">
-      <p className="text-sm font-medium text-gray-600">
-        <span className="text-armath-teal">●</span> {t("coreTeam")} ({t("nucleus")}) •
-        <span className="ml-2 text-armath-red">●</span> {t("supporters")} ({t("orbitingElectrons")})
-      </p>
+function MemberButton({ member, active, isTouch, onHover, onLeave, onFocus, onBlur, onSelect, size }: {
+  member: TeamMember; active: boolean; isTouch: boolean; size: number;
+  onHover: () => void; onLeave: () => void; onFocus: () => void; onBlur: () => void; onSelect: () => void
+}) {
+  const anchor = useRef<HTMLButtonElement>(null)
+  return <>
+    <button ref={anchor} type="button" data-atom-member-button="true" data-member-id={member.id}
+      aria-label={`${member.name}, ${member.role}`} aria-describedby={!isTouch && active ? `tip-${member.id}` : undefined}
+      aria-haspopup={isTouch ? "dialog" : undefined} aria-expanded={isTouch ? active : undefined}
+      onMouseEnter={() => { if (!isTouch) onHover() }} onMouseLeave={() => { if (!isTouch) onLeave() }}
+      onFocus={onFocus} onBlur={onBlur} onClick={onSelect}
+      className="flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-armath-teal">
+      <span className={`flex items-center justify-center rounded-full border-2 shadow-md text-xs font-bold ${member.isCore ? "border-armath-blue/20 bg-white text-armath-teal" : "border-white bg-armath-red text-white"}`}
+        style={{ width: size, height: size }}>{initials(member.name)}</span>
+    </button>
+    {!isTouch && active && <Tooltip member={member} anchor={anchor} onEnter={onHover} onLeave={onLeave} />}
+  </>
+}
+
+function Electron({ radius, duration, startingAngle, paused, children }: {
+  radius: number; duration: number; startingAngle: number; paused: boolean; children: React.ReactNode
+}) {
+  const angle = useMotionValue(startingAngle)
+  const counterAngle = useTransform(angle, value => -value)
+  const reduceMotion = useReducedMotion()
+  useAnimationFrame((_, delta) => {
+    angle.set(advanceOrbit(angle.get(), delta, duration, paused || !!reduceMotion))
+  })
+  return <motion.div className="absolute left-1/2 top-1/2 z-30" style={{ rotate: angle }}>
+    <div className="absolute" style={{ left: radius, transform: "translate(-50%, -50%)" }}>
+      <motion.div style={{ rotate: counterAngle }}>{children}</motion.div>
     </div>
-  )
+  </motion.div>
 }
 
-// --- Main Component ---
 export function AtomStructure() {
-  const [hoveredMemberId, setHoveredMemberId] = useState<string | null>(null)
-  const [pinnedMemberId, setPinnedMemberId] = useState<string | null>(null)
-  const [mobileMember, setMobileMember] = useState<TeamMember | null>(null)
-  const activeMemberId = pinnedMemberId ?? hoveredMemberId
-  const isTouch = useIsTouchDevice()
-
-  const togglePin = useCallback((id: string) => {
-    setPinnedMemberId((prev) => (prev === id ? null : id))
-    setHoveredMemberId(null)
-  }, [])
-
-  // Close pinned tooltip on outside click/tap.
-  useEffect(() => {
-    if (!pinnedMemberId) return
-
-    const onPointerDown = (e: PointerEvent) => {
-      const target = e.target as HTMLElement | null
-      if (!target) return
-      if (target.closest?.('[data-atom-member-button="true"]')) return
-      setPinnedMemberId(null)
-      setHoveredMemberId(null)
-    }
-
-    window.addEventListener("pointerdown", onPointerDown)
-    return () => window.removeEventListener("pointerdown", onPointerDown)
-  }, [pinnedMemberId])
-
-  // Handle escape key to close tooltip (at component level to avoid multiple listeners)
-  const closeAllTooltips = useCallback(() => {
-    setHoveredMemberId(null)
-    setPinnedMemberId(null)
-    setMobileMember(null)
-  }, [])
-  useEscapeKey(closeAllTooltips)
-
-  // Measure container to scale radii proportionally
-  const { ref, width, height } = useMeasure<HTMLDivElement>()
-  const shortest = Math.max(0, Math.min(width, height))
-  const baseRadius = shortest / 2
-
-  const isSmall = shortest < 360
-  const isTiny = shortest < 280
-
-  // Nucleus needs to be larger on mobile to fit core members without overlap
-  const nucleusDiameter = Math.max(
-    MIN_NUCLEUS_DIAMETER,
-    shortest * (isTiny ? 0.42 : isSmall ? 0.38 : 0.28)
-  )
-
-  const electronSize = Math.round(
-    Math.max(24, Math.min(44, shortest * (isTiny ? 0.1 : isSmall ? 0.11 : 0.12)))
-  )
-
-  // Adjust orbit radii to accommodate larger nucleus on mobile
-  const rawInnerOrbit = Math.max(
-    nucleusDiameter * MIN_ORBIT_RADIUS_MULTIPLIER,
-    baseRadius * (isTiny ? 0.58 : isSmall ? 0.52 : 0.45)
-  )
-  const rawOuterOrbit = Math.max(
-    nucleusDiameter * 1.25,
-    baseRadius * (isTiny ? 0.82 : isSmall ? 0.76 : 0.62)
-  )
-
-  // Clamp orbits so electrons don't clip outside the scene container on small screens
-  const orbitSafetyMargin = 6
-  const maxOrbitRadius = Math.max(0, baseRadius - electronSize / 2 - orbitSafetyMargin)
-  const innerOrbit = Math.min(rawInnerOrbit, maxOrbitRadius)
-  const outerOrbit = Math.max(innerOrbit, Math.min(rawOuterOrbit, maxOrbitRadius))
-
-  const orbits = [
-    { radius: innerOrbit, duration: 20 },
-    { radius: outerOrbit, duration: 25 },
-  ]
-
   const { t } = useLanguage()
-  const teamMembers = useMemo(() => getTeamMembers(t), [t])
-  const coreMembers = teamMembers.filter((m) => m.isCore)
-  const supporters = teamMembers.filter((m) => !m.isCore)
-
-  // On touch devices open a bottom sheet; on desktop pin the floating tooltip
-  const togglePinOrSheet = useCallback((id: string) => {
-    if (isTouch) {
-      const member = teamMembers.find((m) => m.id === id) ?? null
-      setMobileMember((prev) => (prev?.id === id ? null : member))
-    } else {
-      togglePin(id)
+  const team = useMemo(() => getTeamMembers(t), [t])
+  const core = team.filter(member => member.isCore)
+  const supporters = team.filter(member => !member.isCore)
+  const scene = useRef<HTMLDivElement>(null)
+  const [size, setSize] = useState(320)
+  const [hovered, setHovered] = useState<string | null>(null)
+  const [focused, setFocused] = useState<string | null>(null)
+  const [pinned, setPinned] = useState<string | null>(null)
+  const [mobile, setMobile] = useState<string | null>(null)
+  const [userPaused, setUserPaused] = useState(false)
+  const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const isTouch = useSyncExternalStore(subscribeTouch, touchSnapshot, serverSnapshot)
+  const reduceMotion = useReducedMotion()
+  const active = isTouch ? mobile : pinned ?? focused ?? hovered
+  const layout = getAtomLayout(size, core.length)
+  const clearTimer = useCallback(() => {
+    if (leaveTimer.current) clearTimeout(leaveTimer.current)
+  }, [])
+  const close = useCallback(() => {
+    clearTimer(); setHovered(null); setFocused(null); setPinned(null); setMobile(null)
+  }, [clearTimer])
+  useLayoutEffect(() => {
+    if (!scene.current) return
+    const observer = new ResizeObserver(([entry]) => {
+      setSize(Math.min(entry.contentRect.width, entry.contentRect.height))
+    })
+    observer.observe(scene.current)
+    return () => observer.disconnect()
+  }, [])
+  useEffect(() => {
+    const keyboard = (event: KeyboardEvent) => { if (event.key === "Escape") close() }
+    const outside = (event: PointerEvent) => {
+      if (event.target instanceof Element && !event.target.closest('[data-atom-member-button], [data-atom-profile], dialog')) close()
     }
-  }, [isTouch, teamMembers, togglePin])
-
-  return (
-    <div className="w-full" style={{ paddingBottom: '4rem', overflow: 'visible' }}>
-      {/* Scene container - overflow-visible to allow electrons to extend; extra padding for orbiting electrons; tooltips use portals so they still work */}
-      <div
-        ref={ref}
-        className="relative mx-auto flex h-[clamp(20rem,65vw,28rem)] max-w-full items-center justify-center touch-pan-y"
-        style={{ overflow: 'visible' }}
-      >
-        {/* Nucleus */}
-        <Nucleus
-          diameter={nucleusDiameter}
-          coreMembers={coreMembers}
-          activeId={activeMemberId}
-          setActiveId={setHoveredMemberId}
-          togglePin={togglePinOrSheet}
-        />
-
-        {/* Orbits */}
-        {orbits.map((o, i) => (
-          <Orbit key={i} radius={o.radius} delay={0.8 + i * 0.2} dashed={i === orbits.length - 1} />
-        ))}
-
-        {/* Electrons */}
-        {supporters.length > 0 &&
-          supporters.map((supporter, index) => {
-            const { radius, duration } = orbits[index % orbits.length]
-            const startingAngle = index * GOLDEN_ANGLE
-            return (
-              <Electron
-                key={supporter.id}
-                supporter={supporter}
-                orbitRadius={radius}
-                duration={duration}
-                startingAngle={startingAngle}
-                activeId={activeMemberId}
-                setActiveId={setHoveredMemberId}
-                togglePin={togglePinOrSheet}
-                size={electronSize}
-              />
-            )
-          })}
+    window.addEventListener("keydown", keyboard)
+    window.addEventListener("pointerdown", outside)
+    return () => {
+      clearTimer()
+      window.removeEventListener("keydown", keyboard)
+      window.removeEventListener("pointerdown", outside)
+    }
+  }, [close, clearTimer])
+  const button = (member: TeamMember) => <MemberButton member={member} active={active === member.id} isTouch={isTouch}
+    size={member.isCore ? layout.coreSize : layout.electronSize}
+    onHover={() => { clearTimer(); setHovered(member.id) }}
+    onLeave={() => { clearTimer(); leaveTimer.current = setTimeout(() => setHovered(null), 160) }}
+    onFocus={() => { if (!isTouch) setFocused(member.id) }} onBlur={() => setFocused(null)}
+    onSelect={() => {
+      clearTimer(); setHovered(null); setFocused(null)
+      if (isTouch) setMobile(prev => prev === member.id ? null : member.id)
+      else setPinned(prev => prev === member.id ? null : member.id)
+    }} />
+  const mobileMember = team.find(member => member.id === mobile)
+  return <div className="w-full pb-8">
+    <div ref={scene} className="relative mx-auto flex h-[clamp(20rem,65vw,28rem)] max-w-full items-center justify-center touch-pan-y">
+      <div className="relative z-20 rounded-full bg-gradient-to-br from-armath-blue to-armath-blue/80 border-4 border-white shadow-xl"
+        style={{ width: layout.nucleusDiameter, height: layout.nucleusDiameter }}>
+        {core.map((member, index) => {
+          const angle = (360 / core.length * index - 90) * Math.PI / 180
+          return <div key={member.id} className="absolute" style={{ left: "50%", top: "50%",
+            transform: `translate(calc(-50% + ${Math.cos(angle) * layout.coreRadius}px), calc(-50% + ${Math.sin(angle) * layout.coreRadius}px))` }}>{button(member)}</div>
+        })}
       </div>
-
-      {/* Legend (moved outside absolute scene for consistent placement) */}
-      <Legend />
-
-      {/* Mobile bottom sheet — shown on touch devices instead of floating tooltips */}
-      {isTouch && <MobileProfileSheet member={mobileMember} onClose={() => setMobileMember(null)} />}
+      {[layout.innerOrbit, layout.outerOrbit].map((radius, index) => <div key={index} aria-hidden="true"
+        className={`absolute rounded-full border border-armath-blue/20 pointer-events-none ${index ? "border-dashed" : ""}`}
+        style={{ width: radius * 2, height: radius * 2 }} />)}
+      {supporters.map((member, index) => <Electron key={member.id} radius={index % 2 ? layout.outerOrbit : layout.innerOrbit}
+        duration={index % 2 ? 25 : 20} startingAngle={index * 137.5}
+        paused={userPaused || active !== null}>{button(member)}</Electron>)}
     </div>
-  )
+    <p className="mt-4 text-center text-sm font-medium text-gray-600">
+      <span className="text-armath-teal">●</span> {t("coreTeam")} ({t("nucleus")}) · {" "}
+      <span className="text-armath-red">●</span> {t("supporters")} ({t("orbitingElectrons")})
+    </p>
+    {!reduceMotion && <div className="mt-3 text-center"><button type="button" aria-pressed={userPaused}
+      onClick={() => setUserPaused(value => !value)} className="min-h-11 rounded-lg px-4 text-sm text-armath-teal underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-armath-teal">
+      {t(userPaused ? "resumeAtomMotion" : "pauseAtomMotion")}
+    </button></div>}
+    {isTouch && mobileMember && <MobileProfileSheet key={mobileMember.id} member={mobileMember} onClose={close} />}
+  </div>
 }

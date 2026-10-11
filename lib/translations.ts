@@ -207,6 +207,8 @@ export const translations = {
     heroSubtitle: "STEM education center where students discover their talents and create the future",
     readMore: "Read More",
     close: "Close",
+    pauseAtomMotion: "Pause motion",
+    resumeAtomMotion: "Resume motion",
 
     // Footer
     engineeringLab: "Engineering Lab",
@@ -645,6 +647,8 @@ export const translations = {
     heroSubtitle: "ԲՏՃՄ աշխատանոց, որտեղ ուսանողները բացահայտում են իրենց տաղանդները և կառուցում իրենց ու համայնքի ապագան",
     readMore: "Կարդալ ավելին",
     close: "Փակել",
+    pauseAtomMotion: "Դադարեցնել շարժումը",
+    resumeAtomMotion: "Շարունակել շարժումը",
 
     // Footer
     engineeringLab: "Ճարտարագիտական աշխատանոց",

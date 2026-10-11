@@ -58,3 +58,11 @@ Plan: [Identity-first homepage revision](superpowers/plans/2026-10-11-identity-f
 8. Check real enrollment, password change, material assignment, upload, review, and download journeys in an isolated staging database.
 
 Changes are local and have not been deployed.
+
+### Atom interaction fixes — 2026-10-11
+
+Kept the nucleus, two orbit rings, team members, colors, and homepage section order. Member controls now have 44px targets; core targets do not overlap. The orbit layout keeps distinct rings on narrow screens. Supporter motion pauses on hover, keyboard focus, or profile selection; a translated pause/resume control also allows visitors to stop motion. Reduced-motion preferences stop orbital movement.
+
+Desktop profile cards use separate positioning and animation elements, remain inside the viewport, and can be hovered without disappearing. Resize and scroll events update their position instead of an endless tooltip animation loop. Touch profiles use a native modal dialog with a translated close button, Escape/backdrop dismissal, scroll locking, and focus restoration. Profiles remain visible in the initial server-rendered atom.
+
+Regression tests cover responsive ring spacing, 44px target geometry, viewport positioning, and continuous pause/resume angles. Browser interaction checks remain pending because no browser is available in this environment. At scene widths below 256px, core and supporter touch areas can intersect at some orbital angles; the visible circles and rings remain separated.
