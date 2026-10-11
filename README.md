@@ -6,10 +6,10 @@
 
 **A state-of-the-art makerspace where engineers, makers, and innovators come together to create, learn, and transform ideas into reality.**
 
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
 [![Supabase](https://img.shields.io/badge/Supabase-Database-3FCF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
 
 [Live Demo](https://armatharapi.vercel.app) · [Report Bug](https://github.com/GrishaKh/ArmathArapi-website/issues) · [Request Feature](https://github.com/GrishaKh/ArmathArapi-website/issues)
@@ -41,11 +41,11 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 
 | Category | Technology |
 |----------|------------|
-| Framework | Next.js 15 (App Router) |
-| Language | TypeScript 5 |
-| Styling | Tailwind CSS 3 |
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript 6 |
+| Styling | Tailwind CSS 4 |
 | UI Components | Radix UI + shadcn/ui |
-| Animations | Framer Motion 11 |
+| Animations | Framer Motion 12 |
 | Content | Contentlayer (MDX) |
 | Database | Supabase (PostgreSQL) |
 | Authentication | bcryptjs + httpOnly session cookies |
@@ -61,7 +61,7 @@ Armath Arapi is an engineering makerspace located in Arapi, Armenia. This websit
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 24 (matches CI and the route-test runtime)
 - pnpm (recommended) or npm
 
 ### Installation

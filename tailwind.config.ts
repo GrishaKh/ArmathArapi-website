@@ -31,6 +31,7 @@ const config: Config = {
       colors: {
         armath: {
           blue: "#3EC1CF",
+          teal: "#087C86",
           red: "#A4237E",
           black: "#231F20",
           gray: "#A7A9AB",

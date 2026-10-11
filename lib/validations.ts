@@ -167,3 +167,12 @@ export type StudentLoginData = z.infer<typeof studentLoginSchema>
 export type StudentWorkUploadData = z.infer<typeof studentWorkUploadSchema>
 export type StudentChangePasswordData = z.infer<typeof studentChangePasswordSchema>
 export type CreateStudentMaterialData = z.infer<typeof createStudentMaterialSchema>
+
+export const studentProgressUpdateSchema = z.object({
+  status: z.enum(['not_started', 'in_progress', 'completed']).optional(),
+  progress_percent: z.number().int().min(0).max(100).optional(),
+  last_position: z.string().max(2000).optional(),
+  time_spent_minutes: z.number().int().min(0).max(525600).optional(),
+}).strict().refine((data) => Object.keys(data).length > 0, {
+  message: 'At least one progress field is required',
+})

@@ -69,7 +69,7 @@ export default function MaterialPathPage({ params }: Props) {
             <CardContent className="flex flex-wrap gap-3">
               {pathMaterials.length > 0 && (
                 <Link href={`/materials/${pathMaterials[0].slug}`}>
-                  <Button className="bg-armath-blue hover:bg-armath-blue/90">
+                  <Button className="bg-armath-teal hover:bg-armath-teal/90">
                     {t("startPath")}
                     <ArrowRight className="h-4 w-4" />
                   </Button>
@@ -90,7 +90,7 @@ export default function MaterialPathPage({ params }: Props) {
                   <CardContent className="pt-6">
                     <div className="flex gap-4">
                       <div className="flex flex-col items-center">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-armath-blue text-sm font-semibold text-white">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-armath-teal text-sm font-semibold text-white">
                           {index + 1}
                         </div>
                         {index < pathMaterials.length - 1 && (
@@ -117,7 +117,7 @@ export default function MaterialPathPage({ params }: Props) {
                             {material.ageGroup}
                           </span>
                         </div>
-                        <Link href={`/materials/${material.slug}`} className="inline-flex items-center gap-1 text-sm font-medium text-armath-blue">
+                        <Link href={`/materials/${material.slug}`} className="inline-flex items-center gap-1 text-sm font-medium text-armath-teal">
                           {t("viewMaterial")}
                           <ArrowRight className="h-4 w-4" />
                         </Link>

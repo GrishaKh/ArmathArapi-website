@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { getAuthenticatedStudentId } from '@/lib/student-auth'
 import { getClientIp } from '@/lib/request-utils'
+import { studentProgressUpdateSchema } from '@/lib/validations'
 import { studentApiRateLimiter } from '@/lib/student-rate-limit'
 
 export async function GET(
@@ -18,6 +19,19 @@ export async function GET(
 
     if (!supabaseAdmin) {
       return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
+    }
+
+    const { data: assignment, error: assignmentError } = await supabaseAdmin
+      .from('student_material_assignments')
+      .select('id')
+      .eq('student_id', studentId)
+      .eq('material_id', materialId)
+      .maybeSingle()
+    if (assignmentError) {
+      return NextResponse.json({ error: 'Failed to verify material assignment' }, { status: 500 })
+    }
+    if (!assignment) {
+      return NextResponse.json({ error: 'Material not assigned to you' }, { status: 403 })
     }
 
     const { data: progress } = await supabaseAdmin
@@ -71,55 +85,53 @@ export async function PATCH(
     }
 
     const { materialId } = await params
-    const body = await request.json()
+    const parsed = studentProgressUpdateSchema.safeParse(await request.json().catch(() => null))
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.issues[0]?.message || 'Invalid progress' }, { status: 400 })
+    }
+    const body = parsed.data
 
     // Validate that student has this material assigned
-    const { data: assignment } = await supabaseAdmin
+    const { data: assignment, error: assignmentError } = await supabaseAdmin
       .from('student_material_assignments')
       .select('id')
       .eq('student_id', studentId)
       .eq('material_id', materialId)
-      .single()
+      .maybeSingle()
 
+    if (assignmentError) {
+      return NextResponse.json({ error: 'Failed to verify material assignment' }, { status: 500 })
+    }
     if (!assignment) {
       return NextResponse.json({ error: 'Material not assigned to you' }, { status: 403 })
     }
 
-    // Build update data
-    const updateData: Record<string, unknown> = {
-      updated_at: new Date().toISOString(),
-    }
-
-    if (typeof body.status === 'string' && ['not_started', 'in_progress', 'completed'].includes(body.status)) {
-      updateData.status = body.status
-      if (body.status === 'in_progress') {
-        updateData.started_at = updateData.started_at || new Date().toISOString()
-      }
-      if (body.status === 'completed') {
-        updateData.completed_at = new Date().toISOString()
-        updateData.progress_percent = 100
-      }
-    }
-
-    if (typeof body.progress_percent === 'number') {
-      updateData.progress_percent = Math.max(0, Math.min(100, body.progress_percent))
-    }
-
-    if (typeof body.last_position === 'string') {
-      updateData.last_position = body.last_position
-    }
-
-    if (typeof body.time_spent_minutes === 'number') {
-      updateData.time_spent_minutes = Math.max(0, body.time_spent_minutes)
-    }
-
-    // Upsert progress
-    const { data: existing } = await supabaseAdmin
+    const { data: existing, error: progressError } = await supabaseAdmin
       .from('student_progress')
-      .select('id, started_at')
+      .select('id, status, progress_percent, started_at, completed_at')
       .eq('student_id', studentId)
       .eq('material_id', materialId)
-      .single()
+      .maybeSingle()
+    if (progressError) {
+      return NextResponse.json({ error: 'Failed to fetch progress' }, { status: 500 })
+    }
+
+    const now = new Date().toISOString()
+    const updateData: Record<string, unknown> = { ...body, updated_at: now }
+    const nextStatus = body.status ?? existing?.status ?? 'not_started'
+    if (nextStatus === 'completed') {
+      updateData.progress_percent = 100
+      updateData.completed_at = existing?.completed_at ?? now
+      if (!existing?.started_at) updateData.started_at = now
+    } else if (body.status !== undefined) {
+      updateData.completed_at = null
+      if (body.status === 'not_started') {
+        updateData.progress_percent = 0
+        updateData.started_at = null
+      } else if (!existing?.started_at) {
+        updateData.started_at = now
+      }
+    }
 
     let progress
     if (existing) {

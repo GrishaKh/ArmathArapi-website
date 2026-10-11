@@ -17,7 +17,7 @@ export default function EventsPage() {
 
   const categoryColors: Record<string, string> = {
     competition: "bg-armath-red",
-    workshop: "bg-armath-blue",
+    workshop: "bg-armath-teal",
     camp: "bg-green-600",
     exhibition: "bg-purple-600",
   }
@@ -55,7 +55,7 @@ export default function EventsPage() {
                     </div>
                   </div>
                   <CardHeader>
-                    <CardTitle className="text-lg group-hover:text-armath-blue transition-colors line-clamp-2">
+                    <CardTitle className="text-lg group-hover:text-armath-teal transition-colors line-clamp-2">
                       {event.title}
                     </CardTitle>
                   </CardHeader>

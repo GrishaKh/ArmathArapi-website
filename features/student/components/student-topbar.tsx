@@ -2,10 +2,10 @@
 
 import { LogOut, Menu } from "lucide-react"
 import { NotificationBell } from "@/features/student/components/notification-bell"
-import type { Student } from "@/features/student/types"
+import type { StudentProfile } from "@/features/student/types"
 
 interface StudentTopbarProps {
-  student: Student
+  student: StudentProfile
   unreadCount: number
   onLogout: () => void
   onToggleSidebar: () => void

@@ -24,7 +24,7 @@ const mdxComponents = {
   ul: (props: any) => <ul className="space-y-4 mb-6" {...props} />,
   li: (props: any) => (
     <li className="flex gap-4" {...props}>
-      <Zap className="w-6 h-6 text-armath-blue shrink-0 mt-1" />
+      <Zap className="w-6 h-6 text-armath-teal shrink-0 mt-1" />
       <span className="text-slate-600 text-lg">{props.children}</span>
     </li>
   ),
@@ -187,10 +187,10 @@ export default function StudentProfilePage({ params }: Props) {
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           </div>
                           <CardContent className="flex flex-col gap-2 pt-6 md:pt-7">
-                            <h3 className="text-lg font-semibold text-slate-900 group-hover:text-armath-blue transition-colors line-clamp-2">
+                            <h3 className="text-lg font-semibold text-slate-900 group-hover:text-armath-teal transition-colors line-clamp-2">
                               {project.title}
                             </h3>
-                            <div className="flex items-center text-sm font-medium text-armath-blue group-hover:gap-2 transition-all">
+                            <div className="flex items-center text-sm font-medium text-armath-teal group-hover:gap-2 transition-all">
                               {t("viewProject")}
                               <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                             </div>
@@ -217,7 +217,7 @@ export default function StudentProfilePage({ params }: Props) {
                         transition={{ delay: index * 0.1 }}
                         className="flex gap-3 text-slate-600"
                       >
-                        <span className="text-armath-blue font-bold mt-1 shrink-0">✓</span>
+                        <span className="text-armath-teal font-bold mt-1 shrink-0">✓</span>
                         <span className="text-lg leading-relaxed">{achievement}</span>
                       </motion.li>
                     ))}
@@ -241,7 +241,7 @@ export default function StudentProfilePage({ params }: Props) {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <Button variant="outline" className="border-armath-blue/30 text-armath-blue">
+                        <Button variant="outline" className="border-armath-blue/30 text-armath-teal">
                           {link.label}
                           <ExternalLink className="w-4 h-4 ml-2" />
                         </Button>

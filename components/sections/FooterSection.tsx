@@ -61,7 +61,7 @@ export function FooterSection() {
                 <ul className="space-y-2 text-sm text-slate-400">
                   {section.links.map((link, linkIndex) => (
                     <motion.li key={link} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} transition={{ delay: linkIndex * 0.1 }}>
-                      <a href={`#${link}`} className="hover:text-white transition-colors">
+                      <a href={`/#${link}`} className="hover:text-white transition-colors">
                         {t(link)}
                       </a>
                     </motion.li>
@@ -70,8 +70,9 @@ export function FooterSection() {
               ) : (
                 <ul className="space-y-2 text-sm text-slate-400">
                   <li>{t("address")}</li>
-                  <li>+374 77 44 18 40</li>
-                  <li>grisha.khachatrian@gmail.com</li>
+                  <li><a href="/student/login" className="hover:text-white">{t("studentLogin")}</a></li>
+                  <li><a href="tel:+37477441840" className="hover:text-white">+374 77 44 18 40</a></li>
+                  <li><a href="mailto:grisha.khachatrian@gmail.com" className="break-all hover:text-white">grisha.khachatrian@gmail.com</a></li>
                 </ul>
               )}
             </AnimatedSection>

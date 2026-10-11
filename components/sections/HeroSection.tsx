@@ -1,101 +1,83 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import Image from "next/image"
+import Link from "next/link"
+import { Sparkles } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/language-context"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { useRef } from "react"
 import { cn } from "@/lib/utils"
-import { ArrowRight, Sparkles } from "lucide-react"
-import { MagneticWrapper } from "@/components/magnetic-wrapper"
 
 export function HeroSection() {
   const { t, language } = useLanguage()
-  const heroRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  })
-
-  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
-  const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0])
 
   return (
-    <section ref={heroRef} className="relative overflow-hidden pt-16 pb-24 md:pt-24 md:pb-32">
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-28 left-1/4 h-96 w-96 rounded-full bg-armath-blue/12 blur-3xl" />
-        <div className="absolute top-20 right-1/4 h-80 w-80 rounded-full bg-armath-red/8 blur-3xl" />
-      </div>
+    <section className="relative overflow-hidden py-12 md:py-20">
+      <div className="container mx-auto grid items-center gap-10 px-4 lg:grid-cols-2 lg:gap-14">
+        <div className="min-w-0">
+          <Badge className="mb-5 bg-armath-blue/10 text-armath-teal hover:bg-armath-blue/15">
+            <Sparkles className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
+            {t("heroBadge")}
+          </Badge>
 
-      <motion.div
-        style={{ y: heroY, opacity: heroOpacity }}
-        className="container mx-auto px-4 relative z-10"
-      >
-        <div className="max-w-3xl mx-auto text-center">
-          <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <Badge className="mb-5 bg-armath-blue/10 text-armath-blue hover:bg-armath-blue/15">
-              <Sparkles className="mr-1.5 h-3.5 w-3.5" />
-              {t("heroBadge")}
-            </Badge>
-          </motion.div>
-
-          <motion.h1
-            className={cn(
-              "font-bold text-slate-900 mb-6 leading-tight",
-              language === "hy"
-                ? "text-4xl sm:text-5xl md:text-6xl tracking-tight"
-                : "text-4xl sm:text-5xl md:text-7xl tracking-tighter" // Added tracking-tighter for English
-            )}
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65, delay: 0.1 }}
-          >
+          <h1 className={cn(
+            "mb-6 max-w-xl font-bold leading-tight text-slate-900",
+            language === "hy"
+              ? "text-4xl tracking-tight sm:text-5xl xl:text-6xl"
+              : "text-4xl tracking-tighter sm:text-5xl xl:text-6xl"
+          )}>
             {t("armathArapi")}
             <span className="block text-armath-red">{t("engineeringMakerspace")}</span>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            className={cn(
-              "mb-10 max-w-2xl mx-auto text-slate-600 leading-relaxed", // Added leading-relaxed
-              language === "hy" ? "text-lg tracking-tight" : "text-xl"
-            )}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.2 }}
-          >
+          <p className={cn(
+            "mb-8 max-w-xl leading-relaxed text-slate-600",
+            language === "hy" ? "text-lg tracking-tight" : "text-xl"
+          )}>
             {t("heroSubtitle")}
-          </motion.p>
+          </p>
 
-          <motion.div
-            className="flex flex-col sm:flex-row gap-3 justify-center"
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.35 }}
-          >
-            <MagneticWrapper>
-              <Button
-                size="lg"
-                className="rounded-full bg-gradient-to-r from-armath-red to-[#C8349C] text-white shadow-md hover:shadow-[0_8px_20px_rgba(164,35,126,0.3)] hover:-translate-y-0.5 transition-all duration-300 px-8 font-medium border-0 tracking-wide"
-                onClick={() => document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })}
-              >
-                {t("joinAsStudent")}
-                <ArrowRight className="ml-1 w-4 h-4" />
-              </Button>
-            </MagneticWrapper>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button asChild size="lg" className="rounded-full bg-armath-red px-8 text-white hover:bg-armath-red/90">
+              <Link href="/#joinAsStudent">{t("applyNow")}</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="rounded-full border-armath-teal/30 px-8 text-armath-teal hover:bg-armath-blue/10">
+              <Link href="/#ourProjects">{t("ourProjects")}</Link>
+            </Button>
+          </div>
 
-            <MagneticWrapper>
-              <Button
-                size="lg"
-                variant="outline"
-                className="rounded-full border-armath-blue/30 text-armath-blue hover:bg-armath-blue/10 px-8 transition-all duration-300 hover:-translate-y-0.5"
-                onClick={() => document.getElementById("ourProjects")?.scrollIntoView({ behavior: "smooth" })}
-              >
-                {t("ourProjects")}
-              </Button>
-            </MagneticWrapper>
-          </motion.div>
+          <dl className="mt-8 grid grid-cols-3 gap-4 border-t border-slate-200 pt-6">
+            <div>
+              <dt className="text-sm text-slate-600">{t("ageGroup")}</dt>
+              <dd className="mt-1 font-semibold text-slate-900">10–17 {t("yearsOld")}</dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-600">{t("participation")}</dt>
+              <dd className="mt-1 font-semibold text-slate-900">{t("freeClasses")}</dd>
+            </div>
+            <div>
+              <dt className="text-sm text-slate-600">{t("schedule")}</dt>
+              <dd className="mt-1 font-semibold text-slate-900">{t("twiceWeekly")}</dd>
+            </div>
+          </dl>
+          <p className="mt-4 text-sm leading-relaxed text-slate-600">{t("joinInfo")}</p>
         </div>
-      </motion.div>
+
+        <figure className="min-w-0">
+          <Link href="/events/first-robotics-2025" className="block overflow-hidden rounded-2xl">
+            <Image
+              src="/events/first-robotics.jpg"
+              alt={t("heroPhotoAlt")}
+              width={2048}
+              height={1152}
+              sizes="(min-width: 1400px) 650px, (min-width: 1024px) 50vw, 100vw"
+              priority
+              className="h-auto w-full"
+            />
+          </Link>
+          <figcaption className="mt-3 text-sm leading-relaxed text-slate-600">{t("heroPhotoCaption")}</figcaption>
+        </figure>
+      </div>
     </section>
   )
 }

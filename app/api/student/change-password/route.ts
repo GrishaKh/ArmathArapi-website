@@ -16,7 +16,7 @@ import { studentChangePasswordSchema } from '@/lib/validations'
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    const studentId = await getAuthenticatedStudentId()
+    const studentId = await getAuthenticatedStudentId({ allowPasswordChangeRequired: true })
     if (!studentId) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
     }

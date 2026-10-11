@@ -21,6 +21,8 @@ export interface Student {
   updated_at: string
 }
 
+export type StudentProfile = Omit<Student, 'application_id' | 'notes'>
+
 export interface StudentWithCredentials extends Student {
   temporary_password: string
 }

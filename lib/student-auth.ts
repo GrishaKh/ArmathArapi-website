@@ -126,11 +126,13 @@ export async function createStudentSessionToken(studentId: string): Promise<stri
 
   // Store session hash in database for server-side revocation
   const tokenHash = createHmac('sha256', secret).update(token).digest('hex')
-  await supabaseAdmin.from('student_sessions').insert({
+  const { error } = await supabaseAdmin.from('student_sessions').insert({
     student_id: studentId,
     token_hash: tokenHash,
     expires_at: new Date((nowSeconds + SESSION_MAX_AGE_SECONDS) * 1000).toISOString(),
   })
+
+  if (error) throw new Error('Failed to persist student session')
 
   return token
 }
@@ -167,7 +169,14 @@ export function parseStudentSessionToken(token: string): StudentSessionPayload |
   }
 }
 
-export async function verifyStudentSessionToken(token: string): Promise<string | null> {
+interface StudentAccessOptions {
+  allowPasswordChangeRequired?: boolean
+}
+
+export async function verifyStudentSessionToken(
+  token: string,
+  options: StudentAccessOptions = {},
+): Promise<string | null> {
   if (!supabaseAdmin) return null
 
   const payload = parseStudentSessionToken(token)
@@ -181,20 +190,31 @@ export async function verifyStudentSessionToken(token: string): Promise<string |
     .from('student_sessions')
     .select('id')
     .eq('token_hash', tokenHash)
+    .eq('student_id', payload.sub)
     .gt('expires_at', new Date().toISOString())
     .single()
 
   if (!session) return null
 
+  // Every protected API call must check current account state, not just login.
+  const { data: student, error } = await supabaseAdmin
+    .from('students')
+    .select('status, must_change_password')
+    .eq('id', payload.sub)
+    .single()
+
+  if (error || !student || student.status !== 'active') return null
+  if (student.must_change_password && !options.allowPasswordChangeRequired) return null
+
   return payload.sub
 }
 
-export async function getAuthenticatedStudentId(): Promise<string | null> {
+export async function getAuthenticatedStudentId(options: StudentAccessOptions = {}): Promise<string | null> {
   try {
     const cookieStore = await cookies()
     const token = cookieStore.get(STUDENT_SESSION_COOKIE)?.value
     if (!token) return null
-    return verifyStudentSessionToken(token)
+    return await verifyStudentSessionToken(token, options)
   } catch {
     return null
   }

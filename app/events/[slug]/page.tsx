@@ -44,7 +44,7 @@ export default function EventDetailPage({ params }: PageProps) {
 
   const categoryColors: Record<string, string> = {
     competition: "bg-armath-red",
-    workshop: "bg-armath-blue",
+    workshop: "bg-armath-teal",
     camp: "bg-green-600",
     exhibition: "bg-purple-600",
   }
@@ -56,7 +56,7 @@ export default function EventDetailPage({ params }: PageProps) {
     ul: (props: any) => <ul className="space-y-4 mb-6" {...props} />,
     li: (props: any) => (
       <li className="flex gap-4" {...props}>
-        <Zap className="w-6 h-6 text-armath-blue shrink-0 mt-1" />
+        <Zap className="w-6 h-6 text-armath-teal shrink-0 mt-1" />
         <span className="text-slate-600 text-lg">{props.children}</span>
       </li>
     ),
@@ -117,7 +117,7 @@ export default function EventDetailPage({ params }: PageProps) {
                 <Badge className={`${categoryColors[event.category]} text-white mb-4`}>
                   {categoryLabels[event.category] || event.category}
                 </Badge>
-                <h1 className="text-5xl font-bold mb-4">{event.title}</h1>
+                <h1 className="text-3xl sm:text-5xl font-bold mb-4 text-white">{event.title}</h1>
               </div>
             </div>
           </div>
@@ -130,7 +130,7 @@ export default function EventDetailPage({ params }: PageProps) {
             <AnimatedSection className="mb-12">
               <div className="grid md:grid-cols-3 gap-6 mb-12">
                 <div className="flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white/95 p-4 shadow-sm">
-                  <Calendar className="w-6 h-6 text-armath-blue" />
+                  <Calendar className="w-6 h-6 text-armath-teal" />
                   <div>
                     <p className="text-sm text-slate-600">{t("eventYear")}</p>
                     <p className="text-lg font-semibold text-slate-900">{event.year}</p>
@@ -183,7 +183,7 @@ export default function EventDetailPage({ params }: PageProps) {
                 <h3 className="text-xl font-bold text-slate-900 mb-4">{t("eventTechnologies")}</h3>
                 <div className="flex flex-wrap gap-2">
                   {event.technologies.map((tech, index) => (
-                    <Badge key={index} variant="secondary" className="bg-armath-blue/20 text-armath-blue">
+                    <Badge key={index} variant="secondary" className="bg-armath-blue/20 text-armath-teal">
                       {tech}
                     </Badge>
                   ))}
@@ -201,7 +201,7 @@ export default function EventDetailPage({ params }: PageProps) {
                 <ul className="space-y-2">
                   {((event.participants as any).schools as string[]).map((school, index) => (
                     <li key={index} className="text-slate-600 flex items-start gap-2">
-                      <span className="text-armath-blue font-bold">•</span>
+                      <span className="text-armath-teal font-bold">•</span>
                       {school}
                     </li>
                   ))}
@@ -229,7 +229,7 @@ export default function EventDetailPage({ params }: PageProps) {
                       />
                     </div>
                     <CardHeader>
-                      <CardTitle className="text-lg group-hover:text-armath-blue transition-colors line-clamp-2">
+                      <CardTitle className="text-lg group-hover:text-armath-teal transition-colors line-clamp-2">
                         {relatedEvent.title}
                       </CardTitle>
                     </CardHeader>

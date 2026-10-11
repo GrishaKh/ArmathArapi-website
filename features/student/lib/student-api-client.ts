@@ -1,5 +1,5 @@
 import type {
-  Student,
+  StudentProfile,
   StudentNotification,
   StudentProgress,
   StudentWork,
@@ -100,11 +100,11 @@ export const studentApiClient = {
     }),
 
   checkSession: () =>
-    requestJson<{ authenticated: boolean; student?: Student }>('/api/student/auth'),
+    requestJson<{ authenticated: boolean; student?: StudentProfile }>('/api/student/auth'),
 
   // ── Profile ──────────────────────────────────────────────────────────
   fetchProfile: () =>
-    requestJson<{ student: Student }>('/api/student/profile'),
+    requestJson<{ student: StudentProfile }>('/api/student/profile'),
 
   // ── Materials ────────────────────────────────────────────────────────
   fetchMaterials: (params?: { status?: string }) => {

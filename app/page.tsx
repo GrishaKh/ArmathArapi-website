@@ -21,29 +21,21 @@ export default function HomePage() {
 
   return (
     <div className={cn("relative min-h-screen bg-background overflow-x-hidden", language === "hy" && "font-armenian")}>
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:p-4 focus:text-armath-teal">{language === "hy" ? "Անցնել բովանդակությանը" : "Skip to content"}</a>
       <Header />
-      {/* Hero Section */}
-      <HeroSection />
-      {/* About Us Section */}
-      <AboutSection />
-      {/* Structure Section */}
-      <StructureSection />
-      {/* Fields of Study Section */}
-      <FieldsOfStudySection />
-      {/* Materials Section */}
-      <MaterialsSection />
-      {/* Events Section */}
-      <EventsSection />
-      {/* Projects Section */}
-      <ProjectsSection />
-      {/* Students Section */}
-      <StudentsSection />
-      {/* Join Section */}
-      <JoinSection />
-      {/* Support Section */}
-      <SupportSection />
-      {/* Contact Section */}
-      <ContactSection />
+      <main id="main-content" tabIndex={-1}>
+        <HeroSection />
+        <AboutSection />
+        <StructureSection />
+        <FieldsOfStudySection />
+        <ProjectsSection />
+        <EventsSection />
+        <MaterialsSection />
+        <StudentsSection />
+        <JoinSection />
+        <SupportSection />
+        <ContactSection />
+      </main>
       {/* Footer */}
       <FooterSection />
     </div>

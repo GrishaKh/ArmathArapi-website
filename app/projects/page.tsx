@@ -58,10 +58,10 @@ export default function ProjectsPage() {
                       </div>
                       <CardHeader>
                         <div className="space-y-2">
-                          <Badge variant="outline" className="w-fit border-armath-blue/30 text-xs text-armath-blue">
+                          <Badge variant="outline" className="w-fit border-armath-blue/30 text-xs text-armath-teal">
                             {category}
                           </Badge>
-                          <CardTitle className="group-hover:text-armath-blue transition-colors">
+                          <CardTitle className="group-hover:text-armath-teal transition-colors">
                             {project.title}
                           </CardTitle>
                         </div>
@@ -86,7 +86,7 @@ export default function ProjectsPage() {
                               </div>
                             </div>
                           )}
-                          <div className="flex items-center text-sm font-medium text-armath-blue group-hover:gap-2 transition-all">
+                          <div className="flex items-center text-sm font-medium text-armath-teal group-hover:gap-2 transition-all">
                             {t("learnMore")}
                             <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                           </div>

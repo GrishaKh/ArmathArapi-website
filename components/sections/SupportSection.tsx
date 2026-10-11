@@ -65,7 +65,7 @@ export function SupportSection() {
                     transition={{ delay: index * 0.1 }}
                   >
                     <div className="w-12 h-12 bg-armath-blue/12 rounded-xl flex items-center justify-center">
-                      <item.icon className="w-6 h-6 text-armath-blue" />
+                      <item.icon className="w-6 h-6 text-armath-teal" />
                     </div>
                     <span className="text-slate-700">{item.text}</span>
                   </motion.div>
@@ -87,6 +87,8 @@ export function SupportSection() {
                   {submitStatus === 'success' ? (
                     <motion.div
                       key="success"
+                      role="status"
+                      aria-live="polite"
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
@@ -106,6 +108,9 @@ export function SupportSection() {
                       <p className="text-slate-600 text-center">
                         {t("supportThankYou")}
                       </p>
+                      <Button type="button" variant="outline" onClick={resetSubmissionState}>
+                        {t("returnToForm")}
+                      </Button>
                     </motion.div>
                   ) : (
                     <motion.form
@@ -115,12 +120,13 @@ export function SupportSection() {
                       exit={{ opacity: 0 }}
                       onSubmit={handleSubmit}
                       className="space-y-4"
-                      noValidate
                     >
                       <div>
                         <label htmlFor="support-name" className="text-sm font-medium text-slate-700 block mb-1">{t("name")}</label>
                         <Input
                           id="support-name"
+                          minLength={2}
+                          maxLength={100}
                           value={supportFormData.name}
                           onChange={(e) => setSupportFormData({ ...supportFormData, name: e.target.value })}
                           placeholder={t("yourName")}
@@ -169,6 +175,8 @@ export function SupportSection() {
                         <label htmlFor="support-message" className="text-sm font-medium text-slate-700 block mb-1">{t("message")}</label>
                         <Textarea
                           id="support-message"
+                          minLength={10}
+                          maxLength={2000}
                           value={supportFormData.message}
                           onChange={(e) => setSupportFormData({ ...supportFormData, message: e.target.value })}
                           placeholder={t("yourMessage")}
@@ -202,7 +210,7 @@ export function SupportSection() {
 
                       <Button
                         type="submit"
-                        className="w-full bg-armath-blue hover:bg-armath-blue/90 shadow-md"
+                        className="w-full bg-armath-teal hover:bg-armath-teal/90 shadow-md"
                         disabled={submitStatus === 'loading'}
                       >
                         {submitStatus === 'loading' ? (

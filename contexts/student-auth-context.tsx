@@ -3,10 +3,10 @@
 import type React from "react"
 import { createContext, useContext, useState, useEffect, useCallback } from "react"
 import { studentApiClient } from "@/features/student/lib/student-api-client"
-import type { Student } from "@/features/student/types"
+import type { StudentProfile } from "@/features/student/types"
 
 interface StudentAuthContextType {
-  student: Student | null
+  student: StudentProfile | null
   isAuthenticated: boolean
   isLoading: boolean
   isAuthenticating: boolean
@@ -20,7 +20,7 @@ interface StudentAuthContextType {
 const StudentAuthContext = createContext<StudentAuthContextType | undefined>(undefined)
 
 export function StudentAuthProvider({ children }: { children: React.ReactNode }) {
-  const [student, setStudent] = useState<Student | null>(null)
+  const [student, setStudent] = useState<StudentProfile | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [isAuthenticating, setIsAuthenticating] = useState(false)

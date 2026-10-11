@@ -64,7 +64,7 @@ export default function MaterialDetailPage({ params }: Props) {
     ul: (props: React.ComponentPropsWithoutRef<"ul">) => <ul className="space-y-4 mb-6" {...props} />,
     li: (props: React.ComponentPropsWithoutRef<"li">) => (
       <li className="flex gap-4" {...props}>
-        <Zap className="w-6 h-6 text-armath-blue shrink-0 mt-1" />
+        <Zap className="w-6 h-6 text-armath-teal shrink-0 mt-1" />
         <span className="text-slate-600 text-lg">{props.children}</span>
       </li>
     ),
@@ -126,7 +126,7 @@ export default function MaterialDetailPage({ params }: Props) {
               <p className="text-xl text-slate-600 mb-8">{material.summary}</p>
               <div className="flex flex-wrap gap-4 text-sm text-slate-600">
                 <span className="inline-flex items-center gap-1">
-                  <Clock3 className="h-4 w-4 text-armath-blue" />
+                  <Clock3 className="h-4 w-4 text-armath-teal" />
                   {t("estimatedTime")}: {material.durationMinutes} {t("minutes")}
                 </span>
                 <span className="inline-flex items-center gap-1">
@@ -154,7 +154,7 @@ export default function MaterialDetailPage({ params }: Props) {
                   <ul className="space-y-3">
                     {material.learningObjectives.map((objective, index) => (
                       <li key={`${objective}-${index}`} className="flex gap-3 text-slate-700">
-                        <span className="text-armath-blue font-bold mt-1 shrink-0">✓</span>
+                        <span className="text-armath-teal font-bold mt-1 shrink-0">✓</span>
                         <span className="text-lg leading-relaxed">{objective}</span>
                       </li>
                     ))}
@@ -194,7 +194,7 @@ export default function MaterialDetailPage({ params }: Props) {
                               {status === "completed" ? (
                                 <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
                               ) : status === "current" ? (
-                                <CircleDot className="h-4 w-4 shrink-0 text-armath-blue" />
+                                <CircleDot className="h-4 w-4 shrink-0 text-armath-teal" />
                               ) : (
                                 <CircleDot className="h-4 w-4 shrink-0 text-slate-300" />
                               )}
@@ -206,7 +206,7 @@ export default function MaterialDetailPage({ params }: Props) {
                                 status === "completed"
                                   ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                                   : status === "current"
-                                    ? "border-armath-blue/20 bg-armath-blue/10 text-armath-blue"
+                                    ? "border-armath-blue/20 bg-armath-blue/10 text-armath-teal"
                                     : "border-slate-200 bg-slate-50 text-slate-500"
                               }
                             >
@@ -215,7 +215,7 @@ export default function MaterialDetailPage({ params }: Props) {
                           </Link>
                         )
                       })}
-                      <Link href={pathHref} className="inline-flex items-center text-sm font-medium text-armath-blue">
+                      <Link href={pathHref} className="inline-flex items-center text-sm font-medium text-armath-teal">
                         {t("viewFullPath")}
                         <ArrowRight className="ml-1 h-4 w-4" />
                       </Link>
@@ -234,7 +234,7 @@ export default function MaterialDetailPage({ params }: Props) {
                       <>
                         <p className="text-sm text-slate-600">{nextInPath.title}</p>
                         <Link href={`/materials/${nextInPath.slug}`}>
-                          <Button className="w-full bg-armath-blue hover:bg-armath-blue/90">
+                          <Button className="w-full bg-armath-teal hover:bg-armath-teal/90">
                             {t("continuePath")}
                             <ArrowRight className="h-4 w-4" />
                           </Button>
@@ -306,7 +306,7 @@ export default function MaterialDetailPage({ params }: Props) {
                             className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                           >
                             <span>{download.label}</span>
-                            <Download className="h-4 w-4 text-armath-blue" />
+                            <Download className="h-4 w-4 text-armath-teal" />
                           </a>
                         )
                       })}
@@ -337,12 +337,12 @@ export default function MaterialDetailPage({ params }: Props) {
                         />
                       </div>
                       <CardHeader>
-                        <CardTitle className="line-clamp-2 transition-colors group-hover:text-armath-blue">
+                        <CardTitle className="line-clamp-2 transition-colors group-hover:text-armath-teal">
                           {relatedMaterial.title}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="inline-flex items-center text-sm font-medium text-armath-blue">
+                        <div className="inline-flex items-center text-sm font-medium text-armath-teal">
                           {t("viewMaterial")}
                           <ArrowRight className="ml-1 h-4 w-4" />
                         </div>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useLanguage } from "@/contexts/language-context"
 
 export type SubmitStatus = "idle" | "loading" | "success" | "error"
 
@@ -8,7 +9,6 @@ interface SubmitOptions {
   endpoint: string
   payload: unknown
   connectionErrorMessage: string
-  successResetMs?: number
   onSuccess?: () => void
 }
 
@@ -28,6 +28,7 @@ function resolveErrorMessage(response: Response, body: unknown, fallback: string
 }
 
 export function useFormSubmission() {
+  const { language, t } = useLanguage()
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle")
   const [errorMessage, setErrorMessage] = useState("")
 
@@ -45,7 +46,6 @@ export function useFormSubmission() {
     endpoint,
     payload,
     connectionErrorMessage,
-    successResetMs = 3000,
     onSuccess,
   }: SubmitOptions) => {
     setSubmitStatus("loading")
@@ -62,18 +62,15 @@ export function useFormSubmission() {
       const success = response.ok && (responseBody?.success ?? true)
 
       if (!success) {
-        setErrorMessage(resolveErrorMessage(response, responseBody, connectionErrorMessage))
+        setErrorMessage(language === "hy"
+          ? t(response.status === 400 ? "errorInvalidForm" : response.status === 429 ? "errorTooManyRequests" : "errorServiceUnavailable")
+          : resolveErrorMessage(response, responseBody, connectionErrorMessage))
         setSubmitStatus("error")
         return false
       }
 
       setSubmitStatus("success")
       onSuccess?.()
-
-      window.setTimeout(() => {
-        setSubmitStatus("idle")
-        setErrorMessage("")
-      }, successResetMs)
 
       return true
     } catch {

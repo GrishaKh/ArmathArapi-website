@@ -64,7 +64,7 @@ export function MaterialsSection() {
                           {t(MATERIAL_DIFFICULTY_LABELS[material.difficulty])}
                         </Badge>
                       </div>
-                      <CardTitle className="line-clamp-2 text-lg transition-colors group-hover:text-armath-blue">
+                      <CardTitle className="line-clamp-2 text-lg transition-colors group-hover:text-armath-teal">
                         {material.title}
                       </CardTitle>
                       <CardDescription className="line-clamp-2">{material.summary}</CardDescription>
@@ -82,7 +82,7 @@ export function MaterialsSection() {
                             {material.ageGroup}
                           </span>
                         </div>
-                        <div className="flex items-center text-sm font-medium text-armath-blue">
+                        <div className="flex items-center text-sm font-medium text-armath-teal">
                           {t("viewMaterial")}
                           <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </div>
@@ -102,7 +102,7 @@ export function MaterialsSection() {
 
         <AnimatedSection className="text-center mt-16">
           <Link href="/materials">
-            <Button size="lg" className="bg-armath-blue hover:bg-armath-blue/90">
+            <Button size="lg" className="bg-armath-teal hover:bg-armath-teal/90">
               {t("viewAllMaterials")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>

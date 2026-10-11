@@ -1,206 +1,91 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { LanguageToggle } from "@/components/language-toggle"
-import { useLanguage } from "@/contexts/language-context"
-import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
-import { cn } from "@/lib/utils"
-import type { TranslationKey } from "@/lib/translations"
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"
-import { MagneticWrapper } from "@/components/magnetic-wrapper"
+import { Button } from "@/components/ui/button"
+import { LanguageToggle } from "@/components/language-toggle"
+import { useLanguage } from "@/contexts/language-context"
 
-interface HeaderProps {
-  subtitle?: string
-  showNav?: boolean
-}
-
-const navItems: TranslationKey[] = [
-  "aboutUs",
-  "structure",
-  "fieldsOfStudy",
-  "learningMaterials",
-  "events",
-  "ourProjects",
-  "students",
-  "supportArmath",
-  "contact",
-]
+interface HeaderProps { subtitle?: string; showNav?: boolean }
 
 export function Header({ subtitle, showNav = true }: HeaderProps) {
-  const { t, language } = useLanguage()
+  const { t } = useLanguage()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
+  const menuButton = useRef<HTMLButtonElement>(null)
+  const mobileMenu = useRef<HTMLElement>(null)
+  const links = [
+    { href: "/#aboutUs", label: t("aboutUs") },
+    { href: "/#structure", label: t("structure") },
+    { href: "/#fieldsOfStudy", label: t("fieldsOfStudy") },
+    { href: "/#ourProjects", label: t("ourProjects") },
+    { href: "/#contact", label: t("contact") },
+  ]
 
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 8)
-    onScroll()
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [])
+    if (!mobileOpen) return
+    mobileMenu.current?.querySelector<HTMLAnchorElement>("a")?.focus()
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileOpen(false)
+        menuButton.current?.focus()
+      }
+    }
+    document.addEventListener("keydown", closeOnEscape)
+    const desktop = window.matchMedia("(min-width: 1280px)")
+    const closeOnDesktop = () => { if (desktop.matches) setMobileOpen(false) }
+    desktop.addEventListener("change", closeOnDesktop)
+    return () => {
+      document.removeEventListener("keydown", closeOnEscape)
+      desktop.removeEventListener("change", closeOnDesktop)
+    }
+  }, [mobileOpen])
 
   return (
-    <motion.header
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={cn(
-        "sticky top-0 z-50 border-b border-slate-200/80 backdrop-blur-lg transition-all duration-200",
-        isScrolled ? "bg-white/95 shadow-md" : "bg-white/85 shadow-sm"
-      )}
-    >
-      <div
-        className={cn(
-          "container mx-auto px-4 flex items-center justify-between transition-all duration-200",
-          isScrolled ? "py-3" : "py-4"
-        )}
-      >
-        <Link href="/" className="flex items-center space-x-3 min-w-0 hover:opacity-90 transition-opacity">
-          <div className="relative h-10 w-10 rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm xl:hidden">
-            <Image
-              src="/logo.png"
-              alt={t("armathArapi") + " " + t("logo")}
-              fill
-              className="object-contain p-1.5"
-              sizes="48px"
-              priority
-            />
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-lg">
+      <div className="container mx-auto flex min-h-20 items-center justify-between gap-3 px-4 py-3">
+        <Link href="/" className="flex min-w-0 items-center gap-3">
+          <Image src="/logo.png" alt="" width={44} height={44} className="shrink-0 xl:hidden" priority />
+          <div className="relative hidden h-12 w-[186px] shrink-0 xl:block">
+            <Image src="/ArmathArapi_logo.png" alt={`${t("armathArapi")} — ${t("engineeringMakerspace")}`}
+              fill sizes="186px" className="object-contain" priority />
           </div>
-          <div className="relative hidden h-12 w-[186px] xl:block">
-            <Image
-              src="/ArmathArapi_logo.png"
-              alt={t("armathArapi") + " " + t("logo")}
-              fill
-              className="object-contain"
-              sizes="186px"
-              priority
-            />
-          </div>
-          <div className="xl:hidden min-w-0">
-            <h1 className={cn("font-bold text-gray-900 truncate", language === "hy" ? "text-base tracking-tight" : "text-lg")}>
-              {t("armathArapi")}
-            </h1>
-            <p className="text-[11px] text-slate-500 truncate">{subtitle || t("engineeringMakerspace")}</p>
+          <div className="min-w-0 xl:hidden">
+            <span className="block truncate text-base font-bold text-slate-900 sm:text-lg">{t("armathArapi")}</span>
+            <span className="hidden text-xs text-slate-600 sm:block">{subtitle || t("engineeringMakerspace")}</span>
           </div>
         </Link>
-
-        {showNav ? (
-          <>
-            <nav className="hidden xl:flex items-center gap-5">
-              {navItems.map((item, index) => (
-                <motion.a
-                  key={item}
-                  href={`/#${item}`}
-                  className={cn(
-                    "group relative text-slate-500 hover:text-slate-900 transition-colors whitespace-nowrap pb-1",
-                    language === "hy" ? "text-sm tracking-normal" : "text-sm font-medium"
-                  )}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.08 + 0.3 }}
-                >
-                  {t(item)}
-                  <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-armath-blue transition-all duration-300 group-hover:w-full rounded-full" />
-                </motion.a>
-              ))}
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: navItems.length * 0.08 + 0.3 }}
-              >
-                <Link
-                  href="/tutorials/marked-graphs"
-                  className={cn(
-                    "group relative inline-flex items-center gap-1.5 whitespace-nowrap pb-1 text-armath-red transition-colors hover:text-armath-red/80",
-                    language === "hy" ? "text-sm tracking-normal" : "text-sm font-medium"
-                  )}
-                >
-                  <span className="h-1.5 w-1.5 rounded-full bg-armath-blue" />
-                  {t("interactiveLab")}
-                  <span className="absolute bottom-0 left-0 h-[2px] w-0 rounded-full bg-armath-red transition-all duration-300 group-hover:w-full" />
-                </Link>
-              </motion.div>
-              <LanguageToggle />
-              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8 }}>
-                <MagneticWrapper>
-                  <Button
-                    className="rounded-full bg-gradient-to-r from-armath-red to-[#C8349C] text-white shadow-md hover:shadow-[0_8px_20px_rgba(164,35,126,0.3)] hover:-translate-y-0.5 transition-all duration-300 px-7 font-medium border-0 tracking-wide"
-                    onClick={() => document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })}
-                  >
-                    {t("joinAsStudent")}
-                  </Button>
-                </MagneticWrapper>
-              </motion.div>
+        <div className="flex shrink-0 items-center gap-2 xl:gap-5">
+          {showNav && (
+            <nav aria-label={t("mainNavigation")} className="hidden items-center gap-4 xl:flex">
+              {links.map(link => <Link key={link.href} href={link.href} className="py-3 text-sm font-medium text-slate-700 hover:text-armath-teal">{link.label}</Link>)}
+              <Link href="/student/login" className="py-3 text-sm font-semibold text-armath-teal">{t("studentLogin")}</Link>
             </nav>
-            <div className="xl:hidden flex items-center gap-2">
-              <LanguageToggle />
-              <Button
-                variant="outline"
-                className="border-slate-200 bg-white hover:bg-slate-50"
-                size="icon"
-                aria-label="Toggle menu"
-                aria-expanded={mobileOpen}
-                onClick={() => setMobileOpen((o) => !o)}
-              >
-                {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </Button>
-            </div>
-          </>
-        ) : (
+          )}
           <LanguageToggle />
-        )}
+          {showNav && <>
+            <Button asChild className="hidden bg-armath-red text-white hover:bg-armath-red/90 xl:inline-flex">
+              <Link href="/#joinAsStudent">{t("applyNow")}</Link>
+            </Button>
+            <Button ref={menuButton} variant="outline" size="icon" className="h-11 w-11 xl:hidden"
+              aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
+              aria-expanded={mobileOpen} aria-controls="mobile-navigation" onClick={() => setMobileOpen(!mobileOpen)}>
+              {mobileOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+            </Button>
+          </>}
+        </div>
       </div>
-
       {showNav && mobileOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          className="xl:hidden container mx-auto px-4 pb-4"
-        >
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-lg p-4">
-            <div className="grid gap-2">
-              {navItems.map((item) => (
-                <a
-                  key={item}
-                  href={`/#${item}`}
-                  className={cn(
-                    "block py-2 px-3 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors",
-                    language === "hy" ? "text-sm tracking-tight" : "text-base"
-                  )}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {t(item)}
-                </a>
-              ))}
-              <Link
-                href="/tutorials/marked-graphs"
-                className={cn(
-                  "flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-armath-red transition-colors hover:bg-slate-100",
-                  language === "hy" ? "text-sm tracking-tight" : "text-base"
-                )}
-                onClick={() => setMobileOpen(false)}
-              >
-                <span className="h-1.5 w-1.5 rounded-full bg-armath-blue" />
-                {t("interactiveLab")}
-              </Link>
-            </div>
-            <div className="mt-3">
-              <Button
-                className="w-full bg-armath-red hover:bg-armath-red/90"
-                onClick={() => {
-                  document.getElementById("joinAsStudent")?.scrollIntoView({ behavior: "smooth" })
-                  setMobileOpen(false)
-                }}
-              >
-                {t("joinAsStudent")}
-              </Button>
-            </div>
-          </div>
-        </motion.div>
+        <nav ref={mobileMenu} id="mobile-navigation" aria-label={t("mainNavigation")} className="container mx-auto grid gap-1 border-t border-slate-200 px-4 py-4 xl:hidden">
+          {[...links, { href: "/materials", label: t("learningMaterials") }, { href: "/tutorials/marked-graphs", label: t("interactiveLab") }, { href: "/student/login", label: t("studentLogin") }].map(link => (
+            <Link key={link.href} href={link.href} className="rounded-lg px-3 py-3 text-slate-700 hover:bg-slate-100" onClick={() => setMobileOpen(false)}>{link.label}</Link>
+          ))}
+          <Button asChild className="mt-2 bg-armath-red text-white hover:bg-armath-red/90">
+            <Link href="/#joinAsStudent" onClick={() => setMobileOpen(false)}>{t("applyNow")}</Link>
+          </Button>
+        </nav>
       )}
-    </motion.header>
+    </header>
   )
 }

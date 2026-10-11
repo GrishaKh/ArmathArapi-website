@@ -45,15 +45,9 @@ export function StudentsSection() {
                       height={400}
                       className="object-cover group-hover:scale-105 transition-transform duration-700 w-full aspect-square"
                     />
-                    {/* Hover name reveal (desktop only) */}
-                    <div className="absolute inset-0 hidden md:flex items-end bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="p-4 text-base font-semibold text-white drop-shadow">
-                        {student.name}
-                      </span>
-                    </div>
                   </div>
-                  {/* Always-visible caption (mobile only) */}
-                  <div className="md:hidden p-3">
+                  {/* Names remain visible for pointer, touch, and keyboard users. */}
+                  <div className="p-3">
                     <span className="block text-sm font-medium text-slate-900">{student.name}</span>
                   </div>
                 </Card>

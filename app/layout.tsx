@@ -27,8 +27,9 @@ export const metadata: Metadata = {
     description: "A state-of-the-art makerspace where engineers, makers, and innovators create and learn.",
     type: "website",
     url: "/",
+    images: [{ url: "/ArmathArapi_logo.png", alt: "Armath Arapi Engineering Makerspace" }],
   },
-  generator: 'v0.app',
+
 }
 
 export default function RootLayout({

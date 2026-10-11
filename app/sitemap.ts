@@ -24,16 +24,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     allEvents?: SitemapEvent[]
     allProjects?: SitemapProject[]
     allMaterials?: SitemapMaterial[]
+    allStudents?: SitemapProject[]
   }
   const allEvents = generated.allEvents ?? []
   const allProjects = generated.allProjects ?? []
   const allMaterials = generated.allMaterials ?? []
+  const allStudents = generated.allStudents ?? []
 
   // Use only English events for sitemap to avoid duplicates
   const englishEvents = allEvents.filter((event) => event.language === 'en')
   const eventUrls = englishEvents.map((event) => ({
     url: `${baseUrl}/events/${event.slug.split('/').pop()}`,
-    lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }))
@@ -42,7 +43,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const englishProjects = allProjects.filter((project) => project.language === 'en')
   const projectUrls = englishProjects.map((project) => ({
     url: `${baseUrl}/projects/${project.slug}`,
-    lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }))
@@ -51,14 +51,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const englishMaterials = allMaterials.filter((material) => material.language === 'en')
   const materialUrls = englishMaterials.map((material) => ({
     url: `${baseUrl}/materials/${material.slug}`,
-    lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }))
 
+  const studentUrls = allStudents.filter((student) => student.language === 'en').map((student) => ({
+    url: `${baseUrl}/students/${student.slug}`,
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }))
+
   const materialPathUrls = MATERIAL_TOPICS.map((topic) => ({
     url: `${baseUrl}/materials/path/${MATERIAL_TOPIC_ROUTE_SEGMENTS[topic]}`,
-    lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.6,
   }))
@@ -66,25 +70,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: baseUrl,
-      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,
     },
     {
       url: `${baseUrl}/events`,
-      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/projects`,
-      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/materials`,
-      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
@@ -92,5 +92,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...projectUrls,
     ...materialUrls,
     ...materialPathUrls,
+    ...studentUrls,
+    { url: `${baseUrl}/tutorials/marked-graphs`, changeFrequency: 'monthly', priority: 0.6 },
   ]
 }

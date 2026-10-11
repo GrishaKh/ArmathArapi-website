@@ -168,6 +168,10 @@ export async function PATCH(
       return NextResponse.json({ error: 'Failed to update student' }, { status: 500 })
     }
 
+    if (updateData.status !== undefined && updateData.status !== 'active') {
+      await revokeStudentSessions(id)
+    }
+
     logRequestEvent('info', 'admin.students.detail.updated', 'Admin student updated successfully', logMeta, {
       status: 200,
       details: { id },

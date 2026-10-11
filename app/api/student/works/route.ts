@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { getAuthenticatedStudentId } from '@/lib/student-auth'
 import { getClientIp } from '@/lib/request-utils'
+import { randomUUID } from 'crypto'
+import { studentWorkUploadSchema } from '@/lib/validations'
 import { studentApiRateLimiter } from '@/lib/student-rate-limit'
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
@@ -60,18 +62,33 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const formData = await request.formData()
-    const title = formData.get('title') as string
-    const description = (formData.get('description') as string) || ''
-    const materialId = (formData.get('materialId') as string) || null
-    const file = formData.get('file') as File | null
-
-    // Validate required fields
-    if (!title || title.length < 2 || title.length > 255) {
-      return NextResponse.json({ error: 'Title must be between 2 and 255 characters' }, { status: 400 })
+    const parsed = studentWorkUploadSchema.safeParse({
+      title: formData.get('title'),
+      description: formData.get('description') ?? '',
+      materialId: formData.get('materialId') ?? '',
+    })
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.issues[0]?.message || 'Invalid input' }, { status: 400 })
+    }
+    const { title, description, materialId } = parsed.data
+    const file = formData.get('file')
+    if (!(file instanceof File) || file.size === 0) {
+      return NextResponse.json({ error: 'A non-empty file is required' }, { status: 400 })
     }
 
-    if (!file) {
-      return NextResponse.json({ error: 'File is required' }, { status: 400 })
+    if (materialId) {
+      const { data: assignment, error } = await supabaseAdmin
+        .from('student_material_assignments')
+        .select('id')
+        .eq('student_id', studentId)
+        .eq('material_id', materialId)
+        .maybeSingle()
+      if (error) {
+        return NextResponse.json({ error: 'Failed to verify material assignment' }, { status: 500 })
+      }
+      if (!assignment) {
+        return NextResponse.json({ error: 'Material not assigned to you' }, { status: 403 })
+      }
     }
 
     // Validate file size
@@ -89,8 +106,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Upload to Supabase Storage
-    const timestamp = Date.now()
-    const storagePath = `${studentId}/${timestamp}-${file.name}`
+    const extension = ALLOWED_EXTENSIONS.find((ext) => fileName.endsWith(ext))!
+    const storagePath = `${studentId}/${randomUUID()}${extension}`
     const fileBuffer = Buffer.from(await file.arrayBuffer())
 
     const { error: uploadError } = await supabaseAdmin.storage
@@ -122,6 +139,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       .single()
 
     if (insertError || !work) {
+      await supabaseAdmin.storage.from('student-works').remove([storagePath])
       return NextResponse.json({ error: 'Failed to save work record' }, { status: 500 })
     }
 

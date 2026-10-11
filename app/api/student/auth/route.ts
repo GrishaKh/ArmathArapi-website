@@ -99,7 +99,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const logMeta = createRequestLogMeta(request, '/api/student/auth')
 
   try {
-    const studentId = await getAuthenticatedStudentId()
+    const studentId = await getAuthenticatedStudentId({ allowPasswordChangeRequired: true })
 
     if (!studentId || !supabaseAdmin) {
       return NextResponse.json({ authenticated: false })
@@ -107,7 +107,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     const { data: student } = await supabaseAdmin
       .from('students')
-      .select('id, username, full_name, age, parent_contact, email, language, status, must_change_password, application_id, notes, created_at, updated_at')
+      .select('id, username, full_name, age, parent_contact, email, language, status, must_change_password, created_at, updated_at')
       .eq('id', studentId)
       .single()
 

@@ -10,8 +10,8 @@
     "dev": "next dev --webpack",
     "lint": "eslint .",
     "start": "next start",
-    "test": "node --experimental-strip-types --test --test-concurrency=1 tests/api/admin-auth-core.test.ts tests/api/submission-core.test.ts tests/api/attendance-event-core.test.ts tests/api/attendance-device-auth.test.ts tests/e2e/admin-client-journey.test.ts",
-    "test:api": "node --experimental-strip-types --test --test-concurrency=1 tests/api/admin-auth-core.test.ts tests/api/submission-core.test.ts tests/api/attendance-event-core.test.ts tests/api/attendance-device-auth.test.ts",
+    "test": "node --experimental-transform-types --experimental-test-module-mocks --import ./tests/helpers/register-aliases.ts --test --test-concurrency=1 tests/api/admin-auth-core.test.ts tests/api/submission-core.test.ts tests/api/attendance-event-core.test.ts tests/api/attendance-device-auth.test.ts tests/e2e/admin-client-journey.test.ts tests/api/student-portal.test.ts",
+    "test:api": "node --experimental-transform-types --experimental-test-module-mocks --import ./tests/helpers/register-aliases.ts --test --test-concurrency=1 tests/api/admin-auth-core.test.ts tests/api/submission-core.test.ts tests/api/attendance-event-core.test.ts tests/api/attendance-device-auth.test.ts tests/api/student-portal.test.ts",
     "test:e2e": "node --experimental-strip-types --test --test-concurrency=1 tests/e2e/admin-client-journey.test.ts",
     "typecheck": "tsc --noEmit"
   },

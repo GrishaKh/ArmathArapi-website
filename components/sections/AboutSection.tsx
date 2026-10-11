@@ -18,9 +18,9 @@ export function AboutSection() {
               <CardHeader>
                 <div className="flex items-center space-x-2 mb-2">
                   <div className="rounded-xl bg-armath-blue/10 p-2">
-                    <Eye className="w-6 h-6 text-armath-blue" />
+                    <Eye className="w-6 h-6 text-armath-teal" />
                   </div>
-                  <CardTitle className="text-armath-blue">
+                  <CardTitle className="text-armath-teal">
                     {t("vision")}
                   </CardTitle>
                 </div>
@@ -54,9 +54,9 @@ export function AboutSection() {
               <CardHeader>
                 <div className="flex items-center space-x-2 mb-2">
                   <div className="rounded-xl bg-armath-blue/10 p-2">
-                    <Lightbulb className="w-6 h-6 text-armath-blue" />
+                    <Lightbulb className="w-6 h-6 text-armath-teal" />
                   </div>
-                  <CardTitle className="text-armath-blue">
+                  <CardTitle className="text-armath-teal">
                     {t("whatWeDo")}
                   </CardTitle>
                 </div>

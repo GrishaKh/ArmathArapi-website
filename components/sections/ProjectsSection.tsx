@@ -77,10 +77,10 @@ export function ProjectsSection() {
                     <CardHeader className="pb-4 grow">
                       <div className="space-y-2">
                         {/* Category badge */}
-                        <Badge variant="outline" className="w-fit text-xs border-armath-blue/30 text-armath-blue">
+                        <Badge variant="outline" className="w-fit text-xs border-armath-blue/30 text-armath-teal">
                           {getProjectCategory(project)}
                         </Badge>
-                        <CardTitle className="group-hover:text-armath-blue transition-colors line-clamp-2 text-lg">
+                        <CardTitle className="group-hover:text-armath-teal transition-colors line-clamp-2 text-lg">
                           {getProjectTitle(project)}
                         </CardTitle>
                       </div>
@@ -101,7 +101,7 @@ export function ProjectsSection() {
                               </Badge>
                             ))}
                             {getProjectTools(project).length > 3 && (
-                              <Badge variant="secondary" className="text-xs bg-armath-blue/10 text-armath-blue">
+                              <Badge variant="secondary" className="text-xs bg-armath-blue/10 text-armath-teal">
                                 +{getProjectTools(project).length - 3}
                               </Badge>
                             )}
@@ -109,7 +109,7 @@ export function ProjectsSection() {
                         </div>
 
                         {/* View Project link */}
-                        <div className="flex items-center text-sm font-medium text-armath-blue pt-2">
+                        <div className="flex items-center text-sm font-medium text-armath-teal pt-2">
                           {t("viewProject")}
                           <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                         </div>
@@ -124,7 +124,7 @@ export function ProjectsSection() {
 
         <AnimatedSection className="text-center mt-16">
           <Link href="/projects">
-            <Button size="lg" className="bg-armath-blue hover:bg-armath-blue/90">
+            <Button size="lg" className="bg-armath-teal hover:bg-armath-teal/90">
               {t("viewAllProjects")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>

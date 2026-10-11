@@ -60,7 +60,7 @@ export function JoinSection() {
               <div className="space-y-4 mb-8">
                 <div className="flex items-center space-x-3 rounded-2xl border border-slate-200/80 bg-white/85 p-3 shadow-sm">
                   <div className="w-8 h-8 bg-armath-blue/15 rounded-full flex items-center justify-center">
-                    <Users className="w-4 h-4 text-armath-blue" />
+                    <Users className="w-4 h-4 text-armath-teal" />
                   </div>
                   <span className="text-slate-700">{t("joinInfo")}</span>
                 </div>
@@ -84,6 +84,8 @@ export function JoinSection() {
                   {submitStatus === 'success' ? (
                     <motion.div
                       key="success"
+                      role="status"
+                      aria-live="polite"
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
@@ -103,6 +105,9 @@ export function JoinSection() {
                       <p className="text-slate-600 text-center">
                         {t("applicationThankYou")}
                       </p>
+                      <Button type="button" variant="outline" onClick={resetSubmissionState}>
+                        {t("returnToForm")}
+                      </Button>
                     </motion.div>
                   ) : (
                     <motion.form
@@ -112,12 +117,13 @@ export function JoinSection() {
                       exit={{ opacity: 0 }}
                       onSubmit={handleSubmit}
                       className="space-y-4"
-                      noValidate
                     >
                       <div>
                         <label htmlFor="join-student-name" className="text-sm font-medium text-slate-700 block mb-1">{t("studentName")}</label>
                         <Input
                           id="join-student-name"
+                          minLength={2}
+                          maxLength={100}
                           value={joinFormData.studentName}
                           onChange={(e) => setJoinFormData({ ...joinFormData, studentName: e.target.value })}
                           placeholder={t("studentNamePlaceholder")}
@@ -152,6 +158,8 @@ export function JoinSection() {
                         <label htmlFor="join-parent-contact" className="text-sm font-medium text-slate-700 block mb-1">{t("parentContact")}</label>
                         <Input
                           id="join-parent-contact"
+                          minLength={5}
+                          maxLength={50}
                           value={joinFormData.parentContact}
                           onChange={(e) => setJoinFormData({ ...joinFormData, parentContact: e.target.value })}
                           placeholder={t("parentContactPlaceholder")}
@@ -166,6 +174,7 @@ export function JoinSection() {
                         <label htmlFor="join-interests" className="text-sm font-medium text-slate-700 block mb-1">{t("interests")}</label>
                         <Textarea
                           id="join-interests"
+                          maxLength={1000}
                           value={joinFormData.interests}
                           onChange={(e) => setJoinFormData({ ...joinFormData, interests: e.target.value })}
                           placeholder={t("interestsPlaceholder")}

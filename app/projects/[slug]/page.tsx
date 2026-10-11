@@ -38,7 +38,7 @@ export default function ProjectDetailPage({ params }: Props) {
     ul: (props: any) => <ul className="space-y-4 mb-6" {...props} />,
     li: (props: any) => (
       <li className="flex gap-4" {...props}>
-        <Zap className="w-6 h-6 text-armath-blue shrink-0 mt-1" />
+        <Zap className="w-6 h-6 text-armath-teal shrink-0 mt-1" />
         <span className="text-slate-600 text-lg">{props.children}</span>
       </li>
     ),
@@ -98,7 +98,7 @@ export default function ProjectDetailPage({ params }: Props) {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <AnimatedSection>
-              <Badge className="mb-4 bg-armath-blue/90 text-white">{category}</Badge>
+              <Badge className="mb-4 bg-armath-teal text-white">{category}</Badge>
               <h1 className={cn("text-5xl font-bold text-slate-900 mb-4", language === "hy" && "text-4xl")}>{title}</h1>
               <p className="text-xl text-slate-600 mb-8">{description}</p>
               {tools.length > 0 && (
@@ -165,7 +165,7 @@ export default function ProjectDetailPage({ params }: Props) {
                         transition={{ delay: index * 0.1 }}
                         className="flex gap-3 text-slate-600"
                       >
-                        <span className="text-armath-blue font-bold mt-1 shrink-0">✓</span>
+                        <span className="text-armath-teal font-bold mt-1 shrink-0">✓</span>
                         <span className="text-lg leading-relaxed">{result}</span>
                       </motion.li>
                     ))}
@@ -237,8 +237,8 @@ export default function ProjectDetailPage({ params }: Props) {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-slate-900 mb-4">{t("interestedInSimilar")}</h2>
           <p className="text-slate-600 mb-8 max-w-2xl mx-auto">{t("joinCommunityCTA")}</p>
-          <Button size="lg" className="bg-armath-red hover:bg-armath-red/90">
-            {t("joinAsStudent")}
+          <Button asChild size="lg" className="bg-armath-red hover:bg-armath-red/90">
+            <Link href="/#joinAsStudent">{t("joinAsStudent")}</Link>
           </Button>
         </div>
       </section>

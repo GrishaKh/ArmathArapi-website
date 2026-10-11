@@ -321,7 +321,7 @@ const MobileProfileSheet: React.FC<MobileProfileSheetProps> = ({ member, onClose
                   )}
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
-                <p className={`text-sm font-semibold mb-4 ${member.isCore ? "text-armath-blue" : "text-armath-red"}`}>{member.role}</p>
+                <p className={`text-sm font-semibold mb-4 ${member.isCore ? "text-armath-teal" : "text-armath-red"}`}>{member.role}</p>
                 <p className="text-base leading-relaxed text-gray-600 max-w-sm">{member.details ?? member.contribution ?? "—"}</p>
               </div>
             </div>
@@ -408,7 +408,7 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
         whileHover={reduceMotion ? undefined : { scale: 1.2 }}
       >
         <div
-          className="flex flex-col items-center justify-center rounded-full border-2 border-armath-blue/20 bg-white text-xs font-bold text-armath-blue shadow-md cursor-pointer hover:bg-armath-blue/5 transition-colors"
+          className="flex flex-col items-center justify-center rounded-full border-2 border-armath-blue/20 bg-white text-xs font-bold text-armath-teal shadow-md cursor-pointer hover:bg-armath-blue/5 transition-colors"
           style={{ width: dotSize, height: dotSize }}
         >
           <span>{getInitials(member.name)}</span>
@@ -442,7 +442,7 @@ const CoreMemberButton: React.FC<CoreMemberButtonProps> = ({
                 </div>
                 {/* Name and role */}
                 <h3 className="text-base font-bold text-gray-900 mb-1">{member.name}</h3>
-                <p className="text-sm font-semibold text-armath-blue mb-3">{member.role}</p>
+                <p className="text-sm font-semibold text-armath-teal mb-3">{member.role}</p>
                 {/* Details */}
                 <p className="text-sm leading-relaxed text-gray-600">{member.details ?? "—"}</p>
               </div>
@@ -656,7 +656,7 @@ const Legend: React.FC = () => {
   return (
     <div className="mt-4 text-center">
       <p className="text-sm font-medium text-gray-600">
-        <span className="text-armath-blue">●</span> {t("coreTeam")} ({t("nucleus")}) •
+        <span className="text-armath-teal">●</span> {t("coreTeam")} ({t("nucleus")}) •
         <span className="ml-2 text-armath-red">●</span> {t("supporters")} ({t("orbitingElectrons")})
       </p>
     </div>

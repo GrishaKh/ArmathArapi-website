@@ -55,16 +55,19 @@ export function ContactSection() {
                       icon: MapPin,
                       label: t("location"),
                       value: t("fullAddress"),
+                      href: "https://www.google.com/maps/search/?api=1&query=Arapi%2C+Shirak%2C+Armenia",
                     },
                     {
                       icon: Phone,
                       label: t("phone"),
                       value: "+374 77 44 18 40",
+                      href: "tel:+37477441840",
                     },
                     {
                       icon: Mail,
                       label: t("email"),
                       value: "grisha.khachatrian@gmail.com",
+                      href: "mailto:grisha.khachatrian@gmail.com",
                     },
                   ].map((item, index) => (
                     <motion.div
@@ -75,11 +78,11 @@ export function ContactSection() {
                       transition={{ delay: index * 0.1 }}
                     >
                       <div className="w-12 h-12 bg-armath-blue/10 rounded-xl flex items-center justify-center">
-                        <item.icon className="w-6 h-6 text-armath-blue" />
+                        <item.icon className="w-6 h-6 text-armath-teal" />
                       </div>
                       <div>
                         <div className="font-medium text-slate-900">{item.label}</div>
-                        <div className="text-slate-600">{item.value}</div>
+                        <a href={item.href} className="block break-all text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-armath-teal">{item.value}</a>
                       </div>
                     </motion.div>
                   ))}
@@ -102,6 +105,8 @@ export function ContactSection() {
                   {submitStatus === 'success' ? (
                     <motion.div
                       key="success"
+                      role="status"
+                      aria-live="polite"
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.9 }}
@@ -121,6 +126,9 @@ export function ContactSection() {
                       <p className="text-slate-600 text-center">
                         {t("messageThankYou")}
                       </p>
+                      <Button type="button" variant="outline" onClick={resetSubmissionState}>
+                        {t("returnToForm")}
+                      </Button>
                     </motion.div>
                   ) : (
                     <motion.form
@@ -130,12 +138,13 @@ export function ContactSection() {
                       exit={{ opacity: 0 }}
                       onSubmit={handleSubmit}
                       className="space-y-4"
-                      noValidate
                     >
                       <div>
                         <label htmlFor="contact-name" className="text-sm font-medium text-slate-700 block mb-1">{t("name")}</label>
                         <Input 
                           id="contact-name"
+                          minLength={2}
+                          maxLength={100}
                           value={contactFormData.name}
                           onChange={(e) => setContactFormData({ ...contactFormData, name: e.target.value })}
                           placeholder={t("yourName")} 
@@ -165,6 +174,8 @@ export function ContactSection() {
                         <label htmlFor="contact-message" className="text-sm font-medium text-slate-700 block mb-1">{t("message")}</label>
                         <Textarea 
                           id="contact-message"
+                          minLength={10}
+                          maxLength={2000}
                           value={contactFormData.message}
                           onChange={(e) => setContactFormData({ ...contactFormData, message: e.target.value })}
                           placeholder={t("yourMessage")} 

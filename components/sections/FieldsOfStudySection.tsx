@@ -116,7 +116,7 @@ export function FieldsOfStudySection() {
             <AnimatedSection key={`field-${index}`} animation="fadeInUp" delay={index * 0.1}>
               <Card className="group h-full border-slate-200/80 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                 <CardHeader>
-                  <CardTitle className="text-lg text-slate-900 group-hover:text-armath-blue transition-colors">
+                  <CardTitle className="text-lg text-slate-900 group-hover:text-armath-teal transition-colors">
                     {field.title}
                   </CardTitle>
                 </CardHeader>

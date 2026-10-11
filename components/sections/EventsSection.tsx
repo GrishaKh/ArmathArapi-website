@@ -17,7 +17,7 @@ export function EventsSection() {
 
   const categoryColors: Record<string, string> = {
     competition: "bg-armath-red",
-    workshop: "bg-armath-blue",
+    workshop: "bg-armath-teal",
     camp: "bg-green-600",
     exhibition: "bg-purple-600",
   }
@@ -69,7 +69,7 @@ export function EventsSection() {
                   </div>
 
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-lg group-hover:text-armath-blue transition-colors line-clamp-2">
+                    <CardTitle className="text-lg group-hover:text-armath-teal transition-colors line-clamp-2">
                       {event.title}
                     </CardTitle>
                   </CardHeader>
@@ -88,7 +88,7 @@ export function EventsSection() {
                     </div>
 
                     {/* Learn More link */}
-                    <div className="flex items-center text-armath-blue font-semibold text-sm gap-1 pt-2">
+                    <div className="flex items-center text-armath-teal font-semibold text-sm gap-1 pt-2">
                       {t("learnMore")}
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </div>
@@ -102,7 +102,7 @@ export function EventsSection() {
         {/* View All Events Button */}
         <AnimatedSection className="text-center">
           <Link href="/events">
-            <Button size="lg" className="bg-armath-blue hover:bg-armath-blue/90">
+            <Button size="lg" className="bg-armath-teal hover:bg-armath-teal/90">
               {t("viewAllEvents")}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>

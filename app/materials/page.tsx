@@ -106,7 +106,7 @@ export default function MaterialsPage() {
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(62,193,207,0.16),transparent_42%),radial-gradient(circle_at_100%_100%,rgba(164,35,126,0.13),transparent_46%)]" />
               <div className="relative flex flex-col gap-6 p-6 sm:p-8 md:flex-row md:items-center md:justify-between">
                 <div className="flex items-start gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-armath-blue/30 bg-armath-blue/10 text-armath-blue">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-armath-blue/30 bg-armath-blue/10 text-armath-teal">
                     <Workflow className="h-6 w-6" />
                   </div>
                   <div>
@@ -177,7 +177,7 @@ export default function MaterialsPage() {
                     variant={topic === "all" ? "default" : "outline"}
                     size="sm"
                     onClick={() => setTopic("all")}
-                    className={cn("shrink-0", topic === "all" ? "bg-armath-blue hover:bg-armath-blue/90" : "text-slate-600")}
+                    className={cn("shrink-0", topic === "all" ? "bg-armath-teal hover:bg-armath-teal/90" : "text-slate-600")}
                   >
                     {t("allTopics")}
                   </Button>
@@ -189,7 +189,7 @@ export default function MaterialsPage() {
                       onClick={() => setTopic(option)}
                       className={cn(
                         "shrink-0",
-                        topic === option ? "bg-armath-blue hover:bg-armath-blue/90" : MATERIAL_TOPIC_STYLES[option]
+                        topic === option ? "bg-armath-teal hover:bg-armath-teal/90" : MATERIAL_TOPIC_STYLES[option]
                       )}
                     >
                       {t(MATERIAL_TOPIC_LABELS[option])}
@@ -331,7 +331,7 @@ export default function MaterialsPage() {
                         </Link>
                       ))}
                       {path.materials.length > 0 && (
-                        <Link href={getMaterialPathHref(path.topic)} className="inline-flex items-center text-sm font-medium text-armath-blue">
+                        <Link href={getMaterialPathHref(path.topic)} className="inline-flex items-center text-sm font-medium text-armath-teal">
                           {t("startPath")}
                           <ArrowRight className="w-4 h-4 ml-1" />
                         </Link>
@@ -368,7 +368,7 @@ export default function MaterialsPage() {
                           {t(MATERIAL_DIFFICULTY_LABELS[material.difficulty])}
                         </Badge>
                       </div>
-                      <CardTitle className="text-lg line-clamp-2 transition-colors group-hover:text-armath-blue">
+                      <CardTitle className="text-lg line-clamp-2 transition-colors group-hover:text-armath-teal">
                         {material.title}
                       </CardTitle>
                       <CardDescription className="line-clamp-3">{material.summary}</CardDescription>
@@ -386,7 +386,7 @@ export default function MaterialsPage() {
                             {material.ageGroup}
                           </span>
                         </div>
-                        <div className="flex items-center text-sm font-medium text-armath-blue">
+                        <div className="flex items-center text-sm font-medium text-armath-teal">
                           {t("viewMaterial")}
                           <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                         </div>

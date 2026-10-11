@@ -6,7 +6,7 @@ import { studentApiRateLimiter } from '@/lib/student-rate-limit'
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
-    const studentId = await getAuthenticatedStudentId()
+    const studentId = await getAuthenticatedStudentId({ allowPasswordChangeRequired: true })
     if (!studentId) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
     }
